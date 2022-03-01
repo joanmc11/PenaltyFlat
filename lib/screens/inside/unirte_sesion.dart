@@ -154,6 +154,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   "color": userLen.docs.length,
                                   "id": user.uid,
                                   "isAdmin": false,
+                                  "imagenPerfil":""
                                 });
                                 
                                 //Busco el nom de la casa

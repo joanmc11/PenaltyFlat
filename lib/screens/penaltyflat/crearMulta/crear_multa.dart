@@ -75,14 +75,10 @@ class _CrearMultaState extends State<CrearMulta> {
                     children: [
                       Center(
                           child: Text(
-                        "Codigo de Multas",
+                        "Crea tu propia multa",
                         style: TiposBlue.title,
                       )),
-                      Center(
-                          child: Text(
-                        "Crea tus propias multas",
-                        style: TiposBlue.bodyBold,
-                      )),
+                      
                     ],
                   ),
                 ),

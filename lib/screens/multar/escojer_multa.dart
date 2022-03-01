@@ -24,6 +24,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
   String parte = "Todas";
   String search = "";
   String _site = "";
+  bool edit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +76,8 @@ class _EscojerMultaState extends State<EscojerMulta> {
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                       color: PageColors.blue,
-                      borderRadius:
-                          const BorderRadius.only(topRight: Radius.circular(20))),
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(20))),
                   //Lista Partes Casa
                   child: StreamBuilder(
                       stream: db.doc("sesion/${widget.sesionId}").snapshots(),
@@ -117,7 +118,8 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                 child: Row(
                                   children: [
                                     AnimatedContainer(
-                                      duration: const Duration(milliseconds: 300),
+                                      duration:
+                                          const Duration(milliseconds: 300),
                                       height: (selectedIndex == index ? 40 : 0),
                                       width: 2,
                                       color: PageColors.yellow,
@@ -133,8 +135,9 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                                   ? Colors.blueGrey
                                                       .withOpacity(0.15)
                                                   : Colors.transparent,
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(10))),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 0, horizontal: 5),
@@ -164,16 +167,16 @@ class _EscojerMultaState extends State<EscojerMulta> {
               Expanded(
                 flex: 9,
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Column(
                     children: [
                       Container(
                         alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 20),
+                        padding: const EdgeInsets.only(right: 20),
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 30),
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 400),
                             width: _folded ? 56 : 250,
                             alignment: Alignment.bottomRight,
                             height: 56,
@@ -186,7 +189,8 @@ class _EscojerMultaState extends State<EscojerMulta> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    padding: EdgeInsets.only(left: 16),
+                                    padding:
+                                        const EdgeInsets.only(left: 16),
                                     child: !_folded
                                         ? TextField(
                                             decoration: InputDecoration(
@@ -206,21 +210,26 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                   ),
                                 ),
                                 AnimatedContainer(
-                                  duration: Duration(milliseconds: 400),
+                                  duration:
+                                      const Duration(milliseconds: 400),
                                   child: Material(
                                     type: MaterialType.transparency,
                                     child: InkWell(
                                       borderRadius: BorderRadius.only(
-                                          topLeft:
-                                              Radius.circular(_folded ? 32 : 0),
-                                          topRight: Radius.circular(32),
-                                          bottomLeft:
-                                              Radius.circular(_folded ? 32 : 0),
-                                          bottomRight: Radius.circular(32)),
+                                          topLeft: Radius.circular(
+                                              _folded ? 32 : 0),
+                                          topRight:
+                                              const Radius.circular(32),
+                                          bottomLeft: Radius.circular(
+                                              _folded ? 32 : 0),
+                                          bottomRight:
+                                              const Radius.circular(32)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Icon(
-                                          _folded ? Icons.search : Icons.close,
+                                          _folded
+                                              ? Icons.search
+                                              : Icons.close,
                                           color: PageColors.blue,
                                         ),
                                       ),
@@ -243,35 +252,40 @@ class _EscojerMultaState extends State<EscojerMulta> {
                       Flexible(
                         child: StreamBuilder(
                           stream: !_folded && search != ""
-                              ? db
-                                  .collection(
-                                      "sesion/${widget.sesionId}/codigoMultas")
-                                  .where('titulo',
-                                      isGreaterThanOrEqualTo:
-                                          search.toLowerCase())
-                                  .where('titulo',
-                                      isLessThan: search
-                                              .toLowerCase()
-                                              .substring(
-                                                  0,
-                                                  search.toLowerCase().length -
-                                                      1) +
-                                          String.fromCharCode(search
-                                                  .toLowerCase()
-                                                  .codeUnitAt(
-                                                      search.length - 1) +
-                                              1))
-                                  .snapshots()
-                              : todas
+                              ? todas
                                   ? db
                                       .collection(
                                           "sesion/${widget.sesionId}/codigoMultas")
+                                      .where('titulo',
+                                          isGreaterThanOrEqualTo:
+                                              search.toLowerCase())
+                                      .where('titulo',
+                                          isLessThan: search.toLowerCase().substring(
+                                                  0,
+                                                  search.toLowerCase().length -
+                                                      1) +
+                                              String.fromCharCode(search
+                                                      .toLowerCase()
+                                                      .codeUnitAt(
+                                                          search.length - 1) +
+                                                  1))
                                       .snapshots()
                                   : db
                                       .collection(
                                           "sesion/${widget.sesionId}/codigoMultas")
                                       .where('parte', isEqualTo: parte)
-                                      .snapshots(),
+                                      .where('titulo',
+                                          isGreaterThanOrEqualTo:
+                                              search.toLowerCase())
+                                      .where('titulo',
+                                          isLessThan: search
+                                                  .toLowerCase()
+                                                  .substring(0, search.toLowerCase().length - 1) +
+                                              String.fromCharCode(search.toLowerCase().codeUnitAt(search.length - 1) + 1))
+                                      .snapshots()
+                              : todas
+                                  ? db.collection("sesion/${widget.sesionId}/codigoMultas").snapshots()
+                                  : db.collection("sesion/${widget.sesionId}/codigoMultas").where('parte', isEqualTo: parte).snapshots(),
                           builder: (
                             BuildContext context,
                             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -304,7 +318,12 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                       child: CircularProgressIndicator());
                                 }
                                 final casaData = snapshot.data!.data()!;
-                                return ListView.builder(
+                                return codigoMultas.isEmpty? Center(child: Text(
+                                                      "No se han encontrado multas.",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TiposBlue.body,
+                                                    ),): ListView.builder(
                                   itemCount: codigoMultas.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
@@ -328,6 +347,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                                 color: Colors.grey
                                                     .withOpacity(0.3))),
                                         child: ListTile(
+                                          
                                           title: Text(
                                             titulo!,
                                             style: TextStyle(

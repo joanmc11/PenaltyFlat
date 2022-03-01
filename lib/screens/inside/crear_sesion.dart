@@ -151,6 +151,7 @@ class _CrearSesionState extends State<CrearSesion> {
                                 "color": 0,
                                 "id": user!.uid,
                                 "isAdmin": true,
+                                "imagenPerfil":""
                               });
                               //creo la collection de casas (inicialment buida)
                               await DatabaseService(uid: user.uid)

@@ -12,6 +12,7 @@ import 'package:collection/collection.dart';
 
 import '../../models/user.dart';
 import '../widgets/tab_item.dart';
+import 'llistaMultes/multaDetall.dart';
 
 class PrincipalScreen extends StatelessWidget {
   final String sesionId;
@@ -42,7 +43,7 @@ class PrincipalScreen extends StatelessWidget {
       body: StreamBuilder(
         stream: db
             .collection("sesion/$sesionId/multas")
-            .orderBy('fecha')
+            .orderBy('fecha', descending: true)
             .snapshots(),
         builder: (
           BuildContext context,
@@ -235,6 +236,32 @@ class PrincipalScreen extends StatelessWidget {
                                                 ),
                                               )
                                             : ListTile(
+                                                leading: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          Navigator.pushReplacement(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        MultaDetall(
+                                                                  sesionId: sesionId,
+                                                                  idMulta:
+                                                                      multasSesion[
+                                                                              index]
+                                                                          .id,
+                                                                ),
+                                                              ));
+                                                        },
+                                                        icon: Icon(
+                                                            Icons.open_in_full,
+                                                            color: PageColors
+                                                                .blue)),
+                                                  ],
+                                                ),
                                                 title: Text(
                                                     multasSesion[index]
                                                         ['nomMultado'],

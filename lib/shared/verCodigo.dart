@@ -40,7 +40,7 @@ class VerCodigo extends StatelessWidget {
                     strokeWidth: 0.5,
                     child: Center(
                         child: Text(codigo,
-                            style: TextStyle(fontSize: 100, color: PageColors.blue))),
+                            style: TextStyle(fontSize: 80, color: PageColors.blue))),
                   ),
                 ),
                 

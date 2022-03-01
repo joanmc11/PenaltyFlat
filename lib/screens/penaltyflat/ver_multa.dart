@@ -101,14 +101,10 @@ class _VerMultaState extends State<VerMulta> {
                   children: [
                     Center(
                         child: Text(
-                      "Codigo de Multas",
+                      "Edita esta Multa",
                       style: TiposBlue.title,
                     )),
-                    Center(
-                        child: Text(
-                      "Edita esta Multa",
-                      style: TiposBlue.bodyBold,
-                    )),
+                    
                   ],
                 ),
               ),

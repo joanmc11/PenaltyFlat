@@ -115,208 +115,237 @@ class Multar extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   final multaData = snapshot.data!.data()!;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text("Resumen", style: TiposBlue.title),
-                      ),
-                      Row(
+                  return StreamBuilder(
+                    stream: db
+                        .doc("sesion/$sesionId/users/${user!.uid}")
+                        .snapshots(),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                          snapshot,
+                    ) {
+                      if (snapshot.hasError) {
+                        return ErrorWidget(snapshot.error.toString());
+                      }
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final autorData = snapshot.data!.data()!;
+                      return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("¿Quién?", style: TiposBlue.subtitle),
-                          Column(
+                          Center(
+                            child: Text("Resumen", style: TiposBlue.title),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 4.0),
-                                child: DottedBorder(
-                                  radius: Radius.circular(8),
-                                  borderType: BorderType.Circle,
-                                  dashPattern: [5],
-                                  color: colors[userData['color']],
-                                  strokeWidth: 1,
-                                  child: Icon(
-                                    Icons.account_circle_rounded,
-                                    color: colors[userData['color']],
-                                    size: 80,
+                              Text("¿Quién?", style: TiposBlue.subtitle),
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4.0),
+                                    child: DottedBorder(
+                                      radius: Radius.circular(8),
+                                      borderType: BorderType.Circle,
+                                      dashPattern: [5],
+                                      color: colors[userData['color']],
+                                      strokeWidth: 1,
+                                      child: Icon(
+                                        Icons.account_circle_rounded,
+                                        color: colors[userData['color']],
+                                        size: 80,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                userData['nombre'],
-                                style: TiposBlue.bodyBold,
+                                  Text(
+                                    userData['nombre'],
+                                    style: TiposBlue.bodyBold,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: Text("¿Que ha hecho?",
-                                      style: TiposBlue.subtitle),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Text("¿Que ha hecho?",
+                                          style: TiposBlue.subtitle),
+                                    ),
+                                    Text("${multaData['titulo']}".capitalize!,
+                                        style: TiposBlue.bodyBold),
+                                    Text(
+                                        "${multaData['descripcion']}"
+                                            .capitalize!,
+                                        style: TiposBlue.body),
+                                    Text("${multaData['precio']}€",
+                                        style: TiposBlue.body),
+                                  ],
                                 ),
-                                Text("${multaData['titulo']}".capitalize!,
-                                    style: TiposBlue.bodyBold),
-                                Text("${multaData['descripcion']}".capitalize!,
-                                    style: TiposBlue.body),
-                                Text("${multaData['precio']}€",
-                                    style: TiposBlue.body),
-                              ],
-                            ),
+                              ),
+                              Container()
+                            ],
                           ),
-                          Container()
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 40),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "¿Tienes Pruebas?",
-                                  style: TiposBlue.subtitle,
-                                ),
-                                Material(
-                                  color: Colors.white.withOpacity(0.0),
-                                  child: InkWell(
-                                    splashColor:
-                                        Theme.of(context).primaryColorLight,
-                                    onTap: () async {
-                                      final image = await ImagePicker()
-                                          .pickImage(
-                                              source: ImageSource.camera);
-                                      if (image == null) return;
-                                      final imageTemporary = File(image.path);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: DottedBorder(
-                                        radius: Radius.circular(8),
-                                        borderType: BorderType.RRect,
-                                        dashPattern: [5],
-                                        color: PageColors.blue,
-                                        strokeWidth: 0.5,
-                                        child: Container(
-                                          height: 80,
-                                          width: 80,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(
-                                              Icons.add_a_photo,
-                                              size: 40,
-                                              color: Color.fromARGB(
-                                                  255, 45, 52, 96),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 40),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "¿Tienes Pruebas?",
+                                      style: TiposBlue.subtitle,
+                                    ),
+                                    Material(
+                                      color: Colors.white.withOpacity(0.0),
+                                      child: InkWell(
+                                        splashColor:
+                                            Theme.of(context).primaryColorLight,
+                                        onTap: () async {
+                                          final image = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.camera);
+                                          if (image == null) return;
+                                          final imageTemporary =
+                                              File(image.path);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: DottedBorder(
+                                            radius: Radius.circular(8),
+                                            borderType: BorderType.RRect,
+                                            dashPattern: [5],
+                                            color: PageColors.blue,
+                                            strokeWidth: 0.5,
+                                            child: Container(
+                                              height: 80,
+                                              width: 80,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  size: 40,
+                                                  color: Color.fromARGB(
+                                                      255, 45, 52, 96),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  primary: PageColors.blue,
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      side: BorderSide(
-                                          color:
-                                              Colors.black.withOpacity(0.5))),
-                                  minimumSize: const Size(120, 20)),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EscojerMulta(
-                                        sesionId: sesionId,
-                                        idMultado: idMultado,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                      primary: PageColors.blue,
+                                      backgroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          side: BorderSide(
+                                              color: Colors.black
+                                                  .withOpacity(0.5))),
+                                      minimumSize: const Size(120, 20)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EscojerMulta(
+                                            sesionId: sesionId,
+                                            idMultado: idMultado,
+                                          ),
+                                        ));
+                                  },
+                                  child: const Text('Cancelar',
+                                      style: TextStyle(fontSize: 15)),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                      primary: PageColors.blue,
+                                      backgroundColor: PageColors.yellow,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      minimumSize: const Size(120, 25)),
+                                  onPressed: () async {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 1),
+                                        content: Text(
+                                            "${userData['nombre']} ha sido multado/a"),
                                       ),
-                                    ));
-                              },
-                              child: const Text('Cancelar',
-                                  style: TextStyle(fontSize: 15)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  primary: PageColors.blue,
-                                  backgroundColor: PageColors.yellow,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  minimumSize: const Size(120, 25)),
-                              onPressed: () async {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    duration: Duration(seconds: 1),
-                                    content: Text(
-                                        "${userData['nombre']} ha sido multado/a"),
-                                  ),
-                                );
-                                await db
-                                    .collection('sesion/$sesionId/multas')
-                                    .add({
-                                  'titulo': multaData['titulo'],
-                                  'descripcion': multaData['descripcion'],
-                                  'autorId': user!.uid,
-                                  'precio': multaData['precio'],
-                                  'nomMultado': userData['nombre'],
-                                  'idMultado': userData['id'],
-                                  'imagen': imgPath,
-                                  'parte': multaData['parte'],
-                                  'fecha': dateToday,
-                                });
-                                 await db.doc('sesion/$sesionId/users/$idMultado').update({
-                                  'dinero': userData['dinero']==null ? multaData['precio'] : userData['dinero']+multaData['precio'],
-                                });
-                                
-                               print(idMultado);
-                                await Future.delayed(
-                                    const Duration(milliseconds: 1000), () {Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PrincipalScreen(sesionId: sesionId),
-                                    ));});
-                              },
-                              child: const Text('Multar',
-                                  style: TextStyle(fontSize: 15)),
-                            ),
+                                    );
+                                    await db
+                                        .collection('sesion/$sesionId/multas')
+                                        .add({
+                                      'titulo': multaData['titulo'],
+                                      'descripcion': multaData['descripcion'],
+                                      'autorId': user.uid,
+                                      'precio': multaData['precio'],
+                                      'nomMultado': userData['nombre'],
+                                      'idMultado': userData['id'],
+                                      'imagen': imgPath,
+                                      'parte': multaData['parte'],
+                                      'fecha': dateToday,
+                                      'autor': autorData['nombre']
+                                    });
+                                    await db
+                                        .doc(
+                                            'sesion/$sesionId/users/$idMultado')
+                                        .update({
+                                      'dinero': userData['dinero'] == null
+                                          ? multaData['precio']
+                                          : userData['dinero'] +
+                                              multaData['precio'],
+                                    });
+
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 1000), () {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PrincipalScreen(
+                                                    sesionId: sesionId),
+                                          ));
+                                    });
+                                  },
+                                  child: const Text('Multar',
+                                      style: TextStyle(fontSize: 15)),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   );
                 });
           }),
-     
     );
   }
-
-  
 }

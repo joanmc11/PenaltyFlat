@@ -18,13 +18,15 @@ class ProfilePage extends StatelessWidget {
   }) : super(key: key);
   final AuthService _auth = AuthService();
 
+   
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ProfilePic(),
+          ProfilePic(sesionId: sesionId),
           SizedBox(height: 20),
           ProfileMenu(
             text: "Mis PenaltyFlats",

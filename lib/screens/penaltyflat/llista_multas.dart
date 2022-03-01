@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/calendariMultes.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/multaDetall.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../../models/user.dart';
 
 class PantallaMultas extends StatefulWidget {
@@ -18,11 +19,14 @@ class PantallaMultas extends StatefulWidget {
   _PantallaMultasState createState() => _PantallaMultasState();
 }
 
-DateTime _selectedDay = dateToday;
-DateTime _focusedDay = dateToday;
-
 class _PantallaMultasState extends State<PantallaMultas> {
+  String selectedMonth = "Todas";
+  int monthValue = 0;
+  int yearValue = 0;
+  bool mount = true;
   bool selected = true;
+  int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
@@ -59,31 +63,89 @@ class _PantallaMultasState extends State<PantallaMultas> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime.utc(2030, 3, 14),
-            focusedDay: DateTime.now(),
-            locale: 'es_ES',
-            calendarStyle: CalendarStyle() ,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay; // update `_focusedDay` here as well
-              });
-            },
-          ),
           Padding(
-            padding: const EdgeInsets.only(top: 50.0, bottom: 25),
-            child: Text(
-              "Multas Febrero 2022",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: PageColors.blue),
-            ),
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Text("Multas de: ", style: TiposBlue.title),
+          ),
+          StreamBuilder(
+              stream:
+                  db.collection("sesion/${widget.sesionId}/multas").snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final multasData = snapshot.data!.docs;
+                List<String>? monthsYearsStrings = ["Todas"];
+                List<int>? mValues = [0];
+                List<int> yValues = [0];
+                for (int i = 0; i < multasData.length; i++) {
+                  DateTime date = DateTime.fromMicrosecondsSinceEpoch(
+                      multasData[i]['fecha'].microsecondsSinceEpoch);
+
+                  String dateString =
+                      DateFormat("MMMM yyy", "es_ES").format(date);
+                  int year = int.parse(DateFormat('yyyy').format(date));
+                  int month = int.parse(DateFormat('MM').format(date));
+
+                  monthsYearsStrings.contains(dateString)
+                      ? null
+                      : monthsYearsStrings.add(dateString);
+
+                  if (!mValues.contains(month)||!yValues.contains(year)) {
+                    yValues.add(year);
+                    mValues.add(month);
+                  }
+                }
+               
+
+                return DropdownButton(
+                  hint: const Text("Selecciona"),
+                  dropdownColor: PageColors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  value: selectedMonth,
+                  items: monthsYearsStrings.map((valuesItem) {
+                    int index = monthsYearsStrings.indexOf(valuesItem);
+
+                    return DropdownMenuItem(
+                      onTap: () {
+                        setState(() {
+                          currentIndex = index;
+                          mount = false;
+                        });
+                      },
+                      value: valuesItem,
+                      child: Text(valuesItem),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedMonth = value!;
+                      yearValue = yValues[currentIndex];
+                      monthValue = mValues[currentIndex];
+                    });
+                  },
+                );
+              }),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+            child: IconButton(
+                icon: Icon(Icons.calendar_month, color: PageColors.blue),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Calendario(
+                          sesionId: widget.sesionId,
+                        ),
+                      ));
+                },
+                iconSize: 40),
           ),
           Container(
             decoration: BoxDecoration(
@@ -146,11 +208,32 @@ class _PantallaMultasState extends State<PantallaMultas> {
               stream: selected
                   ? db
                       .collection("sesion/${widget.sesionId}/multas")
-                      .orderBy('fecha')
+                      .where('fecha',
+                          isGreaterThanOrEqualTo: DateTime(
+                              selectedMonth == "Todas" ? 2020 : yearValue,
+                              monthValue,
+                              01))
+                      .where('fecha',
+                          isLessThan: DateTime(
+                              selectedMonth == "Todas" ? 2160 : yearValue,
+                              monthValue + 1,
+                              01))
+                      .orderBy('fecha', descending: true)
                       .snapshots()
                   : db
                       .collection("sesion/${widget.sesionId}/multas")
                       .where('idMultado', isEqualTo: user!.uid)
+                      .where('fecha',
+                          isGreaterThanOrEqualTo: DateTime(
+                              selectedMonth == "Todas" ? 2020 : yearValue,
+                              monthValue,
+                              01))
+                      .where('fecha',
+                          isLessThan: DateTime(
+                              selectedMonth == "Todas" ? 2160 : yearValue,
+                              monthValue + 1,
+                              01))
+                      .orderBy('fecha', descending: true)
                       .snapshots(),
               builder: (
                 BuildContext context,
@@ -176,10 +259,26 @@ class _PantallaMultasState extends State<PantallaMultas> {
                             ? Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Text(
-                                  "Todavía no tienes multas",
+                                  currentIndex==0? "Aún no tienes multas":"No tienes multas para esta fecha",
                                   style: TiposBlue.body,
                                 ))
                             : ListTile(
+                              leading: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(onPressed: (){
+                                    Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MultaDetall(
+                                                  sesionId: widget.sesionId,
+                                                  idMulta: multasSesion[index].id,
+                                                ),
+                                              ));
+                                  }, icon: Icon(Icons.open_in_full, color: PageColors.blue)),
+                                ],
+                              ),
                                 title: Text(multasSesion[index]['nomMultado'],
                                     style: TextStyle(
                                         fontSize: 14,

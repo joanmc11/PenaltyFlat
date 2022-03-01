@@ -117,7 +117,7 @@ class Inicio extends StatelessWidget {
                                               style: TiposBlue.bodyBold,
                                             ),
                                             onTap: () async {
-                                              await Navigator.of(context).push(
+                                              await Navigator.of(context).pushReplacement(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         PrincipalScreen(
