@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "251935739114",
+    "project_id": "penalty-flat-3918c",
+    "storage_bucket": "penalty-flat-3918c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251935739114:android:52d3a03cfd9f2dfdfe1b93",
+        "android_client_info": {
+          "package_name": "com.joanmarine.penaltyflat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251935739114-ccojda6jq4ure5t4l4vc1085u6uj7ids.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqcbastfWRXuWBHdFk1ov9CGVnhAZTv9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251935739114-ccojda6jq4ure5t4l4vc1085u6uj7ids.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

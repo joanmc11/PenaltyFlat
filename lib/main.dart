@@ -1,0 +1,37 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/screens/wrapper.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:penalty_flat_app/services/auth.dart';
+import 'package:provider/provider.dart';
+import 'models/user.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+void main() async{
+
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  initializeDateFormatting().then((_) => runApp(MyApp()));
+
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<MyUser?>.value(
+      value: AuthService().user,
+      initialData: null,
+      // ignore: avoid_types_as_parameter_names
+      catchError: (User,MyUser) => null,
+      child: const MaterialApp(
+        home: Wrapper(),
+        
+        ),
+    );
+  }
+}
