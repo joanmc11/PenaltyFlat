@@ -112,7 +112,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: PageColors.yellow),
+                              primary: codi!=""&&apodo!=""? PageColors.yellow: Colors.grey),
                           child: Text(
                             "Únete",
                             style: TextStyle(color: PageColors.blue),

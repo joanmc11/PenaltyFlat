@@ -123,7 +123,7 @@ class _CrearSesionState extends State<CrearSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: PageColors.yellow),
+                              primary: apodo!=""&&casa!=""? PageColors.yellow: Colors.grey),
                           child: Text(
                             "Empieza",
                             style: TextStyle(color: PageColors.blue),

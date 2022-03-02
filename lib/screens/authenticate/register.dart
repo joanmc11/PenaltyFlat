@@ -120,7 +120,7 @@ class _RegisterState extends State<Register> {
                           Expanded(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  primary: PageColors.yellow),
+                                  primary: name!=""&&email!=""&&password!=""? PageColors.yellow : Colors.grey),
                               child: Text(
                                 "Registrate",
                                 style: TextStyle(color: PageColors.blue),

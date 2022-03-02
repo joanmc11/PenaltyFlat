@@ -267,7 +267,7 @@ class _CrearMultaState extends State<CrearMulta> {
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: PageColors.yellow),
+                                        primary: titulo!=""&&descripcion!=""? PageColors.yellow: Colors.grey),
                                     child: Text(
                                       "Crear",
                                       style: TextStyle(color: PageColors.blue),

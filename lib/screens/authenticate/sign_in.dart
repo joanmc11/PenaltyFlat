@@ -94,7 +94,7 @@ class _SignInState extends State<SignIn> {
                           Expanded(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  primary: PageColors.yellow),
+                                  primary: email!=""&&password!=""? PageColors.yellow: Colors.grey),
                               child: Text(
                                 "Entra",
                                 style: TextStyle(color: PageColors.blue),
