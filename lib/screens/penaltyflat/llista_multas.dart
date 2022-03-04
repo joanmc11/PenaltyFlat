@@ -136,8 +136,8 @@ class _PantallaMultasState extends State<PantallaMultas> {
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: IconButton(
                 icon: Icon(Icons.calendar_month, color: PageColors.blue),
-                onPressed: () {
-                  Navigator.pushReplacement(
+                onPressed: () async{
+                  await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => Calendario(
@@ -274,6 +274,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
                                                     MultaDetall(
                                                   sesionId: widget.sesionId,
                                                   idMulta: multasSesion[index].id,
+                                                  idMultado: multasSesion[index]['idMultado'],
                                                 ),
                                               ));
                                   }, icon: Icon(Icons.open_in_full, color: PageColors.blue)),

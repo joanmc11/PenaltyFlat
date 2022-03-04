@@ -304,6 +304,7 @@ class PrincipalScreen extends StatelessWidget {
                                                                       multasSesion[
                                                                               index]
                                                                           .id,
+                                                                          idMultado: multasSesion[index]['idMultado'],
                                                                 ),
                                                               ));
                                                         },
