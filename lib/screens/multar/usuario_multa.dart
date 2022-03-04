@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/escojer_multa.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +43,7 @@ class _PersonaMultadaState extends State<PersonaMultada> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final storage = FirebaseStorage.instance;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -68,92 +72,129 @@ class _PersonaMultadaState extends State<PersonaMultada> {
           )
         ],
       ),
-      body: user==null? const Loading(): StreamBuilder(
-          stream: db
-              .collection("sesion/${widget.sesionId}/users")
-              .where('id', isNotEqualTo: user.uid)
-              .snapshots(),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final usersData = snapshot.data!.docs;
+      body: user == null
+          ? const Loading()
+          : StreamBuilder(
+              stream: db
+                  .collection("sesion/${widget.sesionId}/users")
+                  .where('id', isNotEqualTo: user.uid)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final usersData = snapshot.data!.docs;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
-                  child: Center(
-                      child: Text("¿A quién has pillado?",
-                          style: TiposBlue.title)),
-                ),
-                Flexible(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
+                      child: Center(
+                          child: Text("¿A quién has pillado?",
+                              style: TiposBlue.title)),
                     ),
-                    shrinkWrap: true,
-                    itemCount: usersData.length,
-                    itemBuilder: (context, index) {
-                      return Material(
-                        color: Colors.white.withOpacity(0.0),
-                        child: InkWell(
-                          splashColor: Theme.of(context).primaryColorLight,
-                          onTap: () {
-                            setState(() {});
-                            Future.delayed(const Duration(milliseconds: 200));
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EscojerMulta(
-                                    sesionId: widget.sesionId,
-                                    idMultado: usersData[index].id,
-                                  ),
-                                ));
-                          },
-                          child: Column(
-                            children: [
-                              /*Image.memory(
+                    Flexible(
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                        ),
+                        shrinkWrap: true,
+                        itemCount: usersData.length,
+                        itemBuilder: (context, index) {
+                          return Material(
+                            color: Colors.white.withOpacity(0.0),
+                            child: InkWell(
+                              splashColor: Theme.of(context).primaryColorLight,
+                              onTap: () {
+                                setState(() {});
+                                Future.delayed(
+                                    const Duration(milliseconds: 200));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EscojerMulta(
+                                        sesionId: widget.sesionId,
+                                        idMultado: usersData[index].id,
+                                      ),
+                                    ));
+                              },
+                              child: Column(
+                                children: [
+                                  /*Image.memory(
                           (app as ApplicationWithIcon).icon,
                           width: 40,
                           height: 40,
                         ),*/
-                              DottedBorder(
-                                borderType: BorderType.Circle,
-                                dashPattern: [5],
-                                color: colors[usersData[index]['color']],
-                                strokeWidth: 1,
-                                child: Icon(
-                                  Icons.account_circle_rounded,
-                                  size: 85,
-                                  color: colors[usersData[index]['color']],
-                                ),
+                                  DottedBorder(
+                                    borderType: BorderType.Circle,
+                                    dashPattern: const [5],
+                                    color: colors[usersData[index]['color']],
+                                    strokeWidth: 1,
+                                    child: usersData[index]['imagenPerfil'] ==
+                                            ""
+                                        ? Icon(
+                                            Icons.account_circle_rounded,
+                                            size: 85,
+                                            color: colors[usersData[index]
+                                                ['color']],
+                                          )
+                                        : FutureBuilder(
+                                            future: storage
+                                                .ref(
+                                                    "/images${usersData[index]['imagenPerfil']}")
+                                                .getDownloadURL(),
+                                            builder: (context,
+                                                AsyncSnapshot<String>
+                                                    snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return const CircularProgressIndicator();
+                                              }
+                                              debugPrint(snapshot.data!);
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: CircleAvatar(
+                                                  radius: 38,
+                                                  backgroundColor: colors[
+                                                      usersData[index]
+                                                          ['color']],
+                                                  child: CircleAvatar(
+                                                    radius: 37,
+                                                    backgroundImage:
+                                                        NetworkImage(
+                                                      snapshot.data!,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Text(
+                                      usersData[index]['nombre'],
+                                      style: TiposBlue.bodyBold,
+                                    ),
+                                  )
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text(
-                                  usersData[index]['nombre'],
-                                  style: TiposBlue.bodyBold,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          }),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: Icon(
@@ -180,16 +221,26 @@ class _PersonaMultadaState extends State<PersonaMultada> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
+                onTap: () async {
+                  await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MyApp(),
+                        builder: (context) =>
+                            PrincipalScreen(sesionId: widget.sesionId),
                       ));
                 },
                 child: const TabItem(icon: Icons.home)),
             GestureDetector(
-                onTap: () {}, child: const TabItem(icon: Icons.account_circle))
+                onTap: () async {
+                  await Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) =>
+                          ProfilePage(sesionId: widget.sesionId)),
+                    ),
+                  );
+                },
+                child: const TabItem(icon: Icons.account_circle))
           ],
         ),
       ),

@@ -18,8 +18,6 @@ class ProfilePage extends StatelessWidget {
   }) : super(key: key);
   final AuthService _auth = AuthService();
 
-   
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +25,7 @@ class ProfilePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ProfilePic(sesionId: sesionId),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ProfileMenu(
             text: "Mis PenaltyFlats",
             icon: Icons.house_siding_rounded,
@@ -64,8 +62,8 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => PersonaMultada(sesionId: sesionId),
@@ -95,13 +93,10 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PrincipalScreen(sesionId: sesionId),
-                      ));
+                onTap: () async {
+                  await Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => PrincipalScreen(sesionId: sesionId),
+                  ));
                 },
                 child: const TabItem(icon: Icons.home)),
             GestureDetector(

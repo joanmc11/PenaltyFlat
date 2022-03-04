@@ -19,7 +19,6 @@ class _CrearSesionState extends State<CrearSesion> {
   String apodo = "";
   final _formKey = GlobalKey<FormState>();
   final db = FirebaseFirestore.instance;
- 
 
   //Get Random String
   static const _chars =
@@ -94,7 +93,7 @@ class _CrearSesionState extends State<CrearSesion> {
                   padding: const EdgeInsets.all(40.0),
                   child: Center(
                     child: Text(
-                        """En tu perfil podrás ver el código de tu PenaltyFlat para que tus compañeros puedan unir-se.""",
+                        """En la pantalla principal podrás ver el código de tu PenaltyFlat para que tus compañeros puedan unir-se.""",
                         textAlign: TextAlign.center, style: TiposBlue.body),
                   ),
                 ),
@@ -123,7 +122,9 @@ class _CrearSesionState extends State<CrearSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: apodo!=""&&casa!=""? PageColors.yellow: Colors.grey),
+                              primary: apodo != "" && casa != ""
+                                  ? PageColors.yellow
+                                  : Colors.grey),
                           child: Text(
                             "Empieza",
                             style: TextStyle(color: PageColors.blue),
@@ -144,14 +145,16 @@ class _CrearSesionState extends State<CrearSesion> {
                                 ],
                                 "sinMultas": true,
                               });
-                               await db
-                                  .doc('/sesion/${sesionSnap.id}/users/${user?.uid}')
+                              await db
+                                  .doc(
+                                      '/sesion/${sesionSnap.id}/users/${user?.uid}')
                                   .set({
                                 "nombre": apodo,
                                 "color": 0,
                                 "id": user!.uid,
                                 "isAdmin": true,
-                                "imagenPerfil":""
+                                "imagenPerfil": "",
+                                "dinero": 0
                               });
                               //creo la collection de casas (inicialment buida)
                               await DatabaseService(uid: user.uid)

@@ -37,7 +37,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
-          onPressed: () {
+          onPressed: () async{
             Navigator.pop(context);
           },
         ),
@@ -266,8 +266,8 @@ class _PantallaMultasState extends State<PantallaMultas> {
                               leading: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  IconButton(onPressed: (){
-                                    Navigator.pushReplacement(
+                                  IconButton(onPressed: ()async{
+                                    await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>

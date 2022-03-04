@@ -41,7 +41,7 @@ class _ProfilePicState extends State<ProfilePic> {
     final storage = FirebaseStorage.instance;
     return StreamBuilder(
         stream:
-            db.doc("sesion/${widget.sesionId}/users/${user!.uid}").snapshots(),
+            db.doc("sesion/${widget.sesionId}/users/${user?.uid}").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -116,7 +116,7 @@ class _ProfilePicState extends State<ProfilePic> {
                         if (image == null) return;
                         final imageTemporary = File(image.path);
                         await db
-                            .doc('sesion/${widget.sesionId}/users/${user.uid}')
+                            .doc('sesion/${widget.sesionId}/users/${user?.uid}')
                             .update({
                           'imagenPerfil': image.path,
                         });

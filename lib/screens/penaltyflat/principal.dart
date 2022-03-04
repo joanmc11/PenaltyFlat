@@ -3,20 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/codigo_multas.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/estadisticas/estadisticas_multas.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/llista_multas.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
 import 'package:penalty_flat_app/shared/verCodigo.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
 import '../../models/user.dart';
 import '../widgets/tab_item.dart';
 import 'llistaMultes/multaDetall.dart';
+//import 'package:fl_chart/fl_chart.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class PrincipalScreen extends StatelessWidget {
   final String sesionId;
-  const PrincipalScreen({Key? key, required this.sesionId}) : super(key: key);
+  PrincipalScreen({Key? key, required this.sesionId}) : super(key: key);
+
+  final List<Color> colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.pink,
+    Colors.indigo,
+    Colors.pinkAccent,
+    Colors.amber,
+    Colors.deepOrange,
+    Colors.brown,
+    Colors.cyan,
+    Colors.yellow,
+  ];
+
+  get dataMap => null;
 
   @override
   Widget build(BuildContext context) {
@@ -57,21 +77,16 @@ class PrincipalScreen extends StatelessWidget {
           }
           final multasSesion = snapshot.data!.docs;
 
-          final List<num> dineroMultas = [];
-          for (int i = 0; i < multasSesion.length; i++) {
-            dineroMultas.add(multasSesion[i]['precio']);
-          }
-          final num totalMultas = dineroMultas.sum;
-
           return user == null
               ? Container()
               : StreamBuilder(
-                  stream:
-                      db.doc("sesion/$sesionId/users/${user.uid}").snapshots(),
+                  stream: db
+                      .collection("sesion/$sesionId/users")
+                      .orderBy("color", descending: false)
+                      .snapshots(),
                   builder: (
                     BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                        snapshot,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
                   ) {
                     if (snapshot.hasError) {
                       return ErrorWidget(snapshot.error.toString());
@@ -79,43 +94,78 @@ class PrincipalScreen extends StatelessWidget {
                     if (!snapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    final multasUsuario = snapshot.data!.data()!;
+                    final usersData = snapshot.data!.docs;
 
-                    final num totalUsuario = multasUsuario['dinero'] ?? 0;
+                    Map<String, double> sectionsChart = {};
+                    final List<num> dineroMultas = [];
+                    for (int i = 0; i < usersData.length; i++) {
+                      dineroMultas.add(usersData[i]['dinero']);
+                      sectionsChart[usersData[i]['nombre']] =
+                          usersData[i]['dinero'].toDouble();
+                    }
+                    final num totalMultas = dineroMultas.sum;
 
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Center(
-                          child: CircularPercentIndicator(
-                            radius: 68.0,
-                            animation: true,
-                            animationDuration: 1200,
-                            lineWidth: 6.0,
-                            percent: totalUsuario == 0
-                                ? 0
-                                : totalUsuario / totalMultas,
-                            center: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Dinero acumulado",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                Center(
-                                  child: Text(
-                                    "$totalMultas€",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 35,
-                                      color: PageColors.blue,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Center(
+                                  child: PieChart(
+                                    dataMap: sectionsChart,
+                                    animationDuration:
+                                        const Duration(milliseconds: 800),
+                                    chartLegendSpacing: 10,
+                                    chartRadius:
+                                        MediaQuery.of(context).size.width / 3.1,
+                                    colorList: colors,
+                                    initialAngleInDegree: 0,
+                                    chartType: ChartType.ring,
+                                    emptyColor:
+                                        PageColors.blue.withOpacity(0.3),
+                                    ringStrokeWidth: 10,
+                                    centerText: "$totalMultas€",
+                                    centerTextStyle: TiposBlue.title,
+                                    legendOptions: LegendOptions(
+                                      showLegendsInRow: false,
+                                      legendPosition: LegendPosition.left,
+                                      showLegends: true,
+                                      legendTextStyle: TiposBlue.body,
+                                    ),
+                                    chartValuesOptions:
+                                        const ChartValuesOptions(
+                                      showChartValueBackground: false,
+                                      showChartValues: false,
+                                      showChartValuesInPercentage: false,
+                                      showChartValuesOutside: false,
+                                      decimalPlaces: 1,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            circularStrokeCap: CircularStrokeCap.butt,
-                            progressColor: PageColors.blue,
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: IconButton(
+                                            onPressed: () async{
+                                              await Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EstadisticaMultas(
+                                                            sesionId:
+                                                                sesionId)),
+                                              );
+                                            },
+                                            icon: Icon(Icons.arrow_forward, color: PageColors.blue,))),
+                                  ))
+                            ],
                           ),
                         ),
                         StreamBuilder(
@@ -242,13 +292,14 @@ class PrincipalScreen extends StatelessWidget {
                                                   children: [
                                                     IconButton(
                                                         onPressed: () {
-                                                          Navigator.pushReplacement(
+                                                          Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
                                                                         MultaDetall(
-                                                                  sesionId: sesionId,
+                                                                  sesionId:
+                                                                      sesionId,
                                                                   idMulta:
                                                                       multasSesion[
                                                                               index]

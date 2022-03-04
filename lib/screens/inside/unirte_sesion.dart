@@ -83,7 +83,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                   padding: const EdgeInsets.all(40.0),
                   child: Center(
                     child: Text(
-                        """Si el creador de la PenaltyFlat no encuentra el código, está en la sección de perfil.""",
+                        """Si el creador de la PenaltyFlat no encuentra el código, está en la pantalla principal.""",
                         textAlign: TextAlign.center, style: TiposBlue.body),
                   ),
                 ),
@@ -112,7 +112,9 @@ class _EntrarSesionState extends State<EntrarSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: codi!=""&&apodo!=""? PageColors.yellow: Colors.grey),
+                              primary: codi != "" && apodo != ""
+                                  ? PageColors.yellow
+                                  : Colors.grey),
                           child: Text(
                             "Únete",
                             style: TextStyle(color: PageColors.blue),
@@ -144,8 +146,8 @@ class _EntrarSesionState extends State<EntrarSesion> {
                               } else {
                                 //Afageixo un color per defecte a l'usuari segons la llargaria dels usuaris
                                 final userLen = await db
-                                  .collection('sesion/$sesionId/users')
-                                  .get();
+                                    .collection('sesion/$sesionId/users')
+                                    .get();
 
                                 await db
                                     .doc('/sesion/$sesionId/users/${user.uid}')
@@ -154,14 +156,14 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   "color": userLen.docs.length,
                                   "id": user.uid,
                                   "isAdmin": false,
-                                  "imagenPerfil":""
+                                  "imagenPerfil": "",
+                                  "dinero": 0
                                 });
-                                
+
                                 //Busco el nom de la casa
-                                final casa = await db
-                                    .doc('sesion/$sesionId')
-                                    .get();
-                                    final String casaNombre= casa['casa'];
+                                final casa =
+                                    await db.doc('sesion/$sesionId').get();
+                                final String casaNombre = casa['casa'];
                                 //creo la collection de casas de l'usuari (inicialment buida)
                                 await DatabaseService(uid: user.uid)
                                     .updateUserFlats(casaNombre, sesionId);

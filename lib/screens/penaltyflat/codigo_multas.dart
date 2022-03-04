@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/crearMulta/crear_multa.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/ver_multa.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -25,7 +26,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
   bool todas = true;
   String parte = "Todas";
   String search = "";
- bool edit = false;
+  bool edit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
-          onPressed: () {
+          onPressed: () async {
             Navigator.pop(context);
           },
         ),
@@ -310,7 +311,6 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                   child: CircularProgressIndicator());
                             }
                             final codigoMultas = snapshot.data!.docs;
-                            
 
                             return StreamBuilder(
                               stream: db
@@ -461,107 +461,110 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                               ]),
                                         ),
                                       )
-                                    : codigoMultas.isEmpty? Center(child: Text(
-                                                      "No se han encontrado multas.",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TiposBlue.body,
-                                                    ),):
-                                                    ListView.builder(
-                                        itemCount: codigoMultas.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          final String? titulo =
-                                              "${codigoMultas[index]['titulo']}"
-                                                  .capitalize;
-                                          final String? descripcion =
-                                              "${codigoMultas[index]['descripcion']}"
-                                                  .capitalize;
-
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0, top: 4.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(10),
-                                                  ),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3))),
-                                              child: Padding(
-                                                padding: edit? const EdgeInsets.all(4.0):const EdgeInsets.all(0),
-                                                child: ListTile(
-                                                  leading: edit
-                                                      ? Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            IconButton(
-                                                              icon: Icon(
-                                                                  Icons.edit,
-                                                                  color:
-                                                                      PageColors
-                                                                          .blue),
-                                                              onPressed: () {
-                                                                Navigator
-                                                                    .pushReplacement(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            VerMulta(
-                                                                      sesionId: widget
-                                                                          .sesionId,
-                                                                      multaId:
-                                                                          codigoMultas[index]
-                                                                              .id,
-                                                                      parte: codigoMultas[
-                                                                              index]
-                                                                          [
-                                                                          'parte'],
-                                                                      titulo: codigoMultas[
-                                                                              index]
-                                                                          [
-                                                                          'titulo'],
-                                                                      descripcion:
-                                                                          codigoMultas[index]
-                                                                              [
-                                                                              'descripcion'],
-                                                                      precio: codigoMultas[
-                                                                              index]
-                                                                          [
-                                                                          'precio'],
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : null,
-                                                  title: Text(
-                                                    titulo!,
-                                                    style: TextStyle(
-                                                        color: PageColors.blue,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  subtitle: Text(
-                                                    descripcion!,
-                                                    style: TextStyle(
-                                                        color: PageColors.blue),
-                                                  ),
-                                                  trailing: Text(
-                                                      '${codigoMultas[index]['precio']}€'),
-                                                ),
-                                              ),
+                                    : codigoMultas.isEmpty
+                                        ? Center(
+                                            child: Text(
+                                              "No se han encontrado multas.",
+                                              textAlign: TextAlign.center,
+                                              style: TiposBlue.body,
                                             ),
+                                          )
+                                        : ListView.builder(
+                                            itemCount: codigoMultas.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              final String? titulo =
+                                                  "${codigoMultas[index]['titulo']}"
+                                                      .capitalize;
+                                              final String? descripcion =
+                                                  "${codigoMultas[index]['descripcion']}"
+                                                      .capitalize;
+
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0, top: 4.0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                        Radius.circular(10),
+                                                      ),
+                                                      border: Border.all(
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.3))),
+                                                  child: Padding(
+                                                    padding: edit
+                                                        ? const EdgeInsets.all(
+                                                            4.0)
+                                                        : const EdgeInsets.all(
+                                                            0),
+                                                    child: ListTile(
+                                                      leading: edit
+                                                          ? Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                IconButton(
+                                                                  icon: Icon(
+                                                                      Icons
+                                                                          .edit,
+                                                                      color: PageColors
+                                                                          .blue),
+                                                                  onPressed:
+                                                                      () async{
+                                                                   await Navigator
+                                                                        .pushReplacement(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                VerMulta(
+                                                                          sesionId:
+                                                                              widget.sesionId,
+                                                                          multaId:
+                                                                              codigoMultas[index].id,
+                                                                          parte:
+                                                                              codigoMultas[index]['parte'],
+                                                                          titulo:
+                                                                              codigoMultas[index]['titulo'],
+                                                                          descripcion:
+                                                                              codigoMultas[index]['descripcion'],
+                                                                          precio:
+                                                                              codigoMultas[index]['precio'],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : null,
+                                                      title: Text(
+                                                        titulo!,
+                                                        style: TextStyle(
+                                                            color:
+                                                                PageColors.blue,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      subtitle: Text(
+                                                        descripcion!,
+                                                        style: TextStyle(
+                                                            color: PageColors
+                                                                .blue),
+                                                      ),
+                                                      trailing: Text(
+                                                          '${codigoMultas[index]['precio']}€'),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           );
-                                        },
-                                      );
                               },
                             );
                           },

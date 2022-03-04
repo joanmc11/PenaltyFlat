@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
@@ -47,12 +48,18 @@ final List<Color> colors = [
 bool multado = false;
 
 const String imgPath = "";
-DateTime dateToday =
-    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
+DateTime dateToday = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+    DateTime.now().hour,
+    DateTime.now().minute,
+    DateTime.now().second);
 
 class _PonerMultaState extends State<PonerMulta> {
   @override
   Widget build(BuildContext context) {
+    final storage = FirebaseStorage.instance;
     final user = Provider.of<MyUser?>(context);
     return multado
         ? StreamBuilder(
@@ -170,11 +177,44 @@ class _PonerMultaState extends State<PonerMulta> {
                                         dashPattern: [5],
                                         color: colors[userData['color']],
                                         strokeWidth: 1,
-                                        child: Icon(
-                                          Icons.account_circle_rounded,
-                                          color: colors[userData['color']],
-                                          size: 80,
-                                        ),
+                                        child: userData['imagenPerfil'] == ""
+                                            ? Icon(
+                                                Icons.account_circle_rounded,
+                                                color:
+                                                    colors[userData['color']],
+                                                size: 80,
+                                              )
+                                            : FutureBuilder(
+                                                future: storage
+                                                    .ref(
+                                                        "/images${userData['imagenPerfil']}")
+                                                    .getDownloadURL(),
+                                                builder: (context,
+                                                    AsyncSnapshot<String>
+                                                        snapshot) {
+                                                  if (!snapshot.hasData) {
+                                                    return const CircularProgressIndicator();
+                                                  }
+                                                  debugPrint(snapshot.data!);
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: CircleAvatar(
+                                                      radius: 38,
+                                                      backgroundColor: colors[
+                                                          userData['color']],
+                                                      child: CircleAvatar(
+                                                        radius: 37,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                          snapshot.data!,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                       ),
                                     ),
                                     Text(
@@ -251,8 +291,9 @@ class _PonerMultaState extends State<PonerMulta> {
                                               child: SizedBox(
                                                 height: 80,
                                                 width: 80,
-                                                child:  Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Icon(
                                                     Icons.add_a_photo,
                                                     size: 40,
