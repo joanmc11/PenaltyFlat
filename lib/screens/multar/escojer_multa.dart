@@ -35,13 +35,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
           onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PersonaMultada(
-                    sesionId: widget.sesionId,
-                  ),
-                ));
+            Navigator.of(context).pop();
           },
         ),
         toolbarHeight: 70,

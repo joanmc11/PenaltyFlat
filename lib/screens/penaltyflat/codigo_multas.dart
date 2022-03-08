@@ -516,7 +516,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                                                   onPressed:
                                                                       () async{
                                                                    await Navigator
-                                                                        .pushReplacement(
+                                                                        .push(
                                                                       context,
                                                                       MaterialPageRoute(
                                                                         builder:
@@ -580,7 +580,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => CrearMulta(

@@ -114,15 +114,15 @@ class _ProfilePicState extends State<ProfilePic> {
                         final image = await ImagePicker()
                             .pickImage(source: ImageSource.camera);
                         if (image == null) return;
-                        final imageTemporary = File(image.path);
+                        final imageTemporary = File(image.name);
                         await db
                             .doc('sesion/${widget.sesionId}/users/${user?.uid}')
                             .update({
                           'imagenPerfil': image.path,
                         });
                         await FirebaseStorage.instance
-                            .ref("/images${image.path}")
-                            .child(imageTemporary.path);
+                            .ref("/images${image.name}")
+                            .child(imageTemporary.path).putFile(imageTemporary);
                       },
                       child: const Text("+"),
                     ),

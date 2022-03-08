@@ -99,7 +99,7 @@ class _PonerMultaState extends State<PonerMulta> {
                 icon: const Icon(Icons.arrow_back),
                 color: PageColors.blue,
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
               ),
               toolbarHeight: 70,

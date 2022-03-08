@@ -59,13 +59,7 @@ class _VerMultaState extends State<VerMulta> {
           icon: Icon(Icons.arrow_back),
           color: PageColors.blue,
           onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CodigoMultas(
-                    sesionId: widget.sesionId,
-                  ),
-                ));
+           Navigator.of(context).pop();
           },
         ),
         toolbarHeight: 70,

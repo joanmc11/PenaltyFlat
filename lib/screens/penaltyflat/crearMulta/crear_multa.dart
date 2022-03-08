@@ -29,16 +29,10 @@ class _CrearMultaState extends State<CrearMulta> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             color: PageColors.blue,
             onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CodigoMultas(
-                      sesionId: widget.sesionId,
-                    ),
-                  ));
+             Navigator.of(context).pop();
             },
           ),
           toolbarHeight: 70,
@@ -251,13 +245,7 @@ class _CrearMultaState extends State<CrearMulta> {
                                       style: TextStyle(color: PageColors.blue),
                                     ),
                                     onPressed: () async {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => CodigoMultas(
-                                              sesionId: widget.sesionId,
-                                            ),
-                                          ));
+                                      Navigator.of(context).pop;
                                     },
                                   ),
                                 ),
