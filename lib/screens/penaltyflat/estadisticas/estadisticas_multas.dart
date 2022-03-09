@@ -5,12 +5,13 @@ import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
-import 'package:penalty_flat_app/screens/widgets/tab_item.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 import 'package:pie_chart/pie_chart.dart';
+
+import '../../bottomBar/widgets/tab_item.dart';
 
 class EstadisticaMultas extends StatelessWidget {
   final String sesionId;
@@ -186,7 +187,7 @@ class EstadisticaMultas extends StatelessWidget {
                                         chartValuesOptions: ChartValuesOptions(
                                             showChartValueBackground: true,
                                             showChartValues: true,
-                                            showChartValuesInPercentage: true,
+                                            showChartValuesInPercentage: false,
                                             showChartValuesOutside: true,
                                             decimalPlaces: 1,
                                             chartValueStyle: TextStyle(
@@ -210,7 +211,7 @@ class EstadisticaMultas extends StatelessWidget {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Row(
                                         children: [
-                                          Text("Dinero pagado: ",
+                                          Text("Dinero acumulado: ",
                                               style: TiposBlue.body),
                                           Text("$totalUsuario€",
                                               style: TiposBlue.subtitle)

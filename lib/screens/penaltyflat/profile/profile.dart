@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/main.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
-
 import '../../../Styles/colors.dart';
 import '../../../services/auth.dart';
+import '../../bottomBar/widgets/tab_item.dart';
 import '../../multar/usuario_multa.dart';
-import '../../widgets/tab_item.dart';
 import 'profile_widgets/profile_menu.dart';
 import 'profile_widgets/profile_pic.dart';
 
@@ -24,7 +23,10 @@ class ProfilePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ProfilePic(sesionId: sesionId),
+          Padding(
+            padding: const EdgeInsets.only(top:18.0),
+            child: ProfilePic(sesionId: sesionId),
+          ),
           const SizedBox(height: 20),
           ProfileMenu(
             text: "Mis PenaltyFlats",
@@ -42,6 +44,12 @@ class ProfilePage extends StatelessWidget {
             icon: Icons.notification_add,
             press: () {},
           ),
+           ProfileMenu(
+            text: "Paga tus multas",
+            icon: Icons.payment,
+            press: () {},
+          ),
+          
           ProfileMenu(
             text: "Configuración",
             icon: Icons.settings,

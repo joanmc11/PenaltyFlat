@@ -187,7 +187,7 @@ class _PonerMultaState extends State<PonerMulta> {
                                             : FutureBuilder(
                                                 future: storage
                                                     .ref(
-                                                        "/images${userData['imagenPerfil']}")
+                                                        "/images/${userData['imagenPerfil']}")
                                                     .getDownloadURL(),
                                                 builder: (context,
                                                     AsyncSnapshot<String>
@@ -345,7 +345,7 @@ class _PonerMultaState extends State<PonerMulta> {
                                                 Radius.circular(10))),
                                         minimumSize: const Size(120, 25)),
                                     onPressed: () async {
-                                      await db
+                                      var multaActual= await db
                                           .collection(
                                               'sesion/${widget.sesionId}/multas')
                                           .add({
@@ -367,6 +367,17 @@ class _PonerMultaState extends State<PonerMulta> {
                                             ? multaData['precio']
                                             : userData['dinero'] +
                                                 multaData['precio'],
+                                      });
+                                      await db
+                                          .collection(
+                                              'sesion/${widget.sesionId}/notificaciones')
+                                          .add({
+                                        
+                                        'subtitulo': multaData['titulo'],
+                                        'idMulta': multaActual.id,
+                                        'idUsuario': userData['id'],
+                                        'tipo': "multa",
+                                        'fecha': dateToday,
                                       });
                                       setState(() {
                                         multado = true;

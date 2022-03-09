@@ -2,18 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/escojer_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
-
-import '../../main.dart';
-
 import '../../models/user.dart';
-import '../widgets/tab_item.dart';
+import '../bottomBar/widgets/tab_item.dart';
+
 
 class PersonaMultada extends StatefulWidget {
   final String sesionId;
@@ -149,7 +146,7 @@ class _PersonaMultadaState extends State<PersonaMultada> {
                                         : FutureBuilder(
                                             future: storage
                                                 .ref(
-                                                    "/images${usersData[index]['imagenPerfil']}")
+                                                    "/images/${usersData[index]['imagenPerfil']}")
                                                 .getDownloadURL(),
                                             builder: (context,
                                                 AsyncSnapshot<String>

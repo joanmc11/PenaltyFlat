@@ -156,6 +156,10 @@ class _CrearSesionState extends State<CrearSesion> {
                                 "imagenPerfil": "",
                                 "dinero": 0
                               });
+
+                               db.collection('/sesion/${sesionSnap.id}/notificaciones');
+
+                              
                               //creo la collection de casas (inicialment buida)
                               await DatabaseService(uid: user.uid)
                                   .updateUserFlats(casa, sesionSnap.id);

@@ -124,7 +124,7 @@ class MultaDetall extends StatelessWidget {
                                           : FutureBuilder(
                                               future: storage
                                                   .ref(
-                                                      "/images${userData['imagenPerfil']}")
+                                                      "/images/${userData['imagenPerfil']}")
                                                   .getDownloadURL(),
                                               builder: (context,
                                                   AsyncSnapshot<String>

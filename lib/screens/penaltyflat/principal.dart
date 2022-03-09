@@ -5,13 +5,15 @@ import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/codigo_multas.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/estadisticas/estadisticas_multas.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/llista_multas.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/notifications/notifications.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
 import 'package:penalty_flat_app/shared/verCodigo.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
 import '../../models/user.dart';
-import '../widgets/tab_item.dart';
+import '../bottomBar/widgets/tab_item.dart';
+
 import 'llistaMultes/multaDetall.dart';
 //import 'package:fl_chart/fl_chart.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -50,13 +52,24 @@ class PrincipalScreen extends StatelessWidget {
           child: Text('Penalty Flat', style: TiposBlue.title),
         ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
+          Padding(
+            padding: const EdgeInsets.only(right:16.0),
+            child: IconButton(
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Notificaciones(sesionId: sesionId)),
+                );
+              },
+              
+              alignment: Alignment.center,
+              icon: Icon(
+                Icons.notifications_none_outlined,
+                color: PageColors.blue,
+              ),
+              
             ),
-            padding: const EdgeInsets.only(right: 30),
           )
         ],
       ),
@@ -154,7 +167,7 @@ class PrincipalScreen extends StatelessWidget {
                                     child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: IconButton(
-                                            onPressed: () async{
+                                            onPressed: () async {
                                               await Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -163,7 +176,10 @@ class PrincipalScreen extends StatelessWidget {
                                                                 sesionId)),
                                               );
                                             },
-                                            icon: Icon(Icons.arrow_forward, color: PageColors.blue,))),
+                                            icon: Icon(
+                                              Icons.arrow_forward,
+                                              color: PageColors.blue,
+                                            ))),
                                   ))
                             ],
                           ),
@@ -304,7 +320,10 @@ class PrincipalScreen extends StatelessWidget {
                                                                       multasSesion[
                                                                               index]
                                                                           .id,
-                                                                          idMultado: multasSesion[index]['idMultado'],
+                                                                  idMultado: multasSesion[
+                                                                          index]
+                                                                      [
+                                                                      'idMultado'],
                                                                 ),
                                                               ));
                                                         },

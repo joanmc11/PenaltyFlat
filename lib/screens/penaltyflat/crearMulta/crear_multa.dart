@@ -245,7 +245,7 @@ class _CrearMultaState extends State<CrearMulta> {
                                       style: TextStyle(color: PageColors.blue),
                                     ),
                                     onPressed: () async {
-                                      Navigator.of(context).pop;
+                                       Navigator.of(context).pop();
                                     },
                                   ),
                                 ),

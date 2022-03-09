@@ -74,7 +74,7 @@ class _ProfilePicState extends State<ProfilePic> {
                           )
                         : FutureBuilder(
                             future: storage
-                                .ref("/images${userData['imagenPerfil']}")
+                                .ref("/images/${userData['imagenPerfil']}")
                                 .getDownloadURL(),
                             builder: (context, AsyncSnapshot<String> snapshot) {
                               if (!snapshot.hasData) {
@@ -112,17 +112,17 @@ class _ProfilePicState extends State<ProfilePic> {
                       ),
                       onPressed: () async {
                         final image = await ImagePicker()
-                            .pickImage(source: ImageSource.camera);
+                            .pickImage(source: ImageSource.gallery, imageQuality: 25);
                         if (image == null) return;
-                        final imageTemporary = File(image.name);
+                        final imageTemporary = File(image.path);
                         await db
                             .doc('sesion/${widget.sesionId}/users/${user?.uid}')
                             .update({
-                          'imagenPerfil': image.path,
+                          'imagenPerfil': image.name,
                         });
                         await FirebaseStorage.instance
-                            .ref("/images${image.name}")
-                            .child(imageTemporary.path).putFile(imageTemporary);
+                            .ref("/images/${image.name}")
+                            .putFile(imageTemporary);
                       },
                       child: const Text("+"),
                     ),
