@@ -10,8 +10,8 @@ class MultadoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
-      Scaffold(backgroundColor: PageColors.yellow, body: Center(child: Text("""¡$nombre 
-      ha sido multado/a!""", style: TiposBlue.title,)),
+      Scaffold(backgroundColor: PageColors.yellow, body: Center(child: Text("""¡Se ha enviado la multa a
+      $nombre!""", style: TiposBlue.title,)),
       
     );
   }

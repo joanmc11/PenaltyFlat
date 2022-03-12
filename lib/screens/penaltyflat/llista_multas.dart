@@ -37,7 +37,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
-          onPressed: () async{
+          onPressed: () async {
             Navigator.pop(context);
           },
         ),
@@ -97,12 +97,11 @@ class _PantallaMultasState extends State<PantallaMultas> {
                       ? null
                       : monthsYearsStrings.add(dateString);
 
-                  if (!mValues.contains(month)||!yValues.contains(year)) {
+                  if (!mValues.contains(month) || !yValues.contains(year)) {
                     yValues.add(year);
                     mValues.add(month);
                   }
                 }
-               
 
                 return DropdownButton(
                   hint: const Text("Selecciona"),
@@ -136,7 +135,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: IconButton(
                 icon: Icon(Icons.calendar_month, color: PageColors.blue),
-                onPressed: () async{
+                onPressed: () async {
                   await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -208,6 +207,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
               stream: selected
                   ? db
                       .collection("sesion/${widget.sesionId}/multas")
+                      .where('aceptada', isEqualTo: true)
                       .where('fecha',
                           isGreaterThanOrEqualTo: DateTime(
                               selectedMonth == "Todas" ? 2020 : yearValue,
@@ -222,6 +222,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
                       .snapshots()
                   : db
                       .collection("sesion/${widget.sesionId}/multas")
+                      .where('aceptada', isEqualTo: true)
                       .where('idMultado', isEqualTo: user!.uid)
                       .where('fecha',
                           isGreaterThanOrEqualTo: DateTime(
@@ -259,27 +260,35 @@ class _PantallaMultasState extends State<PantallaMultas> {
                             ? Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Text(
-                                  currentIndex==0? "Aún no tienes multas":"No tienes multas para esta fecha",
+                                  currentIndex == 0
+                                      ? "Aún no tienes multas"
+                                      : "No tienes multas para esta fecha",
                                   style: TiposBlue.body,
                                 ))
                             : ListTile(
-                              leading: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(onPressed: ()async{
-                                    await Navigator.push(
+                                leading: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () async {
+                                          await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     MultaDetall(
+                                                  notifyId: "sinNotificacion",
                                                   sesionId: widget.sesionId,
-                                                  idMulta: multasSesion[index].id,
-                                                  idMultado: multasSesion[index]['idMultado'],
+                                                  idMulta:
+                                                      multasSesion[index].id,
+                                                  idMultado: multasSesion[index]
+                                                      ['idMultado'],
                                                 ),
                                               ));
-                                  }, icon: Icon(Icons.open_in_full, color: PageColors.blue)),
-                                ],
-                              ),
+                                        },
+                                        icon: Icon(Icons.open_in_full,
+                                            color: PageColors.blue)),
+                                  ],
+                                ),
                                 title: Text(multasSesion[index]['nomMultado'],
                                     style: TextStyle(
                                         fontSize: 14,

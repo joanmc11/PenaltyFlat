@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/main.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/pagamentos/pagamentos.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
 import '../../../Styles/colors.dart';
 import '../../../services/auth.dart';
@@ -47,7 +48,13 @@ class ProfilePage extends StatelessWidget {
            ProfileMenu(
             text: "Paga tus multas",
             icon: Icons.payment,
-            press: () {},
+            press: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Pagamento(sesionId: sesionId,),
+                  ));
+            },
           ),
           
           ProfileMenu(

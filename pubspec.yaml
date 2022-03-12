@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.17.0
   pie_chart: ^5.1.0
   fl_chart: ^0.45.0
+  icon_badge: ^1.0.0
 
 dev_dependencies:
   flutter_test:

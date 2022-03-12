@@ -157,7 +157,9 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   "id": user.uid,
                                   "isAdmin": false,
                                   "imagenPerfil": "",
-                                  "dinero": 0
+                                  "dinero": 0,
+                                  "pendiente": false,
+                                  'contador': 1,
                                 });
 
                                 //Busco el nom de la casa

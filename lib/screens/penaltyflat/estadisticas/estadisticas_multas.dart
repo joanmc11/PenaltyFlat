@@ -10,7 +10,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 import 'package:pie_chart/pie_chart.dart';
-
+import 'package:icon_badge/icon_badge.dart';
 import '../../bottomBar/widgets/tab_item.dart';
 
 class EstadisticaMultas extends StatelessWidget {
@@ -50,6 +50,7 @@ class EstadisticaMultas extends StatelessWidget {
           child: Text('Penalty Flat', style: TiposBlue.title),
         ),
         actions: <Widget>[
+          
           IconButton(
             onPressed: () {},
             icon: Icon(
@@ -60,27 +61,7 @@ class EstadisticaMultas extends StatelessWidget {
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: db.collection("sesion/$sesionId/multas").snapshots(),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final multasSesion = snapshot.data!.docs;
-
-            final List<num> dineroMultas = [];
-            for (int i = 0; i < multasSesion.length; i++) {
-              dineroMultas.add(multasSesion[i]['precio']);
-            }
-            final num totalMultas = dineroMultas.sum;
-
-            return user == null
+      body: user == null
                 ? const Loading()
                 : StreamBuilder(
                     stream: db
@@ -100,9 +81,7 @@ class EstadisticaMultas extends StatelessWidget {
                       final multasUsuario = snapshot.data!.data()!;
 
                       final num totalUsuario = multasUsuario['dinero'] ?? 0;
-                      String porcentajeMulta =
-                          ((totalUsuario / totalMultas) * 100)
-                              .toStringAsFixed(1);
+                      
 
                       return StreamBuilder(
                         stream: db
@@ -123,15 +102,7 @@ class EstadisticaMultas extends StatelessWidget {
                           }
                           final multasData = snapshot.data!.docs;
 
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Estadisticas generales:",
-                                style: TiposBlue.subtitle,
-                              ),
-                              StreamBuilder(
+                          return StreamBuilder(
                                   stream: db
                                       .collection("sesion/$sesionId/users")
                                       .orderBy("color", descending: false)
@@ -160,8 +131,24 @@ class EstadisticaMultas extends StatelessWidget {
                                           usersData[i]['dinero'].toDouble();
                                     }
                                     final num totalMultas = dineroMultas.sum;
+                                     String porcentajeMulta =
+                          ((totalUsuario / totalMultas) * 100)
+                              .toStringAsFixed(1);
 
-                                    return Center(
+                                    return 
+                          
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Estadisticas generales:",
+                                style: TiposBlue.subtitle,
+                              ),
+                              
+                                    
+                                    
+                                    Center(
                                       child: PieChart(
                                         dataMap: sectionsChart,
                                         animationDuration:
@@ -171,12 +158,12 @@ class EstadisticaMultas extends StatelessWidget {
                                             MediaQuery.of(context).size.width /
                                                 3.1,
                                         colorList: colors,
-                                        initialAngleInDegree: 0,
+                                        initialAngleInDegree: -90,
                                         chartType: ChartType.ring,
                                         emptyColor:
                                             PageColors.blue.withOpacity(0.3),
                                         ringStrokeWidth: 10,
-                                        centerText: "$totalMultas€",
+                                        centerText: "${totalMultas.toStringAsFixed(2)}€",
                                         centerTextStyle: TiposBlue.title,
                                         legendOptions: LegendOptions(
                                           showLegendsInRow: false,
@@ -189,15 +176,16 @@ class EstadisticaMultas extends StatelessWidget {
                                             showChartValues: true,
                                             showChartValuesInPercentage: false,
                                             showChartValuesOutside: true,
-                                            decimalPlaces: 1,
-                                            chartValueStyle: TextStyle(
+                                            decimalPlaces: 2,
+                                            chartValueStyle:  TextStyle(
                                                 color: PageColors.blue,
                                                 fontSize: 12),
                                             chartValueBackgroundColor:
                                                 PageColors.yellow.withOpacity(0.8)),
                                       ),
-                                    );
-                                  }),
+                                    ),
+                                  
+                                 
                                   Text(
                                 "Estadisticas propias:",
                                 style: TiposBlue.subtitle,
@@ -213,7 +201,7 @@ class EstadisticaMultas extends StatelessWidget {
                                         children: [
                                           Text("Dinero acumulado: ",
                                               style: TiposBlue.body),
-                                          Text("$totalUsuario€",
+                                          Text("${totalUsuario.toStringAsFixed(2)}€",
                                               style: TiposBlue.subtitle)
                                         ],
                                       ),
@@ -224,7 +212,7 @@ class EstadisticaMultas extends StatelessWidget {
                                       lineHeight: 15,
                                       animation: true,
                                       animationDuration: 1200,
-                                      center: Text(totalMultas==0? "0%":"$porcentajeMulta%",
+                                      center: Text(totalUsuario==0? "0%":"$porcentajeMulta%",
                                           style: TextStyle(
                                             color: PageColors.blue,
                                           )),

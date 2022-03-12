@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/pagamentos/confirmaciones.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import '../../../Styles/colors.dart';
@@ -18,6 +19,13 @@ class Notificaciones extends StatelessWidget {
         appBar: AppBar(
           toolbarHeight: 70,
           backgroundColor: Colors.white,
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: PageColors.blue,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
           title: Center(
             child: Text('Penalty Flat', style: TiposBlue.title),
           ),
@@ -91,11 +99,20 @@ class Notificaciones extends StatelessWidget {
                                     ),
                                     trailing: IconButton(
                                         onPressed: () async {
+                                          await db
+                                              .doc(
+                                                  'sesion/$sesionId/notificaciones/${notifyData[index].id}')
+                                              .update({
+                                            "visto": true,
+                                          });
+
                                           await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     MultaDetall(
+                                                  notifyId:
+                                                      notifyData[index].id,
                                                   sesionId: sesionId,
                                                   idMulta: notifyData[index]
                                                       ['idMulta'],
@@ -119,8 +136,21 @@ class Notificaciones extends StatelessWidget {
                                           style: TiposBlue.body,
                                         ),
                                         trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.add)),
+                                            onPressed: () async{
+await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Confirmaciones(
+                                                  notifyId:
+                                                      notifyData[index].id,
+                                                  sesionId: sesionId,
+                                                  userId: notifyData[index]['idPagador'],
+                                                  
+                                                ),
+                                              ));
+                                            },
+                                            icon: Icon(Icons.add, color: PageColors.blue,)),
                                       )
                                     : ListTile(
                                         title: Text(
@@ -132,8 +162,17 @@ class Notificaciones extends StatelessWidget {
                                           style: TiposBlue.body,
                                         ),
                                         trailing: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.add)),
+                                            onPressed: () async {
+                                              await db
+                                                  .doc(
+                                                      'sesion/$sesionId/notificaciones/${notifyData[index].id}')
+                                                  .update({
+                                                'visto': true,
+                                              });
+                                            },
+                                            icon: notifyData[index]['visto']
+                                                ? Container()
+                                                :  Icon(Icons.check, color: PageColors.blue)),
                                       );
                       });
                 },

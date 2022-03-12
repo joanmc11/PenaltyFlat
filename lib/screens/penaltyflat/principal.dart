@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/codigo_multas.dart';
@@ -52,30 +53,51 @@ class PrincipalScreen extends StatelessWidget {
           child: Text('Penalty Flat', style: TiposBlue.title),
         ),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right:16.0),
-            child: IconButton(
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Notificaciones(sesionId: sesionId)),
+          StreamBuilder(
+              stream: db
+                  .collection("sesion/$sesionId/notificaciones")
+                  .where('idUsuario', isEqualTo: user?.uid)
+                  .where('visto', isEqualTo: false)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final notifyData = snapshot.data!.docs;
+
+                return IconBadge(
+                  icon: Icon(
+                    Icons.notifications_none_outlined,
+                    color: PageColors.blue,
+                    size: 35,
+                  ),
+                  itemCount: notifyData.length,
+                  badgeColor: Colors.red,
+                  itemColor: Colors.white,
+                  hideZero: true,
+                  top: 11,
+                  right: 9,
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Notificaciones(sesionId: sesionId)),
+                    );
+                  },
                 );
-              },
-              
-              alignment: Alignment.center,
-              icon: Icon(
-                Icons.notifications_none_outlined,
-                color: PageColors.blue,
-              ),
-              
-            ),
-          )
+              }),
         ],
       ),
       body: StreamBuilder(
         stream: db
             .collection("sesion/$sesionId/multas")
+            .where('aceptada', isEqualTo: true)
             .orderBy('fecha', descending: true)
             .snapshots(),
         builder: (
@@ -141,7 +163,7 @@ class PrincipalScreen extends StatelessWidget {
                                     emptyColor:
                                         PageColors.blue.withOpacity(0.3),
                                     ringStrokeWidth: 10,
-                                    centerText: "$totalMultas€",
+                                    centerText: totalMultas.toStringAsFixed(2),
                                     centerTextStyle: TiposBlue.title,
                                     legendOptions: LegendOptions(
                                       showLegendsInRow: false,
@@ -314,6 +336,8 @@ class PrincipalScreen extends StatelessWidget {
                                                                 builder:
                                                                     (context) =>
                                                                         MultaDetall(
+                                                                  notifyId:
+                                                                      "sinNotificacion",
                                                                   sesionId:
                                                                       sesionId,
                                                                   idMulta:

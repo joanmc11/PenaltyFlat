@@ -154,7 +154,9 @@ class _CrearSesionState extends State<CrearSesion> {
                                 "id": user!.uid,
                                 "isAdmin": true,
                                 "imagenPerfil": "",
-                                "dinero": 0
+                                "dinero": 0,
+                                "pendiente": false,
+                                'contador': 1,
                               });
 
                                db.collection('/sesion/${sesionSnap.id}/notificaciones');
