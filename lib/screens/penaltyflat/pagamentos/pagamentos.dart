@@ -41,7 +41,22 @@ class Pagamento extends StatelessWidget {
           },
         ),
         title: Center(
-          child: Text('Penalty Flat', style: TiposBlue.title),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 80,
+                width: 80,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
         actions: <Widget>[
           IconButton(

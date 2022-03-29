@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
@@ -13,6 +14,7 @@ import 'package:string_extensions/string_extensions.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 import '../../models/user.dart';
+import '../penaltyflat/notifications/notifications.dart';
 
 class PonerMulta extends StatefulWidget {
   final String sesionId;
@@ -104,22 +106,65 @@ class _PonerMultaState extends State<PonerMulta> {
               ),
               toolbarHeight: 70,
               backgroundColor: Colors.white,
-              title: const Center(
-                child: Text(
-                  'Penalty Flat',
-                  style: TextStyle(color: Color.fromARGB(255, 45, 52, 96)),
+              title: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/LogoCabecera.png',
+                      height: 70,
+                      width: 70,
+                    ),
+                    Text('PENALTY FLAT',
+                        style: TextStyle(
+                            fontFamily: 'BasierCircle',
+                            fontSize: 18,
+                            color: PageColors.blue,
+                            fontWeight: FontWeight.bold)),
+                  ],
                 ),
               ),
               actions: <Widget>[
-                IconButton(
-                  onPressed: () {},
+          StreamBuilder(
+              stream: db
+                  .collection("sesion/${widget.sesionId}/notificaciones")
+                  .where('idUsuario', isEqualTo: user?.uid)
+                  .where('visto', isEqualTo: false)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final notifyData = snapshot.data!.docs;
+
+                return IconBadge(
                   icon: Icon(
                     Icons.notifications_none_outlined,
                     color: PageColors.blue,
+                    size: 35,
                   ),
-                  padding: const EdgeInsets.only(right: 30),
-                )
-              ],
+                  itemCount: notifyData.length,
+                  badgeColor: Colors.red,
+                  itemColor: Colors.white,
+                  hideZero: true,
+                  top: 11,
+                  right: 9,
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Notificaciones(sesionId: widget.sesionId)),
+                    );
+                  },
+                );
+              }),
+        ],
             ),
             body: StreamBuilder(
                 stream: db
@@ -361,7 +406,7 @@ class _PonerMultaState extends State<PonerMulta> {
                                         'aceptada': false,
                                         'pagado': false
                                       });
-                                      
+
                                       await db
                                           .collection(
                                               'sesion/${widget.sesionId}/notificaciones')
@@ -372,13 +417,10 @@ class _PonerMultaState extends State<PonerMulta> {
                                         'tipo': "multa",
                                         'fecha': dateToday,
                                         'visto': false,
-                                        
                                       });
                                       setState(() {
                                         multado = true;
                                       });
-
-                                      print(widget.idMultado);
                                     },
                                     child: const Text('Multar',
                                         style: TextStyle(fontSize: 15)),

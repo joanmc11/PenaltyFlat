@@ -20,19 +20,32 @@ class TodasCasas extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: PageColors.white,
           elevation: 0.0,
-          title: Center(child: Text("PenaltyFlat", style: TiposBlue.title)),
-          actions: <Widget>[
-            FlatButton.icon(
-              icon: const Icon(Icons.logout),
-              onPressed: () async {
-                await _auth.signOut();
-              },
-              label: const Text(
-                "logOut",
-                style: TextStyle(fontSize: 0),
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: PageColors.blue,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+          title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
               ),
-            )
-          ]),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+          ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
@@ -96,10 +109,10 @@ class TodasCasas extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        primary: PageColors.blue),
+                        primary: PageColors.yellow.withOpacity(1)),
                     child: Text(
                       "Atras",
-                      style: TextStyle(color: PageColors.white),
+                      style: TextStyle(color: PageColors.blue),
                     ),
                     onPressed: () async {
                        Navigator.pop(context);

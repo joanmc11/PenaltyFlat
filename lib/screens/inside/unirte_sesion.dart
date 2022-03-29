@@ -27,7 +27,31 @@ class _EntrarSesionState extends State<EntrarSesion> {
       appBar: AppBar(
         backgroundColor: PageColors.white,
         elevation: 0.0,
-        title: Center(child: Text("PenaltyFlat", style: TiposBlue.title)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: PageColors.blue,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(

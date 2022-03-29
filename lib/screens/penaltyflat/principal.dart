@@ -47,10 +47,26 @@ class PrincipalScreen extends StatelessWidget {
     final user = Provider.of<MyUser?>(context);
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
+        toolbarHeight: 75,
         backgroundColor: Colors.white,
+        leading: Container(),
         title: Center(
-          child: Text('Penalty Flat', style: TiposBlue.title),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
         actions: <Widget>[
           StreamBuilder(

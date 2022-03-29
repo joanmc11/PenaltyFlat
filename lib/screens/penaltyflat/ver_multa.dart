@@ -3,9 +3,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/codigo_multas.dart';
+import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import '../../../Styles/colors.dart';
+import '../../models/user.dart';
+import 'notifications/notifications.dart';
 
 class VerMulta extends StatefulWidget {
   final String sesionId;
@@ -41,7 +45,6 @@ class _VerMultaState extends State<VerMulta> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  final db = FirebaseFirestore.instance;
 
   String titulo = "";
   String descripcion = "";
@@ -53,32 +56,77 @@ class _VerMultaState extends State<VerMulta> {
 
   @override
   Widget build(BuildContext context) {
+    final db = FirebaseFirestore.instance;
+    final user = Provider.of<MyUser?>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: PageColors.blue,
           onPressed: () {
-           Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
         ),
         toolbarHeight: 70,
         backgroundColor: PageColors.white,
         title: Center(
-          child: Text(
-            'Penalty Flat',
-            style: TextStyle(color: PageColors.blue),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
-            ),
-            padding: const EdgeInsets.only(right: 30),
-          )
+          StreamBuilder(
+              stream: db
+                  .collection("sesion/${widget.sesionId}/notificaciones")
+                  .where('idUsuario', isEqualTo: user?.uid)
+                  .where('visto', isEqualTo: false)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final notifyData = snapshot.data!.docs;
+
+                return IconBadge(
+                  icon: Icon(
+                    Icons.notifications_none_outlined,
+                    color: PageColors.blue,
+                    size: 35,
+                  ),
+                  itemCount: notifyData.length,
+                  badgeColor: Colors.red,
+                  itemColor: Colors.white,
+                  hideZero: true,
+                  top: 11,
+                  right: 9,
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Notificaciones(sesionId: widget.sesionId)),
+                    );
+                  },
+                );
+              }),
         ],
       ),
       body: SingleChildScrollView(
@@ -98,7 +146,6 @@ class _VerMultaState extends State<VerMulta> {
                       "Edita esta Multa",
                       style: TiposBlue.title,
                     )),
-                    
                   ],
                 ),
               ),
@@ -322,8 +369,10 @@ class _VerMultaState extends State<VerMulta> {
                                     await showDialog(
                                         context: context,
                                         builder: (_) => AlertDialog(
-                                              title: const Text("¿Eliminar norma?"),
-                                              content: const Text("¿Estás seguro?"),
+                                              title: const Text(
+                                                  "¿Eliminar norma?"),
+                                              content:
+                                                  const Text("¿Estás seguro?"),
                                               actions: [
                                                 FlatButton(
                                                     onPressed: () async {

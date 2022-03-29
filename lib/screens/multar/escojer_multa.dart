@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
+import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
+
+import '../../models/user.dart';
+import '../penaltyflat/notifications/notifications.dart';
 
 class EscojerMulta extends StatefulWidget {
   final String sesionId;
@@ -29,6 +34,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
+    final user = Provider.of<MyUser?>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -41,20 +47,63 @@ class _EscojerMultaState extends State<EscojerMulta> {
         toolbarHeight: 70,
         backgroundColor: Colors.white,
         title: Center(
-          child: Text(
-            'Penalty Flat',
-            style: TextStyle(color: PageColors.blue),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
-            ),
-            padding: const EdgeInsets.only(right: 30),
-          )
+          StreamBuilder(
+              stream: db
+                  .collection("sesion/${widget.sesionId}/notificaciones")
+                  .where('idUsuario', isEqualTo: user?.uid)
+                  .where('visto', isEqualTo: false)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final notifyData = snapshot.data!.docs;
+
+                return IconBadge(
+                  icon: Icon(
+                    Icons.notifications_none_outlined,
+                    color: PageColors.blue,
+                    size: 35,
+                  ),
+                  itemCount: notifyData.length,
+                  badgeColor: Colors.red,
+                  itemColor: Colors.white,
+                  hideZero: true,
+                  top: 11,
+                  right: 9,
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Notificaciones(sesionId: widget.sesionId)),
+                    );
+                  },
+                );
+              }),
         ],
       ),
       body: SafeArea(
@@ -183,8 +232,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    padding:
-                                        const EdgeInsets.only(left: 16),
+                                    padding: const EdgeInsets.only(left: 16),
                                     child: !_folded
                                         ? TextField(
                                             decoration: InputDecoration(
@@ -204,26 +252,22 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                   ),
                                 ),
                                 AnimatedContainer(
-                                  duration:
-                                      const Duration(milliseconds: 400),
+                                  duration: const Duration(milliseconds: 400),
                                   child: Material(
                                     type: MaterialType.transparency,
                                     child: InkWell(
                                       borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(
-                                              _folded ? 32 : 0),
-                                          topRight:
-                                              const Radius.circular(32),
-                                          bottomLeft: Radius.circular(
-                                              _folded ? 32 : 0),
+                                          topLeft:
+                                              Radius.circular(_folded ? 32 : 0),
+                                          topRight: const Radius.circular(32),
+                                          bottomLeft:
+                                              Radius.circular(_folded ? 32 : 0),
                                           bottomRight:
                                               const Radius.circular(32)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Icon(
-                                          _folded
-                                              ? Icons.search
-                                              : Icons.close,
+                                          _folded ? Icons.search : Icons.close,
                                           color: PageColors.blue,
                                         ),
                                       ),
@@ -312,60 +356,65 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                       child: CircularProgressIndicator());
                                 }
                                 final casaData = snapshot.data!.data()!;
-                                return codigoMultas.isEmpty? Center(child: Text(
-                                                      "No se han encontrado multas.",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TiposBlue.body,
-                                                    ),): ListView.builder(
-                                  itemCount: codigoMultas.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final String? titulo =
-                                        "${codigoMultas[index]['titulo']}"
-                                            .capitalize;
-                                    final String? descripcion =
-                                        "${codigoMultas[index]['descripcion']}"
-                                            .capitalize;
-
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, top: 4.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                            border: Border.all(
-                                                color: Colors.grey
-                                                    .withOpacity(0.3))),
-                                        child: ListTile(
-                                          
-                                          title: Text(
-                                            titulo!,
-                                            style: TextStyle(
-                                                color: PageColors.blue,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          subtitle: Text(
-                                            descripcion!,
-                                            style: TextStyle(
-                                                color: PageColors.blue),
-                                          ),
-                                          trailing: Radio(
-                                              value: codigoMultas[index].id,
-                                              groupValue: _site,
-                                              onChanged: (value) async {
-                                                setState(() {
-                                                  _site = value.toString();
-                                                });
-                                              }),
+                                return codigoMultas.isEmpty
+                                    ? Center(
+                                        child: Text(
+                                          "No se han encontrado multas.",
+                                          textAlign: TextAlign.center,
+                                          style: TiposBlue.body,
                                         ),
-                                      ),
-                                    );
-                                  },
-                                );
+                                      )
+                                    : ListView.builder(
+                                        itemCount: codigoMultas.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final String? titulo =
+                                              "${codigoMultas[index]['titulo']}"
+                                                  .capitalize;
+                                          final String? descripcion =
+                                              "${codigoMultas[index]['descripcion']}"
+                                                  .capitalize;
+
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 4.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(10),
+                                                  ),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3))),
+                                              child: ListTile(
+                                                title: Text(
+                                                  titulo!,
+                                                  style: TextStyle(
+                                                      color: PageColors.blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                subtitle: Text(
+                                                  descripcion!,
+                                                  style: TextStyle(
+                                                      color: PageColors.blue),
+                                                ),
+                                                trailing: Radio(
+                                                    value:
+                                                        codigoMultas[index].id,
+                                                    groupValue: _site,
+                                                    onChanged: (value) async {
+                                                      setState(() {
+                                                        _site =
+                                                            value.toString();
+                                                      });
+                                                    }),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
                               },
                             );
                           },

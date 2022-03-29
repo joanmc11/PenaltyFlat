@@ -40,11 +40,7 @@ class ProfilePage extends StatelessWidget {
                   ));
             },
           ),
-          ProfileMenu(
-            text: "Notificaciones",
-            icon: Icons.notification_add,
-            press: () {},
-          ),
+          
            ProfileMenu(
             text: "Paga tus multas",
             icon: Icons.payment,
@@ -58,8 +54,8 @@ class ProfilePage extends StatelessWidget {
           ),
           
           ProfileMenu(
-            text: "Configuración",
-            icon: Icons.settings,
+            text: "Abandonar la casa",
+            icon: Icons.cancel_sharp,
             press: () {},
           ),
           ProfileMenu(

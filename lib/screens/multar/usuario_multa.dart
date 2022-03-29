@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/escojer_multa.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
@@ -10,7 +11,7 @@ import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
 import '../bottomBar/widgets/tab_item.dart';
-
+import '../penaltyflat/notifications/notifications.dart';
 
 class PersonaMultada extends StatefulWidget {
   final String sesionId;
@@ -53,20 +54,63 @@ class _PersonaMultadaState extends State<PersonaMultada> {
         toolbarHeight: 70,
         backgroundColor: Colors.white,
         title: Center(
-          child: Text(
-            'Penalty Flat',
-            style: TextStyle(color: PageColors.blue),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
-            ),
-            padding: const EdgeInsets.only(right: 30),
-          )
+          StreamBuilder(
+              stream: db
+                  .collection("sesion/${widget.sesionId}/notificaciones")
+                  .where('idUsuario', isEqualTo: user?.uid)
+                  .where('visto', isEqualTo: false)
+                  .snapshots(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return ErrorWidget(snapshot.error.toString());
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final notifyData = snapshot.data!.docs;
+
+                return IconBadge(
+                  icon: Icon(
+                    Icons.notifications_none_outlined,
+                    color: PageColors.blue,
+                    size: 35,
+                  ),
+                  itemCount: notifyData.length,
+                  badgeColor: Colors.red,
+                  itemColor: Colors.white,
+                  hideZero: true,
+                  top: 11,
+                  right: 9,
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Notificaciones(sesionId: widget.sesionId)),
+                    );
+                  },
+                );
+              }),
         ],
       ),
       body: user == null

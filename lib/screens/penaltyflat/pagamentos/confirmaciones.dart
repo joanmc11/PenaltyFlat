@@ -68,18 +68,24 @@ class _ConfirmacionesState extends State<Confirmaciones> {
           },
         ),
         title: Center(
-          child: Text('Penalty Flat', style: TiposBlue.title),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 80,
+                width: 80,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
-            ),
-            padding: const EdgeInsets.only(right: 30),
-          )
-        ],
+        
       ),
       body: user == null
           ? const Loading()
@@ -339,7 +345,7 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                                                                 "sesion/${widget.sesionId}/notificaciones")
                                                             .add({
                                                           'mensaje':
-                                                              "Tu pago ha sido rechazado por:",
+                                                              "Pago rechazado por:",
                                                           'subtitulo':
                                                               "${currentUserData['nombre']}",
                                                           'idUsuario':
@@ -347,6 +353,8 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                                                           'fecha': dateToday,
                                                           'tipo': "feedback",
                                                           'visto': false,
+                                                          'idNotificador':
+                                                              user.uid
                                                         });
                                                         Navigator.pop(context);
 
@@ -391,6 +399,27 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                                                           setState(() {
                                                             pagado = true;
                                                           });
+                                                          if (userData[
+                                                                  'contador'] ==
+                                                              allUsers.length -
+                                                                  1) {
+                                                            await db
+                                                                .collection(
+                                                                    "sesion/${widget.sesionId}/notificaciones")
+                                                                .add({
+                                                              'mensaje':
+                                                                  "Pago aceptado",
+                                                              'subtitulo':
+                                                                  "Tus compañeros lo han confirmado",
+                                                              'idUsuario':
+                                                                  widget.userId,
+                                                              'fecha':
+                                                                  dateToday,
+                                                              'tipo':
+                                                                  "feedback",
+                                                              'visto': false,
+                                                            });
+                                                          }
                                                           await db
                                                               .doc(
                                                                   'sesion/${widget.sesionId}/notificaciones/${widget.notifyId}')
@@ -409,7 +438,8 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                                                                     allUsers.length -
                                                                         1)
                                                                 ? false
-                                                                : true,
+                                                                : userData[
+                                                                    'pendiente'],
                                                             'dinero': (userData[
                                                                         'contador'] ==
                                                                     allUsers.length -
@@ -418,27 +448,6 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                                                                 : userData[
                                                                     'dinero']
                                                           });
-
-                                                          if (userData[
-                                                                  'contador'] ==
-                                                              allUsers.length) {
-                                                            await db
-                                                                .collection(
-                                                                    "sesion/${widget.sesionId}/notificaciones")
-                                                                .add({
-                                                              'mensaje':
-                                                                  "Tu pago ha sido aceptado",
-                                                              'subtitulo':
-                                                                  "Tus compañeros lo han confirmado",
-                                                              'idUsuario':
-                                                                  widget.userId,
-                                                              'fecha':
-                                                                  dateToday,
-                                                              'tipo':
-                                                                  "feedback",
-                                                              'visto': false,
-                                                            });
-                                                          }
 
                                                           Navigator.pop(
                                                               context);

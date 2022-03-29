@@ -27,7 +27,25 @@ class Inicio extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: PageColors.white,
           elevation: 0.0,
-          title: Center(child: Text("PenaltyFlat", style: TiposBlue.title)),
+          
+          title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/LogoCabecera.png',
+                height: 70,
+                width: 70,
+              ),
+              Text('PENALTY FLAT',
+                  style: TextStyle(
+                      fontFamily: 'BasierCircle',
+                      fontSize: 18,
+                      color: PageColors.blue,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
           actions: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.logout),
