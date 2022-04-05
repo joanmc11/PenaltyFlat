@@ -45,7 +45,7 @@ class MultaDetall extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             color: PageColors.blue,
             onPressed: () async {
               Navigator.pop(context);
@@ -418,7 +418,7 @@ class MultaDetall extends StatelessWidget {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 20),
                                               ))
-                                            : Center(
+                                            : const Center(
                                                 child: Text(
                                                 "Multa por pagar",
                                                 style: TextStyle(

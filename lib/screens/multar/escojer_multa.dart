@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
-import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class EscojerMulta extends StatefulWidget {
@@ -183,8 +182,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    padding:
-                                        const EdgeInsets.only(left: 16),
+                                    padding: const EdgeInsets.only(left: 16),
                                     child: !_folded
                                         ? TextField(
                                             decoration: InputDecoration(
@@ -197,33 +195,29 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                               setState(() {
                                                 search = value;
                                               });
-                                              print(search);
+                                              // debugPrint(search);
                                             },
                                           )
                                         : null,
                                   ),
                                 ),
                                 AnimatedContainer(
-                                  duration:
-                                      const Duration(milliseconds: 400),
+                                  duration: const Duration(milliseconds: 400),
                                   child: Material(
                                     type: MaterialType.transparency,
                                     child: InkWell(
                                       borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(
-                                              _folded ? 32 : 0),
-                                          topRight:
-                                              const Radius.circular(32),
-                                          bottomLeft: Radius.circular(
-                                              _folded ? 32 : 0),
+                                          topLeft:
+                                              Radius.circular(_folded ? 32 : 0),
+                                          topRight: const Radius.circular(32),
+                                          bottomLeft:
+                                              Radius.circular(_folded ? 32 : 0),
                                           bottomRight:
                                               const Radius.circular(32)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
                                         child: Icon(
-                                          _folded
-                                              ? Icons.search
-                                              : Icons.close,
+                                          _folded ? Icons.search : Icons.close,
                                           color: PageColors.blue,
                                         ),
                                       ),
@@ -311,61 +305,65 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                   return const Center(
                                       child: CircularProgressIndicator());
                                 }
-                                final casaData = snapshot.data!.data()!;
-                                return codigoMultas.isEmpty? Center(child: Text(
-                                                      "No se han encontrado multas.",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TiposBlue.body,
-                                                    ),): ListView.builder(
-                                  itemCount: codigoMultas.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final String? titulo =
-                                        "${codigoMultas[index]['titulo']}"
-                                            .capitalize;
-                                    final String? descripcion =
-                                        "${codigoMultas[index]['descripcion']}"
-                                            .capitalize;
-
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, top: 4.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                            border: Border.all(
-                                                color: Colors.grey
-                                                    .withOpacity(0.3))),
-                                        child: ListTile(
-                                          
-                                          title: Text(
-                                            titulo!,
-                                            style: TextStyle(
-                                                color: PageColors.blue,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          subtitle: Text(
-                                            descripcion!,
-                                            style: TextStyle(
-                                                color: PageColors.blue),
-                                          ),
-                                          trailing: Radio(
-                                              value: codigoMultas[index].id,
-                                              groupValue: _site,
-                                              onChanged: (value) async {
-                                                setState(() {
-                                                  _site = value.toString();
-                                                });
-                                              }),
+                                return codigoMultas.isEmpty
+                                    ? Center(
+                                        child: Text(
+                                          "No se han encontrado multas.",
+                                          textAlign: TextAlign.center,
+                                          style: TiposBlue.body,
                                         ),
-                                      ),
-                                    );
-                                  },
-                                );
+                                      )
+                                    : ListView.builder(
+                                        itemCount: codigoMultas.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final String? titulo =
+                                              "${codigoMultas[index]['titulo']}"
+                                                  .capitalize;
+                                          final String? descripcion =
+                                              "${codigoMultas[index]['descripcion']}"
+                                                  .capitalize;
+
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 4.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(10),
+                                                  ),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3))),
+                                              child: ListTile(
+                                                title: Text(
+                                                  titulo!,
+                                                  style: TextStyle(
+                                                      color: PageColors.blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                subtitle: Text(
+                                                  descripcion!,
+                                                  style: TextStyle(
+                                                      color: PageColors.blue),
+                                                ),
+                                                trailing: Radio(
+                                                    value:
+                                                        codigoMultas[index].id,
+                                                    groupValue: _site,
+                                                    onChanged: (value) async {
+                                                      setState(() {
+                                                        _site =
+                                                            value.toString();
+                                                      });
+                                                    }),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
                               },
                             );
                           },

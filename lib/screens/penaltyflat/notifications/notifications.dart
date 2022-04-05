@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import '../../../Styles/colors.dart';
 import '../../../models/user.dart';
-import '../llistaMultes/multaDetall.dart';
+import '../llistaMultes/multa_detall.dart';
 
 class Notificaciones extends StatelessWidget {
   final String sesionId;
@@ -20,12 +20,12 @@ class Notificaciones extends StatelessWidget {
           toolbarHeight: 70,
           backgroundColor: Colors.white,
           leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+            icon: const Icon(Icons.arrow_back),
+            color: PageColors.blue,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           title: Center(
             child: Text('Penalty Flat', style: TiposBlue.title),
           ),
@@ -136,21 +136,24 @@ class Notificaciones extends StatelessWidget {
                                           style: TiposBlue.body,
                                         ),
                                         trailing: IconButton(
-                                            onPressed: () async{
-await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Confirmaciones(
-                                                  notifyId:
-                                                      notifyData[index].id,
-                                                  sesionId: sesionId,
-                                                  userId: notifyData[index]['idPagador'],
-                                                  
-                                                ),
-                                              ));
+                                            onPressed: () async {
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Confirmaciones(
+                                                      notifyId:
+                                                          notifyData[index].id,
+                                                      sesionId: sesionId,
+                                                      userId: notifyData[index]
+                                                          ['idPagador'],
+                                                    ),
+                                                  ));
                                             },
-                                            icon: Icon(Icons.add, color: PageColors.blue,)),
+                                            icon: Icon(
+                                              Icons.add,
+                                              color: PageColors.blue,
+                                            )),
                                       )
                                     : ListTile(
                                         title: Text(
@@ -172,7 +175,8 @@ await Navigator.push(
                                             },
                                             icon: notifyData[index]['visto']
                                                 ? Container()
-                                                :  Icon(Icons.check, color: PageColors.blue)),
+                                                : Icon(Icons.check,
+                                                    color: PageColors.blue)),
                                       );
                       });
                 },

@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
-import 'package:penalty_flat_app/shared/multaScreen.dart';
+import 'package:penalty_flat_app/shared/multa_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -174,7 +172,7 @@ class _PonerMultaState extends State<PonerMulta> {
                                       child: DottedBorder(
                                         radius: const Radius.circular(8),
                                         borderType: BorderType.Circle,
-                                        dashPattern: [5],
+                                        dashPattern: const [5],
                                         color: colors[userData['color']],
                                         strokeWidth: 1,
                                         child: userData['imagenPerfil'] == ""
@@ -277,8 +275,6 @@ class _PonerMultaState extends State<PonerMulta> {
                                                 .pickImage(
                                                     source: ImageSource.camera);
                                             if (image == null) return;
-                                            final imageTemporary =
-                                                File(image.path);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
@@ -361,7 +357,7 @@ class _PonerMultaState extends State<PonerMulta> {
                                         'aceptada': false,
                                         'pagado': false
                                       });
-                                      
+
                                       await db
                                           .collection(
                                               'sesion/${widget.sesionId}/notificaciones')
@@ -372,13 +368,12 @@ class _PonerMultaState extends State<PonerMulta> {
                                         'tipo': "multa",
                                         'fecha': dateToday,
                                         'visto': false,
-                                        
                                       });
                                       setState(() {
                                         multado = true;
                                       });
 
-                                      print(widget.idMultado);
+                                      // debugPrint(widget.idMultado);
                                     },
                                     child: const Text('Multar',
                                         style: TextStyle(fontSize: 15)),

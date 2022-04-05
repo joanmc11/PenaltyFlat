@@ -9,12 +9,10 @@ import 'package:provider/provider.dart';
 import 'models/user.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-void main() async{
-
-   WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  initializeDateFormatting().then((_) => runApp(MyApp()));
-
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,11 +25,10 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       // ignore: avoid_types_as_parameter_names
-      catchError: (User,MyUser) => null,
+      catchError: (User, MyUser) => null,
       child: const MaterialApp(
         home: Wrapper(),
-        
-        ),
+      ),
     );
   }
 }

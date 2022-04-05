@@ -27,7 +27,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? const Loading()
         : Scaffold(
             backgroundColor: PageColors.white,
             appBar: AppBar(
@@ -38,7 +38,8 @@ class _SignInState extends State<SignIn> {
             body: SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height / 1.2,
-                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 20.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -94,7 +95,9 @@ class _SignInState extends State<SignIn> {
                           Expanded(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  primary: email!=""&&password!=""? PageColors.yellow: Colors.grey),
+                                  primary: email != "" && password != ""
+                                      ? PageColors.yellow
+                                      : Colors.grey),
                               child: Text(
                                 "Entra",
                                 style: TextStyle(color: PageColors.blue),
@@ -107,7 +110,7 @@ class _SignInState extends State<SignIn> {
                                   dynamic result =
                                       await _auth.signInWithEmailAndPassword(
                                           email, password);
-                                  
+
                                   if (result == null) {
                                     setState(() {
                                       error = "Email o contraseña incorrectos";

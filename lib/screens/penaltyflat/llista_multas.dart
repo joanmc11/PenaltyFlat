@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/calendariMultes.dart';
-import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/multaDetall.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/calendari_multes.dart';
+import 'package:penalty_flat_app/screens/penaltyflat/llistaMultes/multa_detall.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
 

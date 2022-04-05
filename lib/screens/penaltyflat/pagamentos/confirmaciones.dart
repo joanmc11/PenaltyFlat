@@ -5,16 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
-import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
-import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
-import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:collection/collection.dart';
-import 'package:pie_chart/pie_chart.dart';
-import 'package:icon_badge/icon_badge.dart';
-import '../../bottomBar/widgets/tab_item.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Confirmaciones extends StatefulWidget {
@@ -136,11 +128,6 @@ class _ConfirmacionesState extends State<Confirmaciones> {
                           return const Center(
                               child: CircularProgressIndicator());
                         }
-
-                        Map multaData = {};
-                        snapshot.data?.data() != null
-                            ? multaData = snapshot.data!.data()!
-                            : multaData = {};
 
                         Map notifyData = {};
                         snapshot.data?.data() != null

@@ -62,7 +62,7 @@ class _ProfilePicState extends State<ProfilePic> {
               children: [
                 DottedBorder(
                   borderType: BorderType.Circle,
-                  dashPattern: [5],
+                  dashPattern: const [5],
                   color: colors[userData['color']],
                   strokeWidth: 1,
                   child: Center(
@@ -111,8 +111,8 @@ class _ProfilePicState extends State<ProfilePic> {
                         backgroundColor: PageColors.blue,
                       ),
                       onPressed: () async {
-                        final image = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery, imageQuality: 25);
+                        final image = await ImagePicker().pickImage(
+                            source: ImageSource.gallery, imageQuality: 25);
                         if (image == null) return;
                         final imageTemporary = File(image.path);
                         await db

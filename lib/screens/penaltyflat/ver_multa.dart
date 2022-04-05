@@ -56,10 +56,10 @@ class _VerMultaState extends State<VerMulta> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
           onPressed: () {
-           Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
         ),
         toolbarHeight: 70,
@@ -98,7 +98,6 @@ class _VerMultaState extends State<VerMulta> {
                       "Edita esta Multa",
                       style: TiposBlue.title,
                     )),
-                    
                   ],
                 ),
               ),
@@ -128,7 +127,7 @@ class _VerMultaState extends State<VerMulta> {
                                     validator: (val) => val!.isEmpty
                                         ? "Introduce un nombre para la norma"
                                         : null,
-                                    initialValue: "$titulo".capitalize,
+                                    initialValue: titulo.capitalize,
                                     decoration: InputDecoration(
                                         hintText: "Titulo ",
                                         focusedBorder: OutlineInputBorder(
@@ -145,7 +144,7 @@ class _VerMultaState extends State<VerMulta> {
                                     children: [
                                       Flexible(
                                           child: Text(
-                                        "${widget.titulo}".capitalize!,
+                                        widget.titulo.capitalize!,
                                         style: TiposBlue.bodyBold,
                                       )),
                                       Padding(
@@ -322,8 +321,10 @@ class _VerMultaState extends State<VerMulta> {
                                     await showDialog(
                                         context: context,
                                         builder: (_) => AlertDialog(
-                                              title: const Text("¿Eliminar norma?"),
-                                              content: const Text("¿Estás seguro?"),
+                                              title: const Text(
+                                                  "¿Eliminar norma?"),
+                                              content:
+                                                  const Text("¿Estás seguro?"),
                                               actions: [
                                                 FlatButton(
                                                     onPressed: () async {
