@@ -5,20 +5,17 @@ import 'package:penalty_flat_app/screens/inside/inici.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({ Key? key }) : super(key: key);
+  const Wrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    
     final user = Provider.of<MyUser?>(context);
-    print(user);
-    
-    
+    debugPrint(user.toString());
+
     //Retorna home o authenticate widged depenent de si estàs logejat o no
-    if(user== null){
+    if (user == null) {
       return const Authenticate();
-    }
-    else{
+    } else {
       return Inicio();
     }
   }

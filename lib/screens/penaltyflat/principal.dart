@@ -8,14 +8,14 @@ import 'package:penalty_flat_app/screens/penaltyflat/estadisticas/estadisticas_m
 import 'package:penalty_flat_app/screens/penaltyflat/llista_multas.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/notifications/notifications.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/profile/profile.dart';
-import 'package:penalty_flat_app/shared/verCodigo.dart';
+import 'package:penalty_flat_app/shared/ver_codigo.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 
 import '../../models/user.dart';
 import '../bottomBar/widgets/tab_item.dart';
 
-import 'llistaMultes/multaDetall.dart';
+import 'llistaMultes/multa_detall.dart';
 //import 'package:fl_chart/fl_chart.dart';
 import 'package:pie_chart/pie_chart.dart';
 

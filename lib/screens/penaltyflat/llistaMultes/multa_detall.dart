@@ -47,14 +47,31 @@ class MultaDetall extends StatelessWidget {
     final storage = FirebaseStorage.instance;
     return Scaffold(
         appBar: AppBar(
-        toolbarHeight: 70,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: PageColors.blue,
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+          ),
+          toolbarHeight: 70,
+          backgroundColor: PageColors.white,
+          title: Center(
+            child: Text(
+              'Penalty Flat',
+              style: TextStyle(color: PageColors.blue),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.notifications_none_outlined,
+                color: PageColors.blue,
+              ),
+              padding: const EdgeInsets.only(right: 30),
+            )
+          ],
         ),
         title: Center(
           child: Row(
@@ -115,7 +132,7 @@ class MultaDetall extends StatelessWidget {
                 );
               }),
         ],
-      ),
+      
         body: StreamBuilder(
           stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
           builder: (

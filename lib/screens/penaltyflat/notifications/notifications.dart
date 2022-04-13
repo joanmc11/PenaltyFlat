@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import '../../../Styles/colors.dart';
 import '../../../models/user.dart';
-import '../llistaMultes/multaDetall.dart';
+import '../llistaMultes/multa_detall.dart';
 
 class Notificaciones extends StatelessWidget {
   final String sesionId;
@@ -215,6 +215,7 @@ class Notificaciones extends StatelessWidget {
                                               width: 45,
                                               child: NotifyPic(
                                                   sesionId: sesionId,
+<<<<<<< HEAD
                                                   notificadorId:
                                                       notifyData[index]
                                                           ['idNotificador']),
@@ -243,6 +244,73 @@ class Notificaciones extends StatelessWidget {
                                     );
                     },
                   );
+=======
+                                                  idMulta: notifyData[index]
+                                                      ['idMulta'],
+                                                  idMultado: user.uid,
+                                                ),
+                                              ));
+                                        },
+                                        icon: Icon(
+                                          Icons.add,
+                                          color: PageColors.blue,
+                                        )),
+                                  )
+                                : notifyData[index]['tipo'] == "pago"
+                                    ? ListTile(
+                                        title: Text(
+                                          "Confirma el pago de:",
+                                          style: TiposBlue.bodyBold,
+                                        ),
+                                        subtitle: Text(
+                                          notifyData[index]['nomPagador'],
+                                          style: TiposBlue.body,
+                                        ),
+                                        trailing: IconButton(
+                                            onPressed: () async {
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Confirmaciones(
+                                                      notifyId:
+                                                          notifyData[index].id,
+                                                      sesionId: sesionId,
+                                                      userId: notifyData[index]
+                                                          ['idPagador'],
+                                                    ),
+                                                  ));
+                                            },
+                                            icon: Icon(
+                                              Icons.add,
+                                              color: PageColors.blue,
+                                            )),
+                                      )
+                                    : ListTile(
+                                        title: Text(
+                                          notifyData[index]['mensaje'],
+                                          style: TiposBlue.bodyBold,
+                                        ),
+                                        subtitle: Text(
+                                          notifyData[index]['subtitulo'],
+                                          style: TiposBlue.body,
+                                        ),
+                                        trailing: IconButton(
+                                            onPressed: () async {
+                                              await db
+                                                  .doc(
+                                                      'sesion/$sesionId/notificaciones/${notifyData[index].id}')
+                                                  .update({
+                                                'visto': true,
+                                              });
+                                            },
+                                            icon: notifyData[index]['visto']
+                                                ? Container()
+                                                : Icon(Icons.check,
+                                                    color: PageColors.blue)),
+                                      );
+                      });
+>>>>>>> bfcae3e228b57e8922275489bd1e9a707c03a1b1
                 },
               ),
             )

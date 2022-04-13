@@ -27,7 +27,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? const Loading()
         : Scaffold(
             backgroundColor: PageColors.white,
             appBar: AppBar(
@@ -38,7 +38,8 @@ class _RegisterState extends State<Register> {
             body: SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height / 1.1,
-                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 20.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -120,7 +121,11 @@ class _RegisterState extends State<Register> {
                           Expanded(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  primary: name!=""&&email!=""&&password!=""? PageColors.yellow : Colors.grey),
+                                  primary: name != "" &&
+                                          email != "" &&
+                                          password != ""
+                                      ? PageColors.yellow
+                                      : Colors.grey),
                               child: Text(
                                 "Registrate",
                                 style: TextStyle(color: PageColors.blue),
@@ -133,7 +138,7 @@ class _RegisterState extends State<Register> {
                                   dynamic result =
                                       await _auth.registerWithEmailAndPassword(
                                           name, email, password);
-                                  
+
                                   if (result == null) {
                                     setState(() {
                                       error = "";

@@ -245,7 +245,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                               setState(() {
                                                 search = value;
                                               });
-                                              print(search);
+                                              // debugPrint(search);
                                             },
                                           )
                                         : null,
@@ -355,7 +355,6 @@ class _EscojerMultaState extends State<EscojerMulta> {
                                   return const Center(
                                       child: CircularProgressIndicator());
                                 }
-                                final casaData = snapshot.data!.data()!;
                                 return codigoMultas.isEmpty
                                     ? Center(
                                         child: Text(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
@@ -10,7 +11,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:icon_badge/icon_badge.dart';
 import '../../bottomBar/widgets/tab_item.dart';
 import '../notifications/notifications.dart';
 
@@ -105,6 +105,14 @@ class EstadisticaMultas extends StatelessWidget {
                   },
                 );
               }),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.notifications_none_outlined,
+              color: PageColors.blue,
+            ),
+            padding: const EdgeInsets.only(right: 30),
+          )
         ],
       ),
       body: user == null

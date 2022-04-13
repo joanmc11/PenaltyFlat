@@ -61,7 +61,7 @@ class _VerMultaState extends State<VerMulta> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
           onPressed: () {
             Navigator.of(context).pop();
@@ -175,7 +175,7 @@ class _VerMultaState extends State<VerMulta> {
                                     validator: (val) => val!.isEmpty
                                         ? "Introduce un nombre para la norma"
                                         : null,
-                                    initialValue: "$titulo".capitalize,
+                                    initialValue: titulo.capitalize,
                                     decoration: InputDecoration(
                                         hintText: "Titulo ",
                                         focusedBorder: OutlineInputBorder(
@@ -192,7 +192,7 @@ class _VerMultaState extends State<VerMulta> {
                                     children: [
                                       Flexible(
                                           child: Text(
-                                        "${widget.titulo}".capitalize!,
+                                        widget.titulo.capitalize!,
                                         style: TiposBlue.bodyBold,
                                       )),
                                       Padding(

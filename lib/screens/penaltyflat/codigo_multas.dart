@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/crearMulta/crear_multa.dart';
-import 'package:penalty_flat_app/screens/penaltyflat/principal.dart';
 import 'package:penalty_flat_app/screens/penaltyflat/ver_multa.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -256,10 +255,12 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(
                                                   _folded ? 32 : 0),
-                                              topRight: Radius.circular(32),
+                                              topRight:
+                                                  const Radius.circular(32),
                                               bottomLeft: Radius.circular(
                                                   _folded ? 32 : 0),
-                                              bottomRight: Radius.circular(32)),
+                                              bottomRight:
+                                                  const Radius.circular(32)),
                                           child: Padding(
                                             padding: const EdgeInsets.all(16.0),
                                             child: Icon(
@@ -483,7 +484,8 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                                       ),
                                                       trailing: GestureDetector(
                                                           onTap: () {},
-                                                          child: Text('2€')),
+                                                          child:
+                                                              const Text('2€')),
                                                     ),
                                                   ),
                                                 ),
@@ -554,8 +556,8 @@ class _CodigoMultasState extends State<CodigoMultas> {
                                                                       color: PageColors
                                                                           .blue),
                                                                   onPressed:
-                                                                      () async{
-                                                                   await Navigator
+                                                                      () async {
+                                                                    await Navigator
                                                                         .push(
                                                                       context,
                                                                       MaterialPageRoute(
