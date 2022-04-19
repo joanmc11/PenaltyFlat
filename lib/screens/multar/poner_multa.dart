@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/multar/botones_multar.dart';
 import 'package:penalty_flat_app/components/multar/detalles_multa.dart';
 import 'package:penalty_flat_app/components/multar/persona_multada.dart';
 import 'package:penalty_flat_app/components/multar/prueba_multa.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/shared/multa_screen.dart';
 

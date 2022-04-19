@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/multa_detall/aceptar_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/descripcion_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/image_detail.dart';
 import 'package:penalty_flat_app/components/multa_detall/precio_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/pruebas.dart';
 import 'package:penalty_flat_app/components/multa_detall/title_multa.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
-import '../../../Styles/colors.dart';
 
 class MultaDetall extends StatelessWidget {
   final String sesionId;

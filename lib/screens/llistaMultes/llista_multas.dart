@@ -1,15 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/llista_multas/botones_propio.dart';
 import 'package:penalty_flat_app/components/llista_multas/multas_list.dart';
 import 'package:penalty_flat_app/components/llista_multas/select_meses.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
-import 'package:provider/provider.dart';
-import '../../models/user.dart';
-import '../notifications.dart';
 
 class PantallaMultas extends StatefulWidget {
   final String sesionId;

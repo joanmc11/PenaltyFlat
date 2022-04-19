@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
 import 'package:penalty_flat_app/components/lista_normas/multas_list.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'crearMulta/crear_multa.dart';
 
 class CodigoMultas extends StatefulWidget {

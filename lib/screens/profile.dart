@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/bottom_bar/bottom_bar.dart';
+import 'package:penalty_flat_app/components/bottom_bar/button_penalty.dart';
 import 'package:penalty_flat_app/components/profile_widgets/profile_menu.dart';
 import 'package:penalty_flat_app/components/profile_widgets/profile_pic.dart';
 import 'package:penalty_flat_app/main.dart';
 import 'package:penalty_flat_app/screens/pagamentos/pagamentos.dart';
-import 'package:penalty_flat_app/screens/principal.dart';
-import '../../Styles/colors.dart';
 import '../../services/auth.dart';
-import 'bottomBar/widgets/tab_item.dart';
-import 'multar/usuario_multa.dart';
 import 'pagamentos/pagamentos.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -73,49 +71,15 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PersonaMultada(sesionId: sesionId),
-              ));
-        },
-        child: Icon(
-          Icons.gavel,
-          color: PageColors.yellow,
-        ),
-        backgroundColor: PageColors.blue,
-      ),
+      floatingActionButton: BottomBarButtonPenalty(sesionId: sesionId),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomTab(context),
     );
   }
 
   _buildBottomTab(context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(20.0),
-        topRight: Radius.circular(20.0),
-      ),
-      child: BottomAppBar(
-        color: PageColors.blue,
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            GestureDetector(
-                onTap: () async {
-                  await Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => PrincipalScreen(sesionId: sesionId),
-                  ));
-                },
-                child: const TabItem(icon: Icons.home)),
-            GestureDetector(
-                onTap: () {}, child: const TabItem(icon: Icons.account_circle))
-          ],
-        ),
-      ),
-    );
+    return BottomBarPenaltyFlat(sesionId: sesionId);
   }
 }
+
+

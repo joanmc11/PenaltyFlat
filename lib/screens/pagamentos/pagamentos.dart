@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/pagamentos/botones_pagamento.dart';
 import 'package:penalty_flat_app/components/pagamentos/circulo_porcentaje.dart';
 import 'package:penalty_flat_app/components/pagamentos/dinero_pagar.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';

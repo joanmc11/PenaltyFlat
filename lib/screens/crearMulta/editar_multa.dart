@@ -1,17 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/crear_multas/cantidad_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/parte_crear.dart';
 import 'package:penalty_flat_app/components/editar_multas/botones_edit.dart';
 import 'package:penalty_flat_app/components/editar_multas/desc_edit.dart';
 import 'package:penalty_flat_app/components/editar_multas/titulo_edit.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
-import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
-import '../../models/user.dart';
-import '../notifications.dart';
 
 class VerMulta extends StatefulWidget {
   final String sesionId;

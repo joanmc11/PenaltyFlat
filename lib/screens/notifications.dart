@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
+import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/components/notificacions/notify_pic.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';

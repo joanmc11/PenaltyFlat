@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/confirmaciones/cantidad_pago.dart';
 import 'package:penalty_flat_app/components/confirmaciones/confirmar_pago.dart';
 import 'package:penalty_flat_app/components/confirmaciones/imagen_confirmacion.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
-import '../../components/penalty_flat_app_bar.dart';
 
 class Confirmaciones extends StatelessWidget {
   final String sesionId;

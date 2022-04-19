@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
+import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/screens/notifications.dart';
 
 class PenaltyFlatAppBar extends AppBar {

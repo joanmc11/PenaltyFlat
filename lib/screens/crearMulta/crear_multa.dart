@@ -1,18 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/crear_multas/botones_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/cantidad_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/descripcion_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/parte_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/titulo_crear.dart';
-import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
-import 'package:provider/provider.dart';
-
 import '../../../Styles/colors.dart';
-import '../../../models/user.dart';
-import '../notifications.dart';
 
 class CrearMulta extends StatefulWidget {
   final String sesionId;
@@ -59,7 +53,6 @@ class _CrearMultaState extends State<CrearMulta> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser?>(context);
     return Scaffold(
         appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
         body: SingleChildScrollView(
