@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:provider/provider.dart';
@@ -26,24 +27,7 @@ class TodasCasas extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
@@ -91,8 +75,7 @@ class TodasCasas extends StatelessWidget {
                                 await Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) => PrincipalScreen(
-                                            sesionId: casasData[index]
-                                                ['idCasa'],
+                                            sesionId: casasData[index]['idCasa'],
                                           )),
                                 );
                               },
@@ -110,8 +93,7 @@ class TodasCasas extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: PageColors.yellow.withOpacity(1)),
+                    style: ElevatedButton.styleFrom(primary: PageColors.yellow.withOpacity(1)),
                     child: Text(
                       "Atras",
                       style: TextStyle(color: PageColors.blue),

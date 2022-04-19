@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
 import 'package:penalty_flat_app/components/lista_normas/multas_list.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
@@ -61,24 +62,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
         ),
         toolbarHeight: 70,
         backgroundColor: Colors.white,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
         actions: <Widget>[
           StreamBuilder(
               stream: db
@@ -113,8 +97,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: widget.sesionId)),
+                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
                     );
                   },
                 );
@@ -130,8 +113,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
             children: [
               Expanded(
                   flex: 2,
-                  child: ZonasCasa(
-                      sesionId: widget.sesionId, callbackParte: callbackParte)),
+                  child: ZonasCasa(sesionId: widget.sesionId, callbackParte: callbackParte)),
               Expanded(
                 flex: 9,
                 child: Container(
@@ -146,8 +128,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Buscador(
-                                  width: 200, callbackSearch: callbackSearch),
+                              Buscador(width: 200, callbackSearch: callbackSearch),
                               //Icono per editar multes
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
 import 'package:penalty_flat_app/components/lista_normas/multas_radioButton.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
@@ -13,9 +14,7 @@ import '../../models/user.dart';
 class EscojerMulta extends StatefulWidget {
   final String sesionId;
   final String idMultado;
-  const EscojerMulta(
-      {Key? key, required this.sesionId, required this.idMultado})
-      : super(key: key);
+  const EscojerMulta({Key? key, required this.sesionId, required this.idMultado}) : super(key: key);
 
   @override
   _EscojerMultaState createState() => _EscojerMultaState();
@@ -66,24 +65,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
         ),
         toolbarHeight: 70,
         backgroundColor: Colors.white,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
         actions: <Widget>[
           StreamBuilder(
               stream: db
@@ -118,8 +100,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: widget.sesionId)),
+                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
                     );
                   },
                 );
@@ -150,7 +131,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
                           padding: const EdgeInsets.only(right: 20),
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 30),
-                            child: Buscador(width: 250,callbackSearch: callbackSearch),
+                            child: Buscador(width: 250, callbackSearch: callbackSearch),
                           )),
                       MultasRadio(
                           sesionId: widget.sesionId,

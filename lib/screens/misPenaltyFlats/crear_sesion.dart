@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/screens/misPenaltyFlats/inici.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -21,12 +22,11 @@ class _CrearSesionState extends State<CrearSesion> {
   final db = FirebaseFirestore.instance;
 
   //Get Random String
-  static const _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz123456789';
+  static const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz123456789';
   final Random _rnd = Random();
 
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  String getRandomString(int length) => String.fromCharCodes(
+      Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   Widget build(BuildContext context) {
@@ -43,24 +43,7 @@ class _CrearSesionState extends State<CrearSesion> {
             Navigator.pop(context);
           },
         ),
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -84,13 +67,11 @@ class _CrearSesionState extends State<CrearSesion> {
                 ),
                 TextFormField(
                   //Nombre
-                  validator: (val) =>
-                      val!.isEmpty ? "Introduce un nombre para la casa" : null,
+                  validator: (val) => val!.isEmpty ? "Introduce un nombre para la casa" : null,
                   decoration: InputDecoration(
                       hintText: "Nombre de la casa",
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: PageColors.yellow, width: 0.5))),
+                          borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
                   onChanged: (val) {
                     setState(() {
                       casa = val;
@@ -99,13 +80,11 @@ class _CrearSesionState extends State<CrearSesion> {
                 ),
                 TextFormField(
                   //apodo
-                  validator: (val) =>
-                      val!.isEmpty ? "Introduce tu apodo" : null,
+                  validator: (val) => val!.isEmpty ? "Introduce tu apodo" : null,
                   decoration: InputDecoration(
                       hintText: "Tu apodo",
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: PageColors.yellow, width: 0.5))),
+                          borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
 
                   onChanged: (val) {
                     setState(() {
@@ -129,8 +108,7 @@ class _CrearSesionState extends State<CrearSesion> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: PageColors.white),
+                          style: ElevatedButton.styleFrom(primary: PageColors.white),
                           child: Text(
                             "Cancelar",
                             style: TextStyle(color: PageColors.blue),
@@ -146,17 +124,14 @@ class _CrearSesionState extends State<CrearSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: apodo != "" && casa != ""
-                                  ? PageColors.yellow
-                                  : Colors.grey),
+                              primary: apodo != "" && casa != "" ? PageColors.yellow : Colors.grey),
                           child: Text(
                             "Empieza",
                             style: TextStyle(color: PageColors.blue),
                           ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              final sesionSnap =
-                                  await db.collection('/sesion').add({
+                              final sesionSnap = await db.collection('/sesion').add({
                                 "codi": getRandomString(5),
                                 "casa": casa,
                                 "partes": [
@@ -169,10 +144,7 @@ class _CrearSesionState extends State<CrearSesion> {
                                 ],
                                 "sinMultas": true,
                               });
-                              await db
-                                  .doc(
-                                      '/sesion/${sesionSnap.id}/users/${user?.uid}')
-                                  .set({
+                              await db.doc('/sesion/${sesionSnap.id}/users/${user?.uid}').set({
                                 "nombre": apodo,
                                 "color": 0,
                                 "id": user!.uid,
@@ -183,8 +155,7 @@ class _CrearSesionState extends State<CrearSesion> {
                                 'contador': 1,
                               });
 
-                              db.collection(
-                                  '/sesion/${sesionSnap.id}/notificaciones');
+                              db.collection('/sesion/${sesionSnap.id}/notificaciones');
 
                               //creo la collection de casas (inicialment buida)
                               await DatabaseService(uid: user.uid)
@@ -196,8 +167,7 @@ class _CrearSesionState extends State<CrearSesion> {
                                   content: Text("¡Has creado un PenaltyFlat!"),
                                 ),
                               );
-                              await Future.delayed(
-                                  const Duration(milliseconds: 300), () {
+                              await Future.delayed(const Duration(milliseconds: 300), () {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/multar/user_grid.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
@@ -14,8 +15,6 @@ import '../notifications.dart';
 class PersonaMultada extends StatelessWidget {
   final String sesionId;
   const PersonaMultada({Key? key, required this.sesionId}) : super(key: key);
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +31,7 @@ class PersonaMultada extends StatelessWidget {
         ),
         toolbarHeight: 70,
         backgroundColor: Colors.white,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
         actions: <Widget>[
           StreamBuilder(
               stream: db
@@ -83,33 +65,25 @@ class PersonaMultada extends StatelessWidget {
                   right: 9,
                   onTap: () async {
                     await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: sesionId)),
+                      MaterialPageRoute(builder: (context) => Notificaciones(sesionId: sesionId)),
                     );
                   },
                 );
               }),
         ],
       ),
-
-
       body: user == null
           ? const Loading()
-          :  Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
-                      child: Center(
-                          child: Text("¿A quién has pillado?",
-                              style: TiposBlue.title)),
-                    ),
-                    UserGrid(sesionId: sesionId)
-                    
-                  ],
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
+                  child: Center(child: Text("¿A quién has pillado?", style: TiposBlue.title)),
                 ),
-              
+                UserGrid(sesionId: sesionId)
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: Icon(
@@ -140,8 +114,7 @@ class PersonaMultada extends StatelessWidget {
                   await Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            PrincipalScreen(sesionId: sesionId),
+                        builder: (context) => PrincipalScreen(sesionId: sesionId),
                       ));
                 },
                 child: const TabItem(icon: Icons.home)),
@@ -150,8 +123,7 @@ class PersonaMultada extends StatelessWidget {
                   await Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: ((context) =>
-                          ProfilePage(sesionId: sesionId)),
+                      builder: ((context) => ProfilePage(sesionId: sesionId)),
                     ),
                   );
                 },

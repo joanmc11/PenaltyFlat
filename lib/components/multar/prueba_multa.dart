@@ -41,8 +41,7 @@ class _PruebaMultarState extends State<PruebaMultar> {
                 child: InkWell(
                   splashColor: Theme.of(context).primaryColorLight,
                   onTap: () async {
-                    final image = await ImagePicker()
-                        .pickImage(source: ImageSource.camera);
+                    final image = await ImagePicker().pickImage(source: ImageSource.camera);
                     if (image == null) return;
                     final imageTemporary = File(image.path);
                     widget.callbackImgPath(image.name);

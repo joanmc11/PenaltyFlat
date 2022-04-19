@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/llista_multas/botones_propio.dart';
 import 'package:penalty_flat_app/components/llista_multas/multas_list.dart';
 import 'package:penalty_flat_app/components/llista_multas/select_meses.dart';
@@ -60,24 +61,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
         ),
         toolbarHeight: 70,
         backgroundColor: Colors.white,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
         actions: <Widget>[
           StreamBuilder(
               stream: db
@@ -112,8 +96,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: widget.sesionId)),
+                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
                     );
                   },
                 );
@@ -144,8 +127,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
                 iconSize: 40),
           ),*/
           const Padding(padding: EdgeInsets.only(bottom: 8.0, top: 4.0)),
-          ButtonPropio(
-              callbackButton: callbackButton),
+          ButtonPropio(callbackButton: callbackButton),
           ListaMultasUsuarios(
               sesionId: widget.sesionId,
               monthValue: monthValue,

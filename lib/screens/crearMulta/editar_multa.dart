@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/crear_multas/cantidad_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/parte_crear.dart';
 import 'package:penalty_flat_app/components/editar_multas/botones_edit.dart';
@@ -93,24 +94,7 @@ class _VerMultaState extends State<VerMulta> {
         ),
         toolbarHeight: 70,
         backgroundColor: PageColors.white,
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/LogoCabecera.png',
-                height: 70,
-                width: 70,
-              ),
-              Text('PENALTY FLAT',
-                  style: TextStyle(
-                      fontFamily: 'BasierCircle',
-                      fontSize: 18,
-                      color: PageColors.blue,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-        ),
+        title: const AppBarTitle(),
         actions: <Widget>[
           StreamBuilder(
               stream: db
@@ -145,8 +129,7 @@ class _VerMultaState extends State<VerMulta> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: widget.sesionId)),
+                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
                     );
                   },
                 );
@@ -181,11 +164,8 @@ class _VerMultaState extends State<VerMulta> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TituloEdit(
-                            titulo: titulo, callbackTitulo: callbackTitulo),
-                        DescripcionEdit(
-                            descripcion: descripcion,
-                            callbackDesc: callbackDesc),
+                        TituloEdit(titulo: titulo, callbackTitulo: callbackTitulo),
+                        DescripcionEdit(descripcion: descripcion, callbackDesc: callbackDesc),
                         ParteCrear(
                             sesionId: widget.sesionId,
                             parteCasa: widget.parte,

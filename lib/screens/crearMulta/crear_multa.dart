@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/crear_multas/botones_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/cantidad_crear.dart';
 import 'package:penalty_flat_app/components/crear_multas/descripcion_crear.dart';
@@ -69,24 +70,7 @@ class _CrearMultaState extends State<CrearMulta> {
           ),
           toolbarHeight: 70,
           backgroundColor: PageColors.white,
-          title: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/LogoCabecera.png',
-                  height: 70,
-                  width: 70,
-                ),
-                Text('PENALTY FLAT',
-                    style: TextStyle(
-                        fontFamily: 'BasierCircle',
-                        fontSize: 18,
-                        color: PageColors.blue,
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
+          title: const AppBarTitle(),
           actions: <Widget>[
             StreamBuilder(
                 stream: db
@@ -121,8 +105,7 @@ class _CrearMultaState extends State<CrearMulta> {
                     onTap: () async {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) =>
-                                Notificaciones(sesionId: widget.sesionId)),
+                            builder: (context) => Notificaciones(sesionId: widget.sesionId)),
                       );
                     },
                   );
@@ -132,8 +115,7 @@ class _CrearMultaState extends State<CrearMulta> {
         body: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height / 1.2,
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: Column(
               children: [
                 Expanded(
@@ -158,20 +140,14 @@ class _CrearMultaState extends State<CrearMulta> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TituloCrear(
-                              sesionId: widget.sesionId,
-                              callbackTitulo: callbackTitulo),
-                          DescripcionCrear(
-                              sesionId: widget.sesionId,
-                              callbackDesc: callbackDesc),
+                          TituloCrear(sesionId: widget.sesionId, callbackTitulo: callbackTitulo),
+                          DescripcionCrear(sesionId: widget.sesionId, callbackDesc: callbackDesc),
                           ParteCrear(
                               sesionId: widget.sesionId,
                               parteCasa: "Otros",
                               callbackParte: callbackParte),
                           CantidadCrear(
-                              sesionId: widget.sesionId,
-                              precio: 1,
-                              callbackPrecio: callbackPrecio),
+                              sesionId: widget.sesionId, precio: 1, callbackPrecio: callbackPrecio),
                           BotonesCrear(
                             sesionId: widget.sesionId,
                             titulo: titulo,
