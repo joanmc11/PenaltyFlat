@@ -4,6 +4,7 @@ import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/multar/user_grid.dart';
+import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
@@ -21,57 +22,7 @@ class PersonaMultada extends StatelessWidget {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        toolbarHeight: 70,
-        backgroundColor: Colors.white,
-        title: const AppBarTitle(),
-        actions: <Widget>[
-          StreamBuilder(
-              stream: db
-                  .collection("sesion/$sesionId/notificaciones")
-                  .where('idUsuario', isEqualTo: user?.uid)
-                  .where('visto', isEqualTo: false)
-                  .snapshots(),
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-              ) {
-                if (snapshot.hasError) {
-                  return ErrorWidget(snapshot.error.toString());
-                }
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final notifyData = snapshot.data!.docs;
-
-                return IconBadge(
-                  icon: Icon(
-                    Icons.notifications_none_outlined,
-                    color: PageColors.blue,
-                    size: 35,
-                  ),
-                  itemCount: notifyData.length,
-                  badgeColor: Colors.red,
-                  itemColor: Colors.white,
-                  hideZero: true,
-                  top: 11,
-                  right: 9,
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Notificaciones(sesionId: sesionId)),
-                    );
-                  },
-                );
-              }),
-        ],
-      ),
+      appBar: PenaltyFlatAppBar(sesionId: sesionId),
       body: user == null
           ? const Loading()
           : Column(
