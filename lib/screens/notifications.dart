@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/notificacions/notify_pic.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -21,26 +22,17 @@ class Notificaciones extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 70,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        iconTheme: IconThemeData(
+          color: PageColors.blue, //change your color here
         ),
-        title: Center(
-          child: Text('Penalty Flat', style: TiposBlue.title),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            AppBarTitle(),
+          ],
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications_none_outlined,
-              color: PageColors.blue,
-            ),
-            padding: const EdgeInsets.only(right: 30),
-          )
-        ],
+        
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

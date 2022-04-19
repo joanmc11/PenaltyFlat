@@ -1,15 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
 import 'package:penalty_flat_app/components/lista_normas/multas_list.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
-import 'package:provider/provider.dart';
-import '../models/user.dart';
+import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'crearMulta/crear_multa.dart';
-import 'notifications.dart';
 
 class CodigoMultas extends StatefulWidget {
   final String sesionId;
@@ -49,61 +45,8 @@ class _CodigoMultasState extends State<CodigoMultas> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MyUser?>(context);
-    final db = FirebaseFirestore.instance;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () async {
-            Navigator.pop(context);
-          },
-        ),
-        toolbarHeight: 70,
-        backgroundColor: Colors.white,
-        title: const AppBarTitle(),
-        actions: <Widget>[
-          StreamBuilder(
-              stream: db
-                  .collection("sesion/${widget.sesionId}/notificaciones")
-                  .where('idUsuario', isEqualTo: user?.uid)
-                  .where('visto', isEqualTo: false)
-                  .snapshots(),
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-              ) {
-                if (snapshot.hasError) {
-                  return ErrorWidget(snapshot.error.toString());
-                }
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final notifyData = snapshot.data!.docs;
-
-                return IconBadge(
-                  icon: Icon(
-                    Icons.notifications_none_outlined,
-                    color: PageColors.blue,
-                    size: 35,
-                  ),
-                  itemCount: notifyData.length,
-                  badgeColor: Colors.red,
-                  itemColor: Colors.white,
-                  hideZero: true,
-                  top: 11,
-                  right: 9,
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
-                    );
-                  },
-                );
-              }),
-        ],
-      ),
+      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),

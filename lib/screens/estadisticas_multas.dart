@@ -1,18 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
-import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
-import 'package:provider/provider.dart';
 import '../components/stats/general_stats.dart';
 import '../components/stats/own_stats.dart';
 import 'bottomBar/widgets/tab_item.dart';
-import 'notifications.dart';
 
 class EstadisticaMultas extends StatelessWidget {
   final String sesionId;
@@ -20,8 +15,7 @@ class EstadisticaMultas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
-    final user = Provider.of<MyUser?>(context);
+    
     return Scaffold(
       appBar: PenaltyFlatAppBar(sesionId: sesionId),
       body: Column(

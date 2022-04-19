@@ -26,16 +26,16 @@ class _EntrarSesionState extends State<EntrarSesion> {
     return Scaffold(
       backgroundColor: PageColors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: PageColors.white,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        iconTheme: IconThemeData(color: PageColors.blue),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            AppBarTitle(),
+          ],
         ),
-        title: const AppBarTitle(),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -58,11 +58,13 @@ class _EntrarSesionState extends State<EntrarSesion> {
                   ),
                 ),
                 TextFormField(
-                  validator: (val) => val!.isEmpty ? "Introduce un código" : null,
+                  validator: (val) =>
+                      val!.isEmpty ? "Introduce un código" : null,
                   decoration: InputDecoration(
                       hintText: "Código",
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
+                          borderSide: BorderSide(
+                              color: PageColors.yellow, width: 0.5))),
                   onChanged: (val) {
                     setState(() {
                       codi = val;
@@ -71,11 +73,15 @@ class _EntrarSesionState extends State<EntrarSesion> {
                 ),
                 TextFormField(
                   //password
-                  validator: (val) => val!.isEmpty ? "Introduce tu apodo" : null,
+                  validator: (val) =>
+                      val!.isEmpty ? "Introduce tu apodo" : null,
                   decoration: InputDecoration(
-                      hintText: "Tu apodo",
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
+                    hintText: "Tu apodo",
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: PageColors.yellow, width: 0.5),
+                    ),
+                  ),
 
                   onChanged: (val) {
                     setState(() {
@@ -99,7 +105,8 @@ class _EntrarSesionState extends State<EntrarSesion> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(primary: PageColors.white),
+                          style: ElevatedButton.styleFrom(
+                              primary: PageColors.white),
                           child: Text(
                             "Cancelar",
                             style: TextStyle(color: PageColors.blue),
@@ -115,7 +122,9 @@ class _EntrarSesionState extends State<EntrarSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: codi != "" && apodo != "" ? PageColors.yellow : Colors.grey),
+                              primary: codi != "" && apodo != ""
+                                  ? PageColors.yellow
+                                  : Colors.grey),
                           child: Text(
                             "Únete",
                             style: TextStyle(color: PageColors.blue),
@@ -126,59 +135,77 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   .collection('sesion')
                                   .where('codi', isEqualTo: codi)
                                   .get();
-                              //id de la sesio
-                              final sesionId = sesionSnap.docs[0].id;
 
-                              //Comprovo si l'usuari ja hi és a la sesió
-                              final userIn = await db
-                                  .collection('sesion/$sesionId/users')
-                                  .where('id', isEqualTo: user!.uid)
-                                  .get();
-
-                              //si no hi és l'afageixo
-                              if (userIn.docs.isNotEmpty) {
+                              if (sesionSnap.docs.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     duration: Duration(seconds: 1),
-                                    content: Text(
-                                        "Ya perteneces a está sesión, no puedes entrar dos veces"),
+                                    content: Text("¡Código inexistente!"),
                                   ),
                                 );
                               } else {
-                                //Afageixo un color per defecte a l'usuari segons la llargaria dels usuaris
-                                final userLen = await db.collection('sesion/$sesionId/users').get();
+                                //id de la sesio
+                                final sesionId = sesionSnap.docs[0].id;
 
-                                await db.doc('/sesion/$sesionId/users/${user.uid}').set({
-                                  "nombre": apodo,
-                                  "color": userLen.docs.length,
-                                  "id": user.uid,
-                                  "isAdmin": false,
-                                  "imagenPerfil": "",
-                                  "dinero": 0,
-                                  "pendiente": false,
-                                  'contador': 1,
-                                });
+                                //Comprovo si l'usuari ja hi és a la sesió
+                                final userIn = await db
+                                    .collection('sesion/$sesionId/users')
+                                    .where('id', isEqualTo: user!.uid)
+                                    .get();
 
-                                //Busco el nom de la casa
-                                final casa = await db.doc('sesion/$sesionId').get();
-                                final String casaNombre = casa['casa'];
-                                //creo la collection de casas de l'usuari (inicialment buida)
-                                await DatabaseService(uid: user.uid)
-                                    .updateUserFlats(casaNombre, sesionId);
+                                //si no hi és l'afageixo
+                                if (userIn.docs.isNotEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content: Text(
+                                          "Ya perteneces a está sesión, no puedes entrar dos veces"),
+                                    ),
+                                  );
+                                } else {
+                                  //Afageixo un color per defecte a l'usuari segons la llargaria dels usuaris
+                                  final userLen = await db
+                                      .collection('sesion/$sesionId/users')
+                                      .get();
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(seconds: 1),
-                                    content: Text("¡Te has unido a la PenaltyFlat!"),
-                                  ),
-                                );
-                                await Future.delayed(const Duration(milliseconds: 300), () {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Inicio(),
-                                      ));
-                                });
+                                  await db
+                                      .doc(
+                                          '/sesion/$sesionId/users/${user.uid}')
+                                      .set({
+                                    "nombre": apodo,
+                                    "color": userLen.docs.length,
+                                    "id": user.uid,
+                                    "isAdmin": false,
+                                    "imagenPerfil": "",
+                                    "dinero": 0,
+                                    "pendiente": false,
+                                    'contador': 1,
+                                  });
+
+                                  //Busco el nom de la casa
+                                  final casa =
+                                      await db.doc('sesion/$sesionId').get();
+                                  final String casaNombre = casa['casa'];
+                                  //creo la collection de casas de l'usuari (inicialment buida)
+                                  await DatabaseService(uid: user.uid)
+                                      .updateUserFlats(casaNombre, sesionId);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 1),
+                                      content: Text(
+                                          "¡Te has unido a la PenaltyFlat!"),
+                                    ),
+                                  );
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 300), () {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Inicio(),
+                                        ));
+                                  });
+                                }
                               }
                             }
                           },

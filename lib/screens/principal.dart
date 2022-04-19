@@ -5,7 +5,6 @@ import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/principal/miniLista_multas.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
-
 import '../components/principal/codigoButton.dart';
 import '../components/principal/codigoCasa.dart';
 import '../components/principal/estadisticas_simples.dart';
@@ -31,7 +30,8 @@ class PrincipalScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => PersonaMultada(sesionId: sesionId)),
+            MaterialPageRoute(
+                builder: (context) => PersonaMultada(sesionId: sesionId)),
           );
         },
         child: Icon(
@@ -57,11 +57,13 @@ class PrincipalScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            GestureDetector(onTap: () {}, child: const TabItem(icon: Icons.home)),
+            GestureDetector(
+                onTap: () {}, child: const TabItem(icon: Icons.home)),
             GestureDetector(
               onTap: () async {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => ProfilePage(sesionId: sesionId)),
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePage(sesionId: sesionId)),
                 );
               },
               child: const TabItem(icon: Icons.account_circle),

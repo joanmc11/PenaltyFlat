@@ -11,6 +11,7 @@ class AppBarTitle extends StatelessWidget {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
             'assets/images/LogoCabecera.png',

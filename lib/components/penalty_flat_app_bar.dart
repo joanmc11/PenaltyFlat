@@ -14,7 +14,8 @@ class PenaltyFlatAppBar extends AppBar {
           key: key,
           toolbarHeight: 75,
           backgroundColor: Colors.white,
-          leading: Container(),
+          
+          iconTheme: IconThemeData(color: PageColors.blue),
           title: const AppBarTitle(),
           actions: <Widget>[buildNotificationAction(sesionId)],
         );

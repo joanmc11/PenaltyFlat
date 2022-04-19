@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
-import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/components/multar/user_grid.dart';
 import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
@@ -11,7 +9,6 @@ import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
 import '../bottomBar/widgets/tab_item.dart';
-import '../notifications.dart';
 
 class PersonaMultada extends StatelessWidget {
   final String sesionId;
@@ -19,7 +16,7 @@ class PersonaMultada extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
+   
     final user = Provider.of<MyUser?>(context);
     return Scaffold(
       appBar: PenaltyFlatAppBar(sesionId: sesionId),

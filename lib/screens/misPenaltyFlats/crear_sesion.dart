@@ -34,16 +34,16 @@ class _CrearSesionState extends State<CrearSesion> {
     return Scaffold(
       backgroundColor: PageColors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: PageColors.white,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const AppBarTitle(),
+       iconTheme: IconThemeData(color: PageColors.blue),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              AppBarTitle(),
+            ],
+          ),
       ),
       body: SingleChildScrollView(
         child: Container(

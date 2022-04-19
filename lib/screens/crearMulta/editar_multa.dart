@@ -7,6 +7,7 @@ import 'package:penalty_flat_app/components/crear_multas/parte_crear.dart';
 import 'package:penalty_flat_app/components/editar_multas/botones_edit.dart';
 import 'package:penalty_flat_app/components/editar_multas/desc_edit.dart';
 import 'package:penalty_flat_app/components/editar_multas/titulo_edit.dart';
+import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 import '../../models/user.dart';
@@ -81,61 +82,8 @@ class _VerMultaState extends State<VerMulta> {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
-    final user = Provider.of<MyUser?>(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        toolbarHeight: 70,
-        backgroundColor: PageColors.white,
-        title: const AppBarTitle(),
-        actions: <Widget>[
-          StreamBuilder(
-              stream: db
-                  .collection("sesion/${widget.sesionId}/notificaciones")
-                  .where('idUsuario', isEqualTo: user?.uid)
-                  .where('visto', isEqualTo: false)
-                  .snapshots(),
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-              ) {
-                if (snapshot.hasError) {
-                  return ErrorWidget(snapshot.error.toString());
-                }
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final notifyData = snapshot.data!.docs;
-
-                return IconBadge(
-                  icon: Icon(
-                    Icons.notifications_none_outlined,
-                    color: PageColors.blue,
-                    size: 35,
-                  ),
-                  itemCount: notifyData.length,
-                  badgeColor: Colors.red,
-                  itemColor: Colors.white,
-                  hideZero: true,
-                  top: 11,
-                  right: 9,
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => Notificaciones(sesionId: widget.sesionId)),
-                    );
-                  },
-                );
-              }),
-        ],
-      ),
+      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height / 1.2,

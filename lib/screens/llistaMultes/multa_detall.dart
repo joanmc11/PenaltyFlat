@@ -6,6 +6,7 @@ import 'package:penalty_flat_app/components/multa_detall/image_detail.dart';
 import 'package:penalty_flat_app/components/multa_detall/precio_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/pruebas.dart';
 import 'package:penalty_flat_app/components/multa_detall/title_multa.dart';
+import 'package:penalty_flat_app/components/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import '../../../Styles/colors.dart';
 
@@ -27,33 +28,7 @@ class MultaDetall extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            color: PageColors.blue,
-            onPressed: () async {
-              Navigator.pop(context);
-            },
-          ),
-          toolbarHeight: 70,
-          backgroundColor: PageColors.white,
-          title: Center(
-            child: Text(
-              'Penalty Flat',
-              style: TextStyle(color: PageColors.blue),
-            ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.notifications_none_outlined,
-                color: PageColors.blue,
-              ),
-              padding: const EdgeInsets.only(right: 30),
-            )
-          ],
-        ),
+        appBar: PenaltyFlatAppBar(sesionId: sesionId),
         body: StreamBuilder(
           stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
           builder: (

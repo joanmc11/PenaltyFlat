@@ -1,15 +1,15 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar_title.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
+import 'package:penalty_flat_app/services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../Styles/colors.dart';
 
 class TodasCasas extends StatelessWidget {
-  const TodasCasas({Key? key}) : super(key: key);
+  TodasCasas({Key? key}) : super(key: key);
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +18,22 @@ class TodasCasas extends StatelessWidget {
     return Scaffold(
       backgroundColor: PageColors.white,
       appBar: AppBar(
-        backgroundColor: PageColors.white,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const AppBarTitle(),
-      ),
+          toolbarHeight: 70,
+          backgroundColor: PageColors.white,
+          iconTheme: IconThemeData(color: PageColors.blue),
+          title: const AppBarTitle(),
+          actions: <Widget>[
+           TextButton.icon(
+              icon: Icon(Icons.logout, color: PageColors.blue,),
+              onPressed: () async {
+                await _auth.signOut();
+              },
+              label: const Text(
+                "logOut",
+                style: TextStyle(fontSize: 0),
+              ),
+            )
+          ]),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
@@ -75,7 +80,8 @@ class TodasCasas extends StatelessWidget {
                                 await Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) => PrincipalScreen(
-                                            sesionId: casasData[index]['idCasa'],
+                                            sesionId: casasData[index]
+                                                ['idCasa'],
                                           )),
                                 );
                               },
@@ -93,7 +99,8 @@ class TodasCasas extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: PageColors.yellow.withOpacity(1)),
+                    style: ElevatedButton.styleFrom(
+                        primary: PageColors.yellow.withOpacity(1)),
                     child: Text(
                       "Atras",
                       style: TextStyle(color: PageColors.blue),

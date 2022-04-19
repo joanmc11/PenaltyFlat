@@ -26,8 +26,9 @@ class Inicio extends StatelessWidget {
     return Scaffold(
       backgroundColor: PageColors.white,
       appBar: AppBar(
-          backgroundColor: PageColors.white,
-          elevation: 0.0,
+        toolbarHeight: 70,
+        backgroundColor: PageColors.white,
+       iconTheme: IconThemeData(color: PageColors.blue),
           title: const AppBarTitle(),
           actions: <Widget>[
             FlatButton.icon(
@@ -38,9 +39,15 @@ class Inicio extends StatelessWidget {
               label: const Text(
                 "logOut",
                 style: TextStyle(fontSize: 0),
+                
               ),
             )
-          ]),
+          ]
+      ),
+      
+      
+      
+      
       body: user == null
           ? const Loading()
           : Container(
@@ -135,15 +142,15 @@ class Inicio extends StatelessWidget {
                                                           await Navigator.of(context).push(
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
-                                                                    const TodasCasas()),
+                                                                     TodasCasas()),
                                                           );
                                                         },
-                                                        child: const Text(
+                                                        child: Text(
                                                           "+ ver más PenaltyFlats",
                                                           style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 14,
-                                                            color: Color.fromARGB(255, 45, 52, 96),
+                                                            color: PageColors.blue,
                                                           ),
                                                         )),
                                                   ),
