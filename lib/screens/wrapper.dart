@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/authenticate/authenticate.dart';
-import 'package:penalty_flat_app/screens/inside/inici.dart';
 import 'package:provider/provider.dart';
+
+import 'misPenaltyFlats/inici.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);

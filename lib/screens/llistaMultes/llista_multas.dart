@@ -2,31 +2,59 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/multar/user_grid.dart';
-import 'package:penalty_flat_app/screens/principal.dart';
-import 'package:penalty_flat_app/screens/profile.dart';
-import 'package:penalty_flat_app/shared/loading.dart';
+import 'package:penalty_flat_app/components/llista_multas/botones_propio.dart';
+import 'package:penalty_flat_app/components/llista_multas/multas_list.dart';
+import 'package:penalty_flat_app/components/llista_multas/select_meses.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
-import '../bottomBar/widgets/tab_item.dart';
 import '../notifications.dart';
 
-class PersonaMultada extends StatelessWidget {
+class PantallaMultas extends StatefulWidget {
   final String sesionId;
-  const PersonaMultada({Key? key, required this.sesionId}) : super(key: key);
 
- 
+  const PantallaMultas({
+    Key? key,
+    required this.sesionId,
+  }) : super(key: key);
+
+  @override
+  _PantallaMultasState createState() => _PantallaMultasState();
+}
+
+class _PantallaMultasState extends State<PantallaMultas> {
+  String selectedMonth = "Todas";
+  int monthValue = 0;
+  int yearValue = 0;
+  bool mount = true;
+  bool selected = true;
+  int currentIndex = 0;
+
+  callbackMes(varSelectedMonth, varMonth, varYear, varIndex) {
+    setState(() {
+      selectedMonth = varSelectedMonth;
+      monthValue = varMonth;
+      yearValue = varYear;
+      currentIndex = varIndex;
+    });
+  }
+
+  callbackButton(varSelected) {
+    setState(() {
+      selected = varSelected;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
-          onPressed: () {
+          onPressed: () async {
             Navigator.pop(context);
           },
         ),
@@ -53,7 +81,7 @@ class PersonaMultada extends StatelessWidget {
         actions: <Widget>[
           StreamBuilder(
               stream: db
-                  .collection("sesion/$sesionId/notificaciones")
+                  .collection("sesion/${widget.sesionId}/notificaciones")
                   .where('idUsuario', isEqualTo: user?.uid)
                   .where('visto', isEqualTo: false)
                   .snapshots(),
@@ -85,79 +113,47 @@ class PersonaMultada extends StatelessWidget {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) =>
-                              Notificaciones(sesionId: sesionId)),
+                              Notificaciones(sesionId: widget.sesionId)),
                     );
                   },
                 );
               }),
         ],
       ),
-
-
-      body: user == null
-          ? const Loading()
-          :  Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
-                      child: Center(
-                          child: Text("¿A quién has pillado?",
-                              style: TiposBlue.title)),
-                    ),
-                    UserGrid(sesionId: sesionId)
-                    
-                  ],
-                ),
-              
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(
-          Icons.gavel,
-          color: PageColors.yellow,
-        ),
-        backgroundColor: PageColors.blue,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomTab(context),
-    );
-  }
-
-  _buildBottomTab(context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(20.0),
-        topRight: Radius.circular(20.0),
-      ),
-      child: BottomAppBar(
-        color: PageColors.blue,
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            GestureDetector(
-                onTap: () async {
-                  await Navigator.pushReplacement(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Text("Multas de: ", style: TiposBlue.title),
+          ),
+          SelectMeses(sesionId: widget.sesionId, callbackMes: callbackMes),
+          /* Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+            child: IconButton(
+                icon: Icon(Icons.calendar_month, color: PageColors.blue),
+                onPressed: () async {
+                  await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            PrincipalScreen(sesionId: sesionId),
+                        builder: (context) => Calendario(
+                          sesionId: widget.sesionId,
+                        ),
                       ));
                 },
-                child: const TabItem(icon: Icons.home)),
-            GestureDetector(
-                onTap: () async {
-                  await Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) =>
-                          ProfilePage(sesionId: sesionId)),
-                    ),
-                  );
-                },
-                child: const TabItem(icon: Icons.account_circle))
-          ],
-        ),
+                iconSize: 40),
+          ),*/
+          const Padding(padding: EdgeInsets.only(bottom: 8.0, top: 4.0)),
+          ButtonPropio(
+              callbackButton: callbackButton),
+          ListaMultasUsuarios(
+              sesionId: widget.sesionId,
+              monthValue: monthValue,
+              selectedMonth: selectedMonth,
+              yearValue: yearValue,
+              selected: selected,
+              currentIndex: currentIndex)
+        ],
       ),
     );
   }

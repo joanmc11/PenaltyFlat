@@ -2,18 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/components/multar/user_grid.dart';
-import 'package:penalty_flat_app/screens/principal.dart';
+import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
+import 'package:penalty_flat_app/components/principal/miniLista_multas.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
-import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
-import '../../models/user.dart';
-import '../bottomBar/widgets/tab_item.dart';
-import '../notifications.dart';
+import '../components/principal/codigoButton.dart';
+import '../components/principal/codigoCasa.dart';
+import '../components/principal/estadisticas_simples.dart';
+import '../models/user.dart';
+import 'bottomBar/widgets/tab_item.dart';
+import 'notifications.dart';
 
-class PersonaMultada extends StatelessWidget {
+class PrincipalScreen extends StatelessWidget {
   final String sesionId;
-  const PersonaMultada({Key? key, required this.sesionId}) : super(key: key);
+  const PrincipalScreen({Key? key, required this.sesionId}) : super(key: key);
 
  
 
@@ -23,15 +25,9 @@ class PersonaMultada extends StatelessWidget {
     final user = Provider.of<MyUser?>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: PageColors.blue,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        toolbarHeight: 70,
+        toolbarHeight: 75,
         backgroundColor: Colors.white,
+        leading: Container(),
         title: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -93,25 +89,24 @@ class PersonaMultada extends StatelessWidget {
         ],
       ),
 
+      body: Column(
+         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          EstadisticasSimples(sesionId: sesionId),
+          CodigoCasa(sesionId: sesionId),
+          MiniLista(sesionId: sesionId),
+          CodigoButton(sesionId: sesionId)
+        ],
+      ),
 
-      body: user == null
-          ? const Loading()
-          :  Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 50.0),
-                      child: Center(
-                          child: Text("¿A quién has pillado?",
-                              style: TiposBlue.title)),
-                    ),
-                    UserGrid(sesionId: sesionId)
-                    
-                  ],
-                ),
-              
+
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => PersonaMultada(sesionId: sesionId)),
+          );
+        },
         child: Icon(
           Icons.gavel,
           color: PageColors.yellow,
@@ -136,23 +131,12 @@ class PersonaMultada extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-                onTap: () async {
-                  await Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PrincipalScreen(sesionId: sesionId),
-                      ));
-                },
-                child: const TabItem(icon: Icons.home)),
+                onTap: () {}, child: const TabItem(icon: Icons.home)),
             GestureDetector(
                 onTap: () async {
-                  await Navigator.pushReplacement(
-                    context,
+                  Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: ((context) =>
-                          ProfilePage(sesionId: sesionId)),
-                    ),
+                        builder: (context) => ProfilePage(sesionId: sesionId)),
                   );
                 },
                 child: const TabItem(icon: Icons.account_circle))

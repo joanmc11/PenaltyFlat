@@ -3,32 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
-import 'package:penalty_flat_app/components/lista_normas/multas_radioButton.dart';
+import 'package:penalty_flat_app/components/lista_normas/multas_list.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
-import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
-import 'package:penalty_flat_app/screens/notifications.dart';
 import 'package:provider/provider.dart';
-import '../../models/user.dart';
+import '../models/user.dart';
+import 'crearMulta/crear_multa.dart';
+import 'notifications.dart';
 
-class EscojerMulta extends StatefulWidget {
+class CodigoMultas extends StatefulWidget {
   final String sesionId;
-  final String idMultado;
-  const EscojerMulta(
-      {Key? key, required this.sesionId, required this.idMultado})
-      : super(key: key);
+  const CodigoMultas({
+    Key? key,
+    required this.sesionId,
+  }) : super(key: key);
 
   @override
-  _EscojerMultaState createState() => _EscojerMultaState();
+  _CodigoMultasState createState() => _CodigoMultasState();
 }
 
-class _EscojerMultaState extends State<EscojerMulta> {
+bool edit = false;
+
+class _CodigoMultasState extends State<CodigoMultas> {
   int selectedIndex = 0;
   bool selected = true;
   bool _folded = true;
   bool todas = true;
-  String parte = "Baño";
+  String parte = "Todas";
   String search = "";
-  String _site = "";
+  bool edit = false;
 
   callbackParte(String varParte, bool varTodas) {
     setState(() {
@@ -44,24 +46,17 @@ class _EscojerMultaState extends State<EscojerMulta> {
     });
   }
 
-  callbackMulta(String varSite) {
-    setState(() {
-      _site = varSite;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    debugPrint(parte);
-    final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final db = FirebaseFirestore.instance;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: PageColors.blue,
-          onPressed: () {
-            Navigator.of(context).pop();
+          onPressed: () async {
+            Navigator.pop(context);
           },
         ),
         toolbarHeight: 70,
@@ -136,9 +131,7 @@ class _EscojerMultaState extends State<EscojerMulta> {
               Expanded(
                   flex: 2,
                   child: ZonasCasa(
-                    sesionId: widget.sesionId,
-                    callbackParte: callbackParte,
-                  )),
+                      sesionId: widget.sesionId, callbackParte: callbackParte)),
               Expanded(
                 flex: 9,
                 child: Container(
@@ -146,19 +139,40 @@ class _EscojerMultaState extends State<EscojerMulta> {
                   child: Column(
                     children: [
                       Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 30),
-                            child: Buscador(width: 250,callbackSearch: callbackSearch),
-                          )),
-                      MultasRadio(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Buscador(
+                                  width: 200, callbackSearch: callbackSearch),
+                              //Icono per editar multes
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        edit = !edit;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      edit ? Icons.edit_off : Icons.edit,
+                                      color: PageColors.blue,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      MultasList(
                           sesionId: widget.sesionId,
                           folded: _folded,
                           search: search,
                           todas: todas,
                           parte: parte,
-                          callbackMulta: callbackMulta)
+                          edit: edit)
                     ],
                   ),
                 ),
@@ -169,27 +183,16 @@ class _EscojerMultaState extends State<EscojerMulta> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (_site != "") {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PonerMulta(
-                    sesionId: widget.sesionId,
-                    idMultado: widget.idMultado,
-                    multaId: _site,
-                  ),
-                ));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                duration: Duration(seconds: 1),
-                content: Text("Escoje una multa"),
-              ),
-            );
-          }
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CrearMulta(
+                  sesionId: widget.sesionId,
+                ),
+              ));
         },
         child: Icon(
-          Icons.navigate_next_rounded,
+          Icons.add,
           color: PageColors.yellow,
         ),
         backgroundColor: PageColors.blue,

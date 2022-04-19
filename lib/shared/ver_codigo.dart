@@ -25,7 +25,7 @@ class VerCodigo extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "El código para unirse a $casa es:",
-                      style: TiposBlue.subtitle,
+                      style: TiposBlue.subtitle, textAlign: TextAlign.center
                     ),
                   ),
                 ),
