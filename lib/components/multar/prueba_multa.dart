@@ -21,7 +21,11 @@ class PruebaMultar extends StatefulWidget {
   _PruebaMultarState createState() => _PruebaMultarState();
 }
 
+
+
 class _PruebaMultarState extends State<PruebaMultar> {
+  File? _image;
+  
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -41,10 +45,13 @@ class _PruebaMultarState extends State<PruebaMultar> {
                 child: InkWell(
                   splashColor: Theme.of(context).primaryColorLight,
                   onTap: () async {
-                    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+                    final image = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 10);
                     if (image == null) return;
-                    final imageTemporary = File(image.path);
-                    widget.callbackImgPath(image.name);
+                    setState(() {
+                      _image=File(image.path) ;
+                    });
+                    
+                    widget.callbackImgPath(image.name, _image);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -55,15 +62,16 @@ class _PruebaMultarState extends State<PruebaMultar> {
                       color: PageColors.blue,
                       strokeWidth: 0.5,
                       child: SizedBox(
-                        height: 80,
-                        width: 80,
+                        height: 100,
+                        width: 100,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Icon(
+                          child: _image==null? Icon(
                             Icons.add_a_photo,
                             size: 40,
                             color: PageColors.blue,
-                          ),
+                          ):
+                          Image.file(_image!),
                         ),
                       ),
                     ),

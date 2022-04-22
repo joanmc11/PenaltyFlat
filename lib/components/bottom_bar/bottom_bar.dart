@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/bottom_bar/tab_item.dart';
-import 'package:penalty_flat_app/screens/profile.dart';
 
 class BottomBarPenaltyFlat extends StatelessWidget {
   const BottomBarPenaltyFlat({
     Key? key,
     required this.sesionId,
+    required this.callbackTap,
+    required this.callbackSelected,
+    required this.casa,
+    required this.perfil,
   }) : super(key: key);
 
   final String sesionId;
+  final Function callbackTap;
+  final Function callbackSelected;
+  final bool casa;
+  final bool perfil;
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +32,23 @@ class BottomBarPenaltyFlat extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-                onTap: () {}, child: const TabItem(icon: Icons.home)),
+                onTap: () {
+                  callbackTap(0);
+                  callbackSelected(true, false, false);
+                },
+                child: TabItem(
+                  icon: Icons.home,
+                  currentItem: casa,
+                )),
             GestureDetector(
               onTap: () async {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => ProfilePage(sesionId: sesionId)),
-                );
+                callbackTap(2);
+                callbackSelected(false, false, true);
               },
-              child: const TabItem(icon: Icons.account_circle),
+              child: TabItem(
+                icon: Icons.account_circle,
+                currentItem: perfil,
+              ),
             )
           ],
         ),

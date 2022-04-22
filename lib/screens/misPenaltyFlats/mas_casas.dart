@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/models/user.dart';
-import 'package:penalty_flat_app/screens/principal.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../Styles/colors.dart';
@@ -79,7 +79,7 @@ class TodasCasas extends StatelessWidget {
                               onTap: () async {
                                 await Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                      builder: (context) => PrincipalScreen(
+                                      builder: (context) => DisplayPaginas(
                                             sesionId: casasData[index]
                                                 ['idCasa'],
                                           )),

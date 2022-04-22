@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
@@ -27,6 +29,7 @@ class PonerMulta extends StatefulWidget {
 final db = FirebaseFirestore.instance;
 bool multado = false;
 String imgPath="";
+File? imgFile;
 class _PonerMultaState extends State<PonerMulta> {
   callbackMultado(varMultado) {
     setState(() {
@@ -34,9 +37,10 @@ class _PonerMultaState extends State<PonerMulta> {
     });
   }
 
-  callbackImgPath(varImgPath){
+  callbackImgPath(varImgPath, varImgFile){
     setState(() {
       imgPath=varImgPath;
+      imgFile=varImgFile;
     });
   }
 
@@ -58,7 +62,7 @@ class _PonerMultaState extends State<PonerMulta> {
                 return const Center(child: CircularProgressIndicator());
               }
               final userData = snapshot.data!.data()!;
-              Future.delayed(const Duration(milliseconds: 800), () async {
+              Future.delayed(const Duration(milliseconds: 2000), () async {
                 setState(() {
                   multado = false;
                 });
@@ -98,7 +102,8 @@ class _PonerMultaState extends State<PonerMulta> {
                   idMultado: widget.idMultado,
                   multaId: widget.multaId,
                   callbackMultado: callbackMultado,
-                  imgPath: imgPath,
+                  imgName: imgPath,
+                  imgFile: imgFile,
                 )
               ],
             ),

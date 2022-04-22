@@ -51,6 +51,7 @@ class OwnStats extends StatelessWidget {
                 stream: db
                     .collection("sesion/$sesionId/multas")
                     .orderBy("fecha", descending: false)
+                    .where('aceptada', isEqualTo: true)
                     .snapshots(),
                 builder: (
                   BuildContext context,
@@ -140,6 +141,7 @@ class OwnStats extends StatelessWidget {
                               stream: db
                                   .collection("sesion/$sesionId/multas")
                                   .where('idMultado', isEqualTo: user.uid)
+                                  .where('aceptada', isEqualTo: true)
                                   .snapshots(),
                               builder: (
                                 BuildContext context,
@@ -207,6 +209,7 @@ class OwnStats extends StatelessWidget {
                               stream: db
                                   .collection("sesion/$sesionId/multas")
                                   .where('autorId', isEqualTo: user.uid)
+                                  .where('aceptada', isEqualTo: true)
                                   .snapshots(),
                               builder: (
                                 BuildContext context,

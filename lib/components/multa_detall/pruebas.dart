@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '../../../Styles/colors.dart';
 
@@ -14,7 +15,7 @@ class PruebasDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    final storage = FirebaseStorage.instance;
     return StreamBuilder(
       stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
       builder: (
@@ -51,14 +52,28 @@ class PruebasDetail extends StatelessWidget {
                           "No se dispone de pruebas",
                           style: TiposBlue.body,
                         )
-                      : const Text("Imagen aquí"),
+                      : FutureBuilder(
+                          future: storage
+                              .ref("/images/multas/${multaData['imagen']}")
+                              .getDownloadURL(),
+                          builder: (context, AsyncSnapshot<String> snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircularProgressIndicator();
+                            }
+                            debugPrint(snapshot.data!);
+                            return SizedBox(
+                                height: 220,
+                                width: 450,
+                                child: Image.network(snapshot.data!,
+                                    fit: BoxFit.scaleDown));
+                          },
+                        ),
                 ),
               ],
             ),
           ],
         );
-                },
-              );
-     
+      },
+    );
   }
 }

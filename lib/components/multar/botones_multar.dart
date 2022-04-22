@@ -1,6 +1,9 @@
 
 
+
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:provider/provider.dart';
@@ -11,14 +14,16 @@ class BotonesMultar extends StatelessWidget {
   final String idMultado;
   final String multaId;
   final Function callbackMultado;
-  final String imgPath;
+  final String imgName;
+  final File? imgFile;
   BotonesMultar(
       {Key? key,
       required this.sesionId,
       required this.idMultado,
       required this.multaId,
       required this.callbackMultado,
-      required this.imgPath})
+      required this.imgName,
+      required this.imgFile})
       : super(key: key);
 
   final db = FirebaseFirestore.instance;
@@ -119,12 +124,18 @@ class BotonesMultar extends StatelessWidget {
                             'precio': multaData['precio'],
                             'nomMultado': userData['nombre'],
                             'idMultado': userData['id'],
-                            'imagen': imgPath,
+                            'imagen': imgName,
                             'parte': multaData['parte'],
                             'fecha': dateToday,
                             'aceptada': false,
                             'pagado': false
                           });
+
+                          imgFile==null?
+                          null: await FirebaseStorage.instance
+                            .ref("/images/multas/$imgName")
+                            .putFile(imgFile as File);
+
 
                           await db
                               .collection('sesion/$sesionId/notificaciones')

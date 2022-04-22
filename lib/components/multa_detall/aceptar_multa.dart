@@ -15,7 +15,7 @@ class AceptarMulta extends StatelessWidget {
     required this.notifyId,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
- 
+
   final DateTime dateToday = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -27,9 +27,25 @@ class AceptarMulta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
-    return 
-        StreamBuilder(
-          stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
+    return StreamBuilder(
+      stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+      ) {
+        if (snapshot.hasError) {
+          return ErrorWidget(snapshot.error.toString());
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        Map multaData = {};
+        snapshot.data?.data() != null
+            ? multaData = snapshot.data!.data()!
+            : multaData = {};
+
+        return StreamBuilder(
+          stream: db.doc("sesion/$sesionId/users/${user!.uid}").snapshots(),
           builder: (
             BuildContext context,
             AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -40,172 +56,120 @@ class AceptarMulta extends StatelessWidget {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            Map multaData = {};
-            snapshot.data?.data() != null
-                ? multaData = snapshot.data!.data()!
-                : multaData = {};
-
-            return StreamBuilder(
-                    stream: db
-                        .doc("sesion/$sesionId/users/${user!.uid}")
-                        .snapshots(),
-                    builder: (
-                      BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                          snapshot,
-                    ) {
-                      if (snapshot.hasError) {
-                        return ErrorWidget(snapshot.error.toString());
-                      }
-                      if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      final userData = snapshot.data!.data()!;
-                      return !multaData['aceptada']
-                          ? Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(
-                                          right: 10.0),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton
-                                        .styleFrom(
-                                            primary: PageColors
-                                                .white),
-                                    child: Text(
-                                      "Rechazar",
-                                      style: TextStyle(
-                                          color:
-                                              PageColors.blue),
-                                    ),
-                                    onPressed: () async {
-                                      await db
-                                          .collection(
-                                              'sesion/$sesionId/notificaciones')
-                                          .add({
-                                        'fecha': dateToday,
-                                        'tipo': "feedback",
-                                        'mensaje':
-                                            "${userData['nombre']} ha rechazado la multa",
-                                        'subtitulo':
-                                            multaData['titulo'],
-                                        'visto': false,
-                                        'idUsuario': multaData[
-                                            'autorId'],
-                                      });
-                                      ScaffoldMessenger.of(
-                                              context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          duration: Duration(
-                                              seconds: 2),
-                                          content: Text(
-                                              "Multa rechazada"),
-                                        ),
-                                      );
-                                      Navigator.pop(context);
-                                      await db
-                                          .doc(
-                                              "sesion/$sesionId/multas/$idMulta")
-                                          .delete();
-                                      await db
-                                          .doc(
-                                              "sesion/$sesionId/notificaciones/$notifyId")
-                                          .delete();
-                                    },
-                                  ),
+            final userData = snapshot.data!.data()!;
+            return !multaData['aceptada']
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: PageColors.white),
+                            child: Text(
+                              "Rechazar",
+                              style: TextStyle(color: PageColors.blue),
+                            ),
+                            onPressed: () async {
+                              await db
+                                  .collection('sesion/$sesionId/notificaciones')
+                                  .add({
+                                'fecha': dateToday,
+                                'tipo': "feedback",
+                                'mensaje':
+                                    "${userData['nombre']} ha rechazado la multa",
+                                'subtitulo': multaData['titulo'],
+                                'visto': false,
+                                'idUsuario': multaData['autorId'],
+                                'idNotificador': user.uid,
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  content: Text("Multa rechazada"),
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(
-                                            left: 10.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton
-                                          .styleFrom(
-                                              primary: PageColors
-                                                  .yellow),
-                                      child: Text(
-                                        "Aceptar",
-                                        style: TextStyle(
-                                            color:
-                                                PageColors.blue),
-                                      ),
-                                      onPressed: () async {
-                                        ScaffoldMessenger.of(
-                                                context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            duration: Duration(
-                                                seconds: 2),
-                                            content: Text(
-                                                "Multa aceptada"),
-                                          ),
-                                        );
-                                        await db
-                                            .doc(
-                                                'sesion/$sesionId/multas/$idMulta')
-                                            .update({
-                                          'aceptada': true,
-                                        });
-                                        await db
-                                            .doc(
-                                                'sesion/$sesionId/users/${user.uid}')
-                                            .update({
-                                          'dinero': userData[
-                                                      'dinero'] ==
-                                                  null
-                                              ? multaData[
-                                                  'precio']
-                                              : userData[
-                                                      'dinero'] +
-                                                  multaData[
-                                                      'precio'],
-                                        });
-                                        await db
-                                            .collection(
-                                                'sesion/$sesionId/notificaciones')
-                                            .add({
-                                          'fecha': dateToday,
-                                          'tipo': "feedback",
-                                          'mensaje':
-                                              "${userData['nombre']} ha aceptado la multa",
-                                          'subtitulo':
-                                              multaData['titulo'],
-                                          'visto': false,
-                                          'idUsuario': multaData[
-                                              'autorId'],
-                                        });
-                                      },
-                                    ),
-                                  ),
+                              );
+                              Navigator.pop(context);
+                              await db
+                                  .doc("sesion/$sesionId/multas/$idMulta")
+                                  .delete();
+                              await db
+                                  .doc(
+                                      "sesion/$sesionId/notificaciones/$notifyId")
+                                  .delete();
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: PageColors.yellow),
+                            child: Text(
+                              "Aceptar",
+                              style: TextStyle(color: PageColors.blue),
+                            ),
+                            onPressed: () async {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  content: Text("Multa aceptada"),
                                 ),
-                              ],
-                            )
-                          : multaData['pagado']
-                              ? const Center(
-                                  child: Text(
-                                  "Multa pagada",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ))
-                              : const Center(
-                                  child: Text(
-                                  "Multa por pagar",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ));
-                    },
-                  );
+                              );
+                              await db
+                                  .doc('sesion/$sesionId/multas/$idMulta')
+                                  .update({
+                                'aceptada': true,
+                              });
+                              await db
+                                  .doc('sesion/$sesionId/users/${user.uid}')
+                                  .update({
+                                'dinero': userData['dinero'] == null
+                                    ? multaData['precio']
+                                    : userData['dinero'] + multaData['precio'],
+                              });
+                              await db
+                                  .collection('sesion/$sesionId/notificaciones')
+                                  .add({
+                                'fecha': dateToday,
+                                'tipo': "feedback",
+                                'mensaje':
+                                    "${userData['nombre']} ha aceptado la multa",
+                                'subtitulo': multaData['titulo'],
+                                'visto': false,
+                                'idUsuario': multaData['autorId'],
+                                'idNotificador': user.uid,
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : multaData['pagado']
+                    ? const Center(
+                        child: Text(
+                        "Multa pagada",
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ))
+                    : const Center(
+                        child: Text(
+                        "Multa por pagar",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ));
           },
         );
+      },
+    );
   }
 }

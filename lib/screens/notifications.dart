@@ -69,11 +69,7 @@ class Notificaciones extends StatelessWidget {
                   itemExtent: 55.0,
                   itemCount: notifyData.isEmpty ? 1 : notifyData.length,
                   itemBuilder: (context, index) {
-                    notifyData[index]['tipo'] == "feedback"
-                        ? notifyData[index]['mensaje'] == "Pago aceptado"
-                            ? null
-                            : debugPrint('este es el id:' + notifyData[index]['idNotificador'])
-                        : null;
+                    
                     return notifyData.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(top: 32.0),

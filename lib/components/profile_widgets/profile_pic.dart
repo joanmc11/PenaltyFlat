@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../Styles/colors.dart';
 
 class ProfilePic extends StatefulWidget {

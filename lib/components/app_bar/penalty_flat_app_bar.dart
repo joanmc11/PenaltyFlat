@@ -5,6 +5,7 @@ import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/screens/notifications.dart';
+import 'package:penalty_flat_app/shared/loading.dart';
 
 class PenaltyFlatAppBar extends AppBar {
   PenaltyFlatAppBar({
@@ -22,8 +23,8 @@ class PenaltyFlatAppBar extends AppBar {
 
   static Widget buildNotificationAction(String sesionId) {
     final db = FirebaseFirestore.instance;
-    final user = FirebaseAuth.instance.currentUser!;
-    return StreamBuilder(
+    final user = FirebaseAuth.instance.currentUser;
+    return user==null? const Loading(): StreamBuilder(
       stream: db
           .collection("sesion/$sesionId/notificaciones")
           .where('idUsuario', isEqualTo: user.uid)

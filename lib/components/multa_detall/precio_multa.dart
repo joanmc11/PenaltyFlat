@@ -36,7 +36,7 @@ class PrecioDetail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Sale a Pagar",
+              "Precio a pagar",
               style: TiposBlue.subtitle,
             ),
             Padding(
