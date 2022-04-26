@@ -8,7 +8,7 @@ import 'package:penalty_flat_app/components/multar/botones_multar.dart';
 import 'package:penalty_flat_app/components/multar/detalles_multa.dart';
 import 'package:penalty_flat_app/components/multar/persona_multada.dart';
 import 'package:penalty_flat_app/components/multar/prueba_multa.dart';
-import 'package:penalty_flat_app/screens/principal.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/shared/multa_screen.dart';
 
 class PonerMulta extends StatefulWidget {
@@ -35,6 +35,7 @@ class _PonerMultaState extends State<PonerMulta> {
     setState(() {
       multado = varMultado;
     });
+    
   }
 
   callbackImgPath(varImgPath, varImgFile){
@@ -62,7 +63,7 @@ class _PonerMultaState extends State<PonerMulta> {
                 return const Center(child: CircularProgressIndicator());
               }
               final userData = snapshot.data!.data()!;
-              Future.delayed(const Duration(milliseconds: 2000), () async {
+              Future.delayed(const Duration(milliseconds: 1500), () async {
                 setState(() {
                   multado = false;
                 });
@@ -71,7 +72,7 @@ class _PonerMultaState extends State<PonerMulta> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          PrincipalScreen(sesionId: widget.sesionId),
+                          DisplayPaginas(sesionId: widget.sesionId),
                     ));
               });
 

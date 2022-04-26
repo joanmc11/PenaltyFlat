@@ -10,10 +10,11 @@ class MultadoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: PageColors.yellow,
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(child: Text("""¡Se ha enviado la multa a
-        $nombre!""", style: TiposBlue.title, textAlign: TextAlign.center)),
-      ),
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text("""¡Se ha enviado la multa a
+              $nombre!""", style: TiposBlue.title, textAlign: TextAlign.left)),
+            ),
+         
     );
   }
 }

@@ -1,6 +1,3 @@
-
-
-
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -42,7 +39,6 @@ class BotonesMultar extends StatelessWidget {
     Colors.cyan,
     Colors.yellow,
   ];
-  
 
   final DateTime dateToday = DateTime(
       DateTime.now().year,
@@ -115,6 +111,7 @@ class BotonesMultar extends StatelessWidget {
                                     BorderRadius.all(Radius.circular(10))),
                             minimumSize: const Size(120, 25)),
                         onPressed: () async {
+                          
                           var multaActual = await db
                               .collection('sesion/$sesionId/multas')
                               .add({
@@ -131,11 +128,11 @@ class BotonesMultar extends StatelessWidget {
                             'pagado': false
                           });
 
-                          imgFile==null?
-                          null: await FirebaseStorage.instance
-                            .ref("/images/multas/$imgName")
-                            .putFile(imgFile as File);
-
+                          imgFile == null
+                              ? null
+                              : await FirebaseStorage.instance
+                                  .ref("/images/multas/$imgName")
+                                  .putFile(imgFile as File);
 
                           await db
                               .collection('sesion/$sesionId/notificaciones')
@@ -149,6 +146,8 @@ class BotonesMultar extends StatelessWidget {
                           });
 
                           callbackMultado(true);
+
+                          
 
                           // debugPrint(widget.idMultado);
                         },
