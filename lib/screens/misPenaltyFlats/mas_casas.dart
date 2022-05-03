@@ -23,8 +23,11 @@ class TodasCasas extends StatelessWidget {
           iconTheme: IconThemeData(color: PageColors.blue),
           title: const AppBarTitle(),
           actions: <Widget>[
-           TextButton.icon(
-              icon: Icon(Icons.logout, color: PageColors.blue,),
+            TextButton.icon(
+              icon: Icon(
+                Icons.logout,
+                color: PageColors.blue,
+              ),
               onPressed: () async {
                 await _auth.signOut();
               },
@@ -79,10 +82,11 @@ class TodasCasas extends StatelessWidget {
                               onTap: () async {
                                 await Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                      builder: (context) => DisplayPaginas(
-                                            sesionId: casasData[index]
-                                                ['idCasa'],
-                                          )),
+                                    builder: (context) => Provider<CasaID>.value(
+                                      value: casasData[index]['idCasa'],
+                                      child: const DisplayPaginas(),
+                                    ),
+                                  ),
                                 );
                               },
                             );
@@ -99,8 +103,7 @@ class TodasCasas extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: PageColors.yellow.withOpacity(1)),
+                    style: ElevatedButton.styleFrom(primary: PageColors.yellow.withOpacity(1)),
                     child: Text(
                       "Atras",
                       style: TextStyle(color: PageColors.blue),

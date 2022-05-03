@@ -8,12 +8,10 @@ import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class Confirmaciones extends StatelessWidget {
-  final String sesionId;
   final String notifyId;
   final String userId;
   const Confirmaciones({
     Key? key,
-    required this.sesionId,
     required this.notifyId,
     required this.userId,
   }) : super(key: key);
@@ -21,19 +19,17 @@ class Confirmaciones extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
-
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: user == null
           ? const Loading()
           : Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ImagenConfirmacion(sesionId: sesionId, userId: userId),
-                CantidadConfirmacion(sesionId: sesionId, userId: userId),
-                BotonesConfirmacion(
-                    sesionId: sesionId, notifyId: notifyId, userId: userId),
+                ImagenConfirmacion(userId: userId),
+                CantidadConfirmacion(userId: userId),
+                BotonesConfirmacion(notifyId: notifyId, userId: userId),
               ],
             ),
     );

@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 
 class DineroPagamento extends StatelessWidget {
-  final String sesionId;
-  const DineroPagamento({Key? key, required this.sesionId}) : super(key: key);
+  const DineroPagamento({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId/users/${user!.uid}").snapshots(),
+      stream: db.doc("sesion/$idCasa/users/${user!.uid}").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -41,8 +42,7 @@ class DineroPagamento extends StatelessWidget {
                     "${totalUsuario.toStringAsFixed(2)}€",
                     style: GoogleFonts.nunitoSans(
                       fontSize: MediaQuery.of(context).size.width / 5,
-                      textStyle: TextStyle(
-                          color: PageColors.blue, fontWeight: FontWeight.w600),
+                      textStyle: TextStyle(color: PageColors.blue, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],

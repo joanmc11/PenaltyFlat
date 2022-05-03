@@ -1,25 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 import '../../../models/user.dart';
 
 class TituloMulta extends StatelessWidget {
-  final String sesionId;
   final String idMulta;
   TituloMulta({
     Key? key,
-    required this.sesionId,
     required this.idMulta,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
- 
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
 
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
+      stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -31,9 +31,7 @@ class TituloMulta extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         Map multaData = {};
-        snapshot.data?.data() != null
-            ? multaData = snapshot.data!.data()!
-            : multaData = {};
+        snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};
 
         return Center(
           child: multaData['idMultado'] == user?.uid

@@ -9,11 +9,7 @@ import 'package:penalty_flat_app/components/crear_multas/titulo_crear.dart';
 import '../../../Styles/colors.dart';
 
 class CrearMulta extends StatefulWidget {
-  final String sesionId;
-  const CrearMulta({
-    Key? key,
-    required this.sesionId,
-  }) : super(key: key);
+  const CrearMulta({Key? key}) : super(key: key);
 
   @override
   _CrearMultaState createState() => _CrearMultaState();
@@ -54,7 +50,7 @@ class _CrearMultaState extends State<CrearMulta> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+        appBar: PenaltyFlatAppBar(),
         body: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height / 1.2,
@@ -83,16 +79,14 @@ class _CrearMultaState extends State<CrearMulta> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TituloCrear(sesionId: widget.sesionId, callbackTitulo: callbackTitulo),
-                          DescripcionCrear(sesionId: widget.sesionId, callbackDesc: callbackDesc),
+                          TituloCrear(callbackTitulo: callbackTitulo),
+                          DescripcionCrear(callbackDesc: callbackDesc),
                           ParteCrear(
-                              sesionId: widget.sesionId,
-                              parteCasa: "Otros",
-                              callbackParte: callbackParte),
-                          CantidadCrear(
-                              sesionId: widget.sesionId, precio: 1, callbackPrecio: callbackPrecio),
+                            parteCasa: "Otros",
+                            callbackParte: callbackParte,
+                          ),
+                          CantidadCrear(precio: 1, callbackPrecio: callbackPrecio),
                           BotonesCrear(
-                            sesionId: widget.sesionId,
                             titulo: titulo,
                             parteCasa: parteCasa,
                             descripcion: descripcion,

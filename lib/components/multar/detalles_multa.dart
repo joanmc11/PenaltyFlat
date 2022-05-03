@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class DetalleMultar extends StatelessWidget {
-  final String sesionId;
   final String multaId;
   DetalleMultar({
     Key? key,
-    required this.sesionId,
     required this.multaId,
   }) : super(key: key);
 
@@ -16,8 +16,9 @@ class DetalleMultar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-        stream: db.doc("sesion/$sesionId/codigoMultas/$multaId").snapshots(),
+        stream: db.doc("sesion/$idCasa/codigoMultas/$multaId").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -48,14 +49,10 @@ class DetalleMultar extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Column(
-                          crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${multaData['titulo']}".capitalize!,
-                                style: TiposBlue.bodyBold),
-                                 Text("${multaData['descripcion']}".capitalize!,
-                        style: TiposBlue.body),
-                        
+                            Text("${multaData['titulo']}".capitalize!, style: TiposBlue.bodyBold),
+                            Text("${multaData['descripcion']}".capitalize!, style: TiposBlue.body),
                           ],
                         ),
                       ),
@@ -64,10 +61,7 @@ class DetalleMultar extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text("Precio a pagar:", style: TiposBlue.subtitle),
                     ),
-                    Text("${multaData['precio']}€",
-                        style: TiposBlue.body),
-                   
-                    
+                    Text("${multaData['precio']}€", style: TiposBlue.body),
                   ],
                 ),
               ),

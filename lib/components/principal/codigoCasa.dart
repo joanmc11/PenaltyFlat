@@ -3,18 +3,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/shared/ver_codigo.dart';
+import 'package:provider/provider.dart';
 
 class CodigoCasa extends StatelessWidget {
-  final String sesionId;
-  const CodigoCasa({Key? key, required this.sesionId}) : super(key: key);
+  const CodigoCasa({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
-    
+    final idCasa = context.read<CasaID>();
+
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId").snapshots(),
+      stream: db.doc("sesion/$idCasa").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -46,15 +48,12 @@ class CodigoCasa extends StatelessWidget {
                       primary: PageColors.blue,
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          side: BorderSide(
-                              color: PageColors.blue.withOpacity(0.2))),
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          side: BorderSide(color: PageColors.blue.withOpacity(0.2))),
                       minimumSize: const Size(20, 20)),
                   child: Text(
                     "Ver código",
-                    style: TextStyle(
-                        fontSize: 10, color: PageColors.blue.withOpacity(0.5)),
+                    style: TextStyle(fontSize: 10, color: PageColors.blue.withOpacity(0.5)),
                   )),
             )
           ],

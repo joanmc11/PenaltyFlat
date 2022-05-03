@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
@@ -8,10 +7,8 @@ import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
 import 'crearMulta/crear_multa.dart';
 
 class CodigoMultas extends StatefulWidget {
-  final String sesionId;
   const CodigoMultas({
     Key? key,
-    required this.sesionId,
   }) : super(key: key);
 
   @override
@@ -46,7 +43,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -54,9 +51,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Expanded(
-                  flex: 2,
-                  child: ZonasCasa(sesionId: widget.sesionId, callbackParte: callbackParte)),
+              Expanded(flex: 2, child: ZonasCasa(callbackParte: callbackParte)),
               Expanded(
                 flex: 9,
                 child: Container(
@@ -91,12 +86,12 @@ class _CodigoMultasState extends State<CodigoMultas> {
                         ),
                       ),
                       MultasList(
-                          sesionId: widget.sesionId,
-                          folded: _folded,
-                          search: search,
-                          todas: todas,
-                          parte: parte,
-                          edit: edit)
+                        folded: _folded,
+                        search: search,
+                        todas: todas,
+                        parte: parte,
+                        edit: edit,
+                      )
                     ],
                   ),
                 ),
@@ -110,9 +105,7 @@ class _CodigoMultasState extends State<CodigoMultas> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CrearMulta(
-                  sesionId: widget.sesionId,
-                ),
+                builder: (context) => const CrearMulta(),
               ));
         },
         child: Icon(

@@ -5,14 +5,12 @@ import 'package:penalty_flat_app/components/bottom_bar/tab_item.dart';
 class BottomBarPenaltyFlat extends StatelessWidget {
   const BottomBarPenaltyFlat({
     Key? key,
-    required this.sesionId,
     required this.callbackTap,
     required this.callbackSelected,
     required this.casa,
     required this.perfil,
   }) : super(key: key);
 
-  final String sesionId;
   final Function callbackTap;
   final Function callbackSelected;
   final bool casa;

@@ -58,13 +58,11 @@ class _EntrarSesionState extends State<EntrarSesion> {
                   ),
                 ),
                 TextFormField(
-                  validator: (val) =>
-                      val!.isEmpty ? "Introduce un código" : null,
+                  validator: (val) => val!.isEmpty ? "Introduce un código" : null,
                   decoration: InputDecoration(
                       hintText: "Código",
                       focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: PageColors.yellow, width: 0.5))),
+                          borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
                   onChanged: (val) {
                     setState(() {
                       codi = val;
@@ -73,13 +71,11 @@ class _EntrarSesionState extends State<EntrarSesion> {
                 ),
                 TextFormField(
                   //password
-                  validator: (val) =>
-                      val!.isEmpty ? "Introduce tu apodo" : null,
+                  validator: (val) => val!.isEmpty ? "Introduce tu apodo" : null,
                   decoration: InputDecoration(
                     hintText: "Tu apodo",
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: PageColors.yellow, width: 0.5),
+                      borderSide: BorderSide(color: PageColors.yellow, width: 0.5),
                     ),
                   ),
 
@@ -105,8 +101,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: PageColors.white),
+                          style: ElevatedButton.styleFrom(primary: PageColors.white),
                           child: Text(
                             "Cancelar",
                             style: TextStyle(color: PageColors.blue),
@@ -122,9 +117,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: codi != "" && apodo != ""
-                                  ? PageColors.yellow
-                                  : Colors.grey),
+                              primary: codi != "" && apodo != "" ? PageColors.yellow : Colors.grey),
                           child: Text(
                             "Únete",
                             style: TextStyle(color: PageColors.blue),
@@ -164,14 +157,10 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   );
                                 } else {
                                   //Afageixo un color per defecte a l'usuari segons la llargaria dels usuaris
-                                  final userLen = await db
-                                      .collection('sesion/$sesionId/users')
-                                      .get();
+                                  final userLen =
+                                      await db.collection('sesion/$sesionId/users').get();
 
-                                  await db
-                                      .doc(
-                                          '/sesion/$sesionId/users/${user.uid}')
-                                      .set({
+                                  await db.doc('/sesion/$sesionId/users/${user.uid}').set({
                                     "nombre": apodo,
                                     "color": userLen.docs.length,
                                     "id": user.uid,
@@ -183,8 +172,7 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   });
 
                                   //Busco el nom de la casa
-                                  final casa =
-                                      await db.doc('sesion/$sesionId').get();
+                                  final casa = await db.doc('sesion/$sesionId').get();
                                   final String casaNombre = casa['casa'];
                                   //creo la collection de casas de l'usuari (inicialment buida)
                                   await DatabaseService(uid: user.uid)
@@ -193,12 +181,10 @@ class _EntrarSesionState extends State<EntrarSesion> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       duration: Duration(seconds: 1),
-                                      content: Text(
-                                          "¡Te has unido a la PenaltyFlat!"),
+                                      content: Text("¡Te has unido a la PenaltyFlat!"),
                                     ),
                                   );
-                                  await Future.delayed(
-                                      const Duration(milliseconds: 300), () {
+                                  await Future.delayed(const Duration(milliseconds: 300), () {
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(

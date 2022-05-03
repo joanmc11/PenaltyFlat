@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
@@ -17,8 +18,7 @@ import 'package:pie_chart/pie_chart.dart';
                             ),*/
 
 class GeneralStats extends StatelessWidget {
-  final String sesionId;
-  GeneralStats({Key? key, required this.sesionId}) : super(key: key);
+  GeneralStats({Key? key}) : super(key: key);
   final List<Color> colors = [
     Colors.blue,
     Colors.red,
@@ -38,11 +38,12 @@ class GeneralStats extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     return user == null
         ? const Loading()
         : StreamBuilder(
             stream: db
-                .collection("sesion/$sesionId/users")
+                .collection("sesion/$idCasa/users")
                 .orderBy("color", descending: false)
                 .snapshots(),
             builder: (
@@ -61,8 +62,7 @@ class GeneralStats extends StatelessWidget {
               final List<num> dineroMultas = [];
               for (int i = 0; i < usersData.length; i++) {
                 dineroMultas.add(usersData[i]['dinero']);
-                sectionsChart[usersData[i]['nombre']] =
-                    usersData[i]['dinero'].toDouble();
+                sectionsChart[usersData[i]['nombre']] = usersData[i]['dinero'].toDouble();
               }
               final num totalMultas = dineroMultas.sum;
 
@@ -91,10 +91,8 @@ class GeneralStats extends StatelessWidget {
                       showChartValuesInPercentage: false,
                       showChartValuesOutside: true,
                       decimalPlaces: 2,
-                      chartValueStyle:
-                          TextStyle(color: PageColors.blue, fontSize: 12),
-                      chartValueBackgroundColor:
-                          PageColors.yellow.withOpacity(0.8)),
+                      chartValueStyle: TextStyle(color: PageColors.blue, fontSize: 12),
+                      chartValueBackgroundColor: PageColors.yellow.withOpacity(0.8)),
                 ),
               );
             },

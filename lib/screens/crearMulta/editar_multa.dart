@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/crear_multas/cantidad_crear.dart';
@@ -9,21 +8,19 @@ import 'package:penalty_flat_app/components/editar_multas/titulo_edit.dart';
 import '../../../Styles/colors.dart';
 
 class VerMulta extends StatefulWidget {
-  final String sesionId;
   final String multaId;
   final String parte;
   final String titulo;
   final String descripcion;
   final num precio;
-  const VerMulta(
-      {Key? key,
-      required this.sesionId,
-      required this.multaId,
-      required this.parte,
-      required this.titulo,
-      required this.descripcion,
-      required this.precio})
-      : super(key: key);
+  const VerMulta({
+    Key? key,
+    required this.multaId,
+    required this.parte,
+    required this.titulo,
+    required this.descripcion,
+    required this.precio,
+  }) : super(key: key);
 
   @override
   _VerMultaState createState() => _VerMultaState();
@@ -78,7 +75,7 @@ class _VerMultaState extends State<VerMulta> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height / 1.2,
@@ -109,23 +106,20 @@ class _VerMultaState extends State<VerMulta> {
                       children: [
                         TituloEdit(titulo: titulo, callbackTitulo: callbackTitulo),
                         DescripcionEdit(descripcion: descripcion, callbackDesc: callbackDesc),
-                        ParteCrear(
-                            sesionId: widget.sesionId,
-                            parteCasa: widget.parte,
-                            callbackParte: callbackParte),
+                        ParteCrear(parteCasa: widget.parte, callbackParte: callbackParte),
                         CantidadCrear(
-                            sesionId: widget.sesionId,
-                            precio: widget.precio,
-                            callbackPrecio: callbackPrecio),
+                          precio: widget.precio,
+                          callbackPrecio: callbackPrecio,
+                        ),
                         BotonesEdit(
-                            sesionId: widget.sesionId,
-                            multaId: widget.multaId,
-                            parte: parteCasa,
-                            titulo: titulo,
-                            descripcion: descripcion,
-                            precio: precio,
-                            parteCasa: parteCasa,
-                            formKey: _formKey)
+                          multaId: widget.multaId,
+                          parte: parteCasa,
+                          titulo: titulo,
+                          descripcion: descripcion,
+                          precio: precio,
+                          parteCasa: parteCasa,
+                          formKey: _formKey,
+                        )
                       ],
                     )),
               )

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
 import 'package:penalty_flat_app/components/bottom_bar/bottom_bar.dart';
 import 'package:penalty_flat_app/components/bottom_bar/button_penalty.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
-import '../components/app_bar/penalty_flat_app_bar.dart';
+
+typedef CasaID = String;
 
 class DisplayPaginas extends StatefulWidget {
-  final String sesionId;
-  const DisplayPaginas({Key? key, required this.sesionId}) : super(key: key);
+  const DisplayPaginas({Key? key}) : super(key: key);
 
   @override
   State<DisplayPaginas> createState() => _DisplayPaginasState();
@@ -48,19 +49,19 @@ class _DisplayPaginasState extends State<DisplayPaginas> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = <Widget>[
-      PrincipalScreen(sesionId: widget.sesionId),
-      PersonaMultada(sesionId: widget.sesionId),
-      ProfilePage(sesionId: widget.sesionId),
+      const PrincipalScreen(),
+      const PersonaMultada(),
+      ProfilePage(),
     ];
 
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: _pages.elementAt(_selectedIndex),
       floatingActionButton: BottomBarButtonPenalty(
-          sesionId: widget.sesionId,
-          callbackTap: callbackTap,
-          callbackSelected: callbackSelected,
-          multa: multa),
+        callbackTap: callbackTap,
+        callbackSelected: callbackSelected,
+        multa: multa,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomTab(context),
     );
@@ -68,7 +69,6 @@ class _DisplayPaginasState extends State<DisplayPaginas> {
 
   _buildBottomTab(context) {
     return BottomBarPenaltyFlat(
-      sesionId: widget.sesionId,
       callbackTap: callbackTap,
       callbackSelected: callbackSelected,
       casa: casa,

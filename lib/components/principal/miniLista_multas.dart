@@ -3,19 +3,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/screens/llistaMultes/llista_multas.dart';
+import 'package:provider/provider.dart';
 import '../../screens/llistaMultes/multa_detall.dart';
 
 class MiniLista extends StatelessWidget {
-  final String sesionId;
-  const MiniLista({Key? key, required this.sesionId}) : super(key: key);
+  const MiniLista({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
       stream: db
-          .collection("sesion/$sesionId/multas")
+          .collection("sesion/$idCasa/multas")
           .where('aceptada', isEqualTo: true)
           .orderBy('fecha', descending: true)
           .snapshots(),
@@ -91,15 +93,12 @@ class MiniLista extends StatelessWidget {
                                             MaterialPageRoute(
                                               builder: (context) => MultaDetall(
                                                 notifyId: "sinNotificacion",
-                                                sesionId: sesionId,
                                                 idMulta: multasSesion[index].id,
-                                                idMultado: multasSesion[index]
-                                                    ['idMultado'],
+                                                idMultado: multasSesion[index]['idMultado'],
                                               ),
                                             ));
                                       },
-                                      icon: Icon(Icons.open_in_full,
-                                          color: PageColors.blue)),
+                                      icon: Icon(Icons.open_in_full, color: PageColors.blue)),
                                 ],
                               ),
                               title: Text(multasSesion[index]['nomMultado'],
@@ -109,25 +108,20 @@ class MiniLista extends StatelessWidget {
                                       fontWeight: FontWeight.bold)),
                               subtitle: Text(
                                 multasSesion[index]['titulo'],
-                                style: TextStyle(
-                                    fontSize: 14, color: PageColors.blue),
+                                style: TextStyle(fontSize: 14, color: PageColors.blue),
                               ),
-                              trailing:
-                                  Text("${multasSesion[index]['precio']}€"),
+                              trailing: Text("${multasSesion[index]['precio']}€"),
                             );
                     },
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(right: 20, top: 8, bottom: 8),
+                    padding: const EdgeInsets.only(right: 20, top: 8, bottom: 8),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: GestureDetector(
                           onTap: () async {
                             await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PantallaMultas(sesionId: sesionId)),
+                              MaterialPageRoute(builder: (context) => const PantallaMultas()),
                             );
                           },
                           child: Text(

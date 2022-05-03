@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 import '../../../models/user.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class DescripcionDetail extends StatelessWidget {
-  final String sesionId;
   final String idMulta;
   DescripcionDetail({
     Key? key,
-    required this.sesionId,
     required this.idMulta,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
@@ -18,9 +17,10 @@ class DescripcionDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
 
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
+      stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -32,18 +32,14 @@ class DescripcionDetail extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         Map multaData = {};
-        snapshot.data?.data() != null
-            ? multaData = snapshot.data!.data()!
-            : multaData = {};
+        snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              multaData['idMultado'] == user?.uid
-                  ? "¿Qué has hecho?"
-                  : "¿Qué ha hecho?",
+              multaData['idMultado'] == user?.uid ? "¿Qué has hecho?" : "¿Qué ha hecho?",
               style: TiposBlue.subtitle,
             ),
             Padding(
@@ -55,17 +51,14 @@ class DescripcionDetail extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${multaData['titulo']}"
-                            .capitalize!,
+                        "${multaData['titulo']}".capitalize!,
                         style: TiposBlue.bodyBold,
                       ),
                       Text(
-                        "${multaData['descripcion']}"
-                            .capitalize!,
+                        "${multaData['descripcion']}".capitalize!,
                         style: TiposBlue.body,
                       )
                     ],

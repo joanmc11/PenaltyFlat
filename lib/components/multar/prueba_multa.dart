@@ -5,13 +5,11 @@ import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 
 class PruebaMultar extends StatefulWidget {
-  final String sesionId;
   final String idMultado;
   final String multaId;
   final Function callbackImgPath;
   const PruebaMultar({
     Key? key,
-    required this.sesionId,
     required this.idMultado,
     required this.multaId,
     required this.callbackImgPath,
@@ -21,11 +19,9 @@ class PruebaMultar extends StatefulWidget {
   _PruebaMultarState createState() => _PruebaMultarState();
 }
 
-
-
 class _PruebaMultarState extends State<PruebaMultar> {
   File? _image;
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -45,12 +41,13 @@ class _PruebaMultarState extends State<PruebaMultar> {
                 child: InkWell(
                   splashColor: Theme.of(context).primaryColorLight,
                   onTap: () async {
-                    final image = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 10);
+                    final image = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery, imageQuality: 10);
                     if (image == null) return;
                     setState(() {
-                      _image=File(image.path) ;
+                      _image = File(image.path);
                     });
-                    
+
                     widget.callbackImgPath(image.name, _image);
                   },
                   child: Padding(
@@ -66,12 +63,13 @@ class _PruebaMultarState extends State<PruebaMultar> {
                         width: 100,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: _image==null? Icon(
-                            Icons.add_a_photo,
-                            size: 40,
-                            color: PageColors.blue,
-                          ):
-                          Image.file(_image!),
+                          child: _image == null
+                              ? Icon(
+                                  Icons.add_a_photo,
+                                  size: 40,
+                                  color: PageColors.blue,
+                                )
+                              : Image.file(_image!),
                         ),
                       ),
                     ),

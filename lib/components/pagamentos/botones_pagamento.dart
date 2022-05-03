@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 
 class BotonesPagamento extends StatelessWidget {
-  final String sesionId;
-  BotonesPagamento({Key? key, required this.sesionId}) : super(key: key);
+  BotonesPagamento({Key? key}) : super(key: key);
 
   final DateTime dateToday = DateTime(
     DateTime.now().year,
@@ -21,8 +21,9 @@ class BotonesPagamento extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId/users/${user!.uid}").snapshots(),
+      stream: db.doc("sesion/$idCasa/users/${user!.uid}").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -36,10 +37,8 @@ class BotonesPagamento extends StatelessWidget {
         final singleUserdata = snapshot.data!.data()!;
 
         return StreamBuilder(
-          stream: db
-              .collection("sesion/$sesionId/users")
-              .orderBy("color", descending: false)
-              .snapshots(),
+          stream:
+              db.collection("sesion/$idCasa/users").orderBy("color", descending: false).snapshots(),
           builder: (
             BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
@@ -66,8 +65,7 @@ class BotonesPagamento extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: PageColors.white),
+                            style: ElevatedButton.styleFrom(primary: PageColors.white),
                             child: Text(
                               "Atrás",
                               style: TextStyle(color: PageColors.blue),
@@ -84,12 +82,12 @@ class BotonesPagamento extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: singleUserdata['pendiente'] == false
-                                    ? singleUserdata['dinero']==0? Colors.grey: PageColors.yellow
+                                    ? singleUserdata['dinero'] == 0
+                                        ? Colors.grey
+                                        : PageColors.yellow
                                     : Colors.grey),
                             child: Text(
-                              singleUserdata['pendiente'] == false
-                                  ? "Pagar"
-                                  : "Pendiente",
+                              singleUserdata['pendiente'] == false ? "Pagar" : "Pendiente",
                               style: TextStyle(color: PageColors.blue),
                             ),
                             onPressed: () async {
@@ -105,16 +103,13 @@ class BotonesPagamento extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       duration: Duration(milliseconds: 800),
-                                      content: Text(
-                                          "Espera a que tus compañeros confirmen el pago"),
+                                      content:
+                                          Text("Espera a que tus compañeros confirmen el pago"),
                                     ),
                                   );
                                   for (int i = 0; i < usersData.length; i++) {
                                     if (usersData[i]['id'] != user.uid) {
-                                      await db
-                                          .collection(
-                                              'sesion/$sesionId/notificaciones')
-                                          .add({
+                                      await db.collection('sesion/$idCasa/notificaciones').add({
                                         'nomPagador': singleUserdata['nombre'],
                                         'idPagador': user.uid,
                                         'idUsuario': usersData[i]['id'],
@@ -123,12 +118,8 @@ class BotonesPagamento extends StatelessWidget {
                                         'visto': false,
                                       });
                                       await db
-                                          .doc(
-                                              'sesion/$sesionId/users/${user.uid}')
-                                          .update({
-                                        'contador': 1,
-                                        'pendiente': true
-                                      });
+                                          .doc('sesion/$idCasa/users/${user.uid}')
+                                          .update({'contador': 1, 'pendiente': true});
                                     }
                                   }
                                 }
@@ -136,8 +127,7 @@ class BotonesPagamento extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     duration: Duration(milliseconds: 800),
-                                    content: Text(
-                                        "Espera a que tus compañeros confirmen el pago"),
+                                    content: Text("Espera a que tus compañeros confirmen el pago"),
                                   ),
                                 );
                               }

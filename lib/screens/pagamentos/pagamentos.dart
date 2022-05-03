@@ -9,8 +9,7 @@ import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 class Pagamento extends StatelessWidget {
-  final String sesionId;
-  const Pagamento({Key? key, required this.sesionId}) : super(key: key);
+  const Pagamento({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +17,13 @@ class Pagamento extends StatelessWidget {
     return user == null
         ? const Loading()
         : Scaffold(
-            appBar: PenaltyFlatAppBar(sesionId: sesionId),
+            appBar: PenaltyFlatAppBar(),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                DineroPagamento(sesionId: sesionId),
-                CirculoPagamento(sesionId: sesionId),
+                const DineroPagamento(),
+                const CirculoPagamento(),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 50, right: 50),
@@ -35,7 +34,7 @@ class Pagamento extends StatelessWidget {
                     ),
                   ),
                 ),
-                BotonesPagamento(sesionId: sesionId),
+                BotonesPagamento(),
               ],
             ),
           );

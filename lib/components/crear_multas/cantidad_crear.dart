@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 class CantidadCrear extends StatefulWidget {
-  final String sesionId;
   final num precio;
   final Function callbackPrecio;
-  const CantidadCrear(
-      {Key? key, required this.sesionId, required this.precio,required this.callbackPrecio})
-      : super(key: key);
+  const CantidadCrear({
+    Key? key,
+    required this.precio,
+    required this.callbackPrecio,
+  }) : super(key: key);
 
   @override
   _CantidadCrearState createState() => _CantidadCrearState();
@@ -25,7 +26,6 @@ class _CantidadCrearState extends State<CantidadCrear> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Padding(
       child: SpinBox(
           max: 10000.0,

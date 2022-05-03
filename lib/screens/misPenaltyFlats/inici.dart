@@ -45,19 +45,16 @@ class Inicio extends StatelessWidget {
       body: user == null
           ? const Loading()
           : Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   StreamBuilder(
-                    stream:
-                        db.collection("users/${user.uid}/casas").snapshots(),
+                    stream: db.collection("users/${user.uid}/casas").snapshots(),
                     builder: (
                       BuildContext context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
                     ) {
                       if (snapshot.hasError) {
                         return ErrorWidget(snapshot.error.toString());
@@ -71,15 +68,13 @@ class Inicio extends StatelessWidget {
                         stream: db.doc("users/${user.uid}").snapshots(),
                         builder: (
                           BuildContext context,
-                          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                              snapshot,
+                          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
                         ) {
                           if (snapshot.hasError) {
                             return ErrorWidget(snapshot.error.toString());
                           }
                           if (!snapshot.hasData) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           }
                           final userData = snapshot.data!.data()!;
                           return Expanded(
@@ -89,119 +84,17 @@ class Inicio extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(40.0),
                                   child: Center(
-                                    child: Text(
-                                        "Bienvenido " + userData['nombre'],
-                                        textAlign: TextAlign.center,
-                                        style: TiposBlue.subtitle),
+                                    child: Text("Bienvenido " + userData['nombre'],
+                                        textAlign: TextAlign.center, style: TiposBlue.subtitle),
                                   ),
                                 ),
                                 casasData.isEmpty
                                     ? Center(
-                                        child: Text(
-                                            """¿Aún no tienes una PenaltyFlat?
+                                        child: Text("""¿Aún no tienes una PenaltyFlat?
  Créala ahora o únete a la de tus compañeros""",
-                                            textAlign: TextAlign.center,
-                                            style: TiposBlue.body),
+                                            textAlign: TextAlign.center, style: TiposBlue.body),
                                       )
-                                    : Column(
-                                        children: [
-                                          Text(
-                                            "Tus PenaltyFlats",
-                                            style: TiposBlue.bodyBold,
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(10),
-                                                      topRight:
-                                                          Radius.circular(10),
-                                                      bottomLeft:
-                                                          Radius.circular(10),
-                                                      bottomRight:
-                                                          Radius.circular(10)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 2,
-                                                  offset: const Offset(0,
-                                                      3), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              shrinkWrap: true,
-                                              itemCount: casasData.length > 3
-                                                  ? 3
-                                                  : casasData.length,
-                                              itemBuilder: (context, index) {
-                                                return ListTile(
-                                                  leading: Icon(
-                                                    Icons.house_rounded,
-                                                    color: PageColors.blue,
-                                                  ),
-                                                  title: Text(
-                                                    casasData[index]
-                                                        ['nombreCasa'],
-                                                    style: TiposBlue.bodyBold,
-                                                  ),
-                                                  onTap: () async {
-                                                    await Navigator.of(context)
-                                                        .pushReplacement(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DisplayPaginas(
-                                                                sesionId: casasData[
-                                                                        index]
-                                                                    ['idCasa'],
-                                                              )),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          casasData.length > 3
-                                              ? Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 20,
-                                                          top: 8,
-                                                          bottom: 8),
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: GestureDetector(
-                                                        onTap: () async {
-                                                          await Navigator.of(
-                                                                  context)
-                                                              .push(
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        TodasCasas()),
-                                                          );
-                                                        },
-                                                        child: Text(
-                                                          "+ ver más PenaltyFlats",
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 14,
-                                                            color:
-                                                                PageColors.blue,
-                                                          ),
-                                                        )),
-                                                  ),
-                                                )
-                                              : const Text(""),
-                                        ],
-                                      ),
+                                    : _CasasList(casasData: casasData),
                               ],
                             ),
                           );
@@ -220,32 +113,27 @@ class Inicio extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 25.0),
                             child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: PageColors.yellow),
+                              style: ElevatedButton.styleFrom(primary: PageColors.yellow),
                               child: Text(
                                 "Crea tu PenaltyFlat",
                                 style: TextStyle(color: PageColors.blue),
                               ),
                               onPressed: () async {
                                 await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CrearSesion()),
+                                  MaterialPageRoute(builder: (context) => const CrearSesion()),
                                 );
                               },
                             ),
                           ),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: PageColors.yellow),
+                            style: ElevatedButton.styleFrom(primary: PageColors.yellow),
                             child: Text(
                               "Entra en una PenaltyFlat",
                               style: TextStyle(color: PageColors.blue),
                             ),
                             onPressed: () async {
                               await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => const EntrarSesion()),
+                                MaterialPageRoute(builder: (context) => const EntrarSesion()),
                               );
                             },
                           ),
@@ -256,6 +144,97 @@ class Inicio extends StatelessWidget {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class _CasasList extends StatelessWidget {
+  const _CasasList({
+    Key? key,
+    required this.casasData,
+  }) : super(key: key);
+
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> casasData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          "Tus PenaltyFlats",
+          style: TiposBlue.bodyBold,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: casasData.length > 3 ? 3 : casasData.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(
+                  Icons.house_rounded,
+                  color: PageColors.blue,
+                ),
+                title: Text(
+                  casasData[index]['nombreCasa'],
+                  style: TiposBlue.bodyBold,
+                ),
+                onTap: () async {
+                  await Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => Provider<CasaID>.value(
+                        value: casasData[index]['idCasa'],
+                        child: const DisplayPaginas(),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        casasData.length > 3
+            ? Padding(
+                padding: const EdgeInsets.only(right: 20, top: 8, bottom: 8),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: GestureDetector(
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => TodasCasas(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "+ ver más PenaltyFlats",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: PageColors.blue,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : const Text(""),
+      ],
     );
   }
 }

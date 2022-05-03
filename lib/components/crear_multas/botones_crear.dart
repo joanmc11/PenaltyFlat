@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 
 class BotonesCrear extends StatelessWidget {
-  final String sesionId;
   final String titulo;
   final String parteCasa;
   final String descripcion;
@@ -11,7 +12,6 @@ class BotonesCrear extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   BotonesCrear({
     Key? key,
-    required this.sesionId,
     required this.titulo,
     required this.parteCasa,
     required this.descripcion,
@@ -19,15 +19,12 @@ class BotonesCrear extends StatelessWidget {
     required this.formKey,
   }) : super(key: key);
 
- 
-
-
   //final _formKey = GlobalKey<FormState>();
   final db = FirebaseFirestore.instance;
-  
 
   @override
   Widget build(BuildContext context) {
+    final idCasa = context.read<CasaID>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
@@ -36,8 +33,7 @@ class BotonesCrear extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  primary: PageColors.white),
+              style: ElevatedButton.styleFrom(primary: PageColors.white),
               child: Text(
                 "Cancelar",
                 style: TextStyle(color: PageColors.blue),
@@ -53,52 +49,38 @@ class BotonesCrear extends StatelessWidget {
             padding: const EdgeInsets.only(left: 10.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary:
-                      titulo != "" && descripcion != ""
-                          ? PageColors.yellow
-                          : Colors.grey),
+                  primary: titulo != "" && descripcion != "" ? PageColors.yellow : Colors.grey),
               child: Text(
                 "Crear",
                 style: TextStyle(color: PageColors.blue),
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  await db
-                      .collection(
-                          'sesion/$sesionId/codigoMultas')
-                      .add({
+                  await db.collection('sesion/$idCasa/codigoMultas').add({
                     'titulo': titulo.toLowerCase(),
-                    'descripcion':
-                        descripcion.toLowerCase(),
+                    'descripcion': descripcion.toLowerCase(),
                     'parte': parteCasa,
                     'precio': precio,
                   });
 
-                  await db
-                      .doc('sesion/$sesionId')
-                      .update({
+                  await db.doc('sesion/$idCasa').update({
                     "sinMultas": false,
                   });
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       duration: Duration(seconds: 1),
-                      content: Text(
-                          "¡Norma creada con éxito!"),
+                      content: Text("¡Norma creada con éxito!"),
                     ),
                   );
-                  await Future.delayed(
-                      const Duration(milliseconds: 300),
-                      () {
-                   /* Navigator.pushReplacement(
+                  await Future.delayed(const Duration(milliseconds: 300), () {
+                    /* Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               CodigoMultas(
-                            sesionId: sesionId,
                           ),
                         ));*/
-                         Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   });
                 }
               },

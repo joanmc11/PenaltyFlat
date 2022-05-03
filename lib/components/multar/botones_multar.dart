@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
 
 class BotonesMultar extends StatelessWidget {
-  final String sesionId;
   final String idMultado;
   final String multaId;
   final Function callbackMultado;
@@ -15,7 +15,6 @@ class BotonesMultar extends StatelessWidget {
   final File? imgFile;
   BotonesMultar(
       {Key? key,
-      required this.sesionId,
       required this.idMultado,
       required this.multaId,
       required this.callbackMultado,
@@ -40,19 +39,15 @@ class BotonesMultar extends StatelessWidget {
     Colors.yellow,
   ];
 
-  final DateTime dateToday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      DateTime.now().hour,
-      DateTime.now().minute,
-      DateTime.now().second);
+  final DateTime dateToday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
+      DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-        stream: db.doc("sesion/$sesionId/users/$idMultado").snapshots(),
+        stream: db.doc("sesion/$idCasa/users/$idMultado").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -65,8 +60,7 @@ class BotonesMultar extends StatelessWidget {
           }
           final userData = snapshot.data!.data()!;
           return StreamBuilder(
-              stream:
-                  db.doc("sesion/$sesionId/codigoMultas/$multaId").snapshots(),
+              stream: db.doc("sesion/$idCasa/codigoMultas/$multaId").snapshots(),
               builder: (
                 BuildContext context,
                 AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -88,16 +82,13 @@ class BotonesMultar extends StatelessWidget {
                             primary: PageColors.blue,
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                side: BorderSide(
-                                    color: Colors.black.withOpacity(0.5))),
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                side: BorderSide(color: Colors.black.withOpacity(0.5))),
                             minimumSize: const Size(120, 20)),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text('Cancelar',
-                            style: TextStyle(fontSize: 15)),
+                        child: const Text('Cancelar', style: TextStyle(fontSize: 15)),
                       ),
                     ),
                     Padding(
@@ -107,14 +98,10 @@ class BotonesMultar extends StatelessWidget {
                             primary: PageColors.blue,
                             backgroundColor: PageColors.yellow,
                             shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
                             minimumSize: const Size(120, 25)),
                         onPressed: () async {
-                          
-                          var multaActual = await db
-                              .collection('sesion/$sesionId/multas')
-                              .add({
+                          var multaActual = await db.collection('sesion/$idCasa/multas').add({
                             'titulo': multaData['titulo'],
                             'descripcion': multaData['descripcion'],
                             'autorId': user!.uid,
@@ -134,9 +121,7 @@ class BotonesMultar extends StatelessWidget {
                                   .ref("/images/multas/$imgName")
                                   .putFile(imgFile as File);
 
-                          await db
-                              .collection('sesion/$sesionId/notificaciones')
-                              .add({
+                          await db.collection('sesion/$idCasa/notificaciones').add({
                             'subtitulo': multaData['titulo'],
                             'idMulta': multaActual.id,
                             'idUsuario': userData['id'],
@@ -147,12 +132,9 @@ class BotonesMultar extends StatelessWidget {
 
                           callbackMultado(true);
 
-                          
-
                           // debugPrint(widget.idMultado);
                         },
-                        child: const Text('Multar',
-                            style: TextStyle(fontSize: 15)),
+                        child: const Text('Multar', style: TextStyle(fontSize: 15)),
                       ),
                     ),
                   ],

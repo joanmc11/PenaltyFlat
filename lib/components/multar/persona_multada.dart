@@ -3,45 +3,39 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 
 class PersonaMultaDetalle extends StatelessWidget {
-  final String sesionId;
   final String idMultado;
-   PersonaMultaDetalle({
+  PersonaMultaDetalle({
     Key? key,
-    required this.sesionId,
     required this.idMultado,
   }) : super(key: key);
 
-
-
-final db = FirebaseFirestore.instance;
-final List<Color> colors = [
-  Colors.blue,
-  Colors.red,
-  Colors.green,
-  Colors.orange,
-  Colors.purple,
-  Colors.pink,
-  Colors.indigo,
-  Colors.pinkAccent,
-  Colors.amber,
-  Colors.deepOrange,
-  Colors.brown,
-  Colors.cyan,
-  Colors.yellow,
-];
-
-
-
+  final db = FirebaseFirestore.instance;
+  final List<Color> colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.pink,
+    Colors.indigo,
+    Colors.pinkAccent,
+    Colors.amber,
+    Colors.deepOrange,
+    Colors.brown,
+    Colors.cyan,
+    Colors.yellow,
+  ];
 
   @override
   Widget build(BuildContext context) {
     final storage = FirebaseStorage.instance;
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-        stream: db
-            .doc("sesion/$sesionId/users/$idMultado")
-            .snapshots(),
+        stream: db.doc("sesion/$idCasa/users/$idMultado").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -77,8 +71,7 @@ final List<Color> colors = [
                               future: storage
                                   .ref("/images/${userData['imagenPerfil']}")
                                   .getDownloadURL(),
-                              builder:
-                                  (context, AsyncSnapshot<String> snapshot) {
+                              builder: (context, AsyncSnapshot<String> snapshot) {
                                 if (!snapshot.hasData) {
                                   return const CircularProgressIndicator();
                                 }

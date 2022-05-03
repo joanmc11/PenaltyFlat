@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
+
 import '../../../Styles/colors.dart';
 
 class ParteCrear extends StatefulWidget {
-  final String sesionId;
   final String parteCasa;
   final Function callbackParte;
   const ParteCrear({
     Key? key,
-    required this.sesionId,
     required this.parteCasa,
-    required this.callbackParte
+    required this.callbackParte,
   }) : super(key: key);
 
   @override
@@ -18,8 +19,6 @@ class ParteCrear extends StatefulWidget {
 }
 
 class _ParteCrearState extends State<ParteCrear> {
-
-  
   final db = FirebaseFirestore.instance;
   String parteCasa = "Otros";
   @override
@@ -29,11 +28,10 @@ class _ParteCrearState extends State<ParteCrear> {
       parteCasa = widget.parteCasa;
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    
+    final idCasa = context.read<CasaID>();
     return Row(
       children: [
         Align(
@@ -49,7 +47,7 @@ class _ParteCrearState extends State<ParteCrear> {
         Align(
           alignment: Alignment.centerRight,
           child: StreamBuilder(
-            stream: db.doc("sesion/${widget.sesionId}").snapshots(),
+            stream: db.doc("sesion/$idCasa").snapshots(),
             builder: (
               BuildContext context,
               AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,

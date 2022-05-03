@@ -36,14 +36,14 @@ class _CrearSesionState extends State<CrearSesion> {
       appBar: AppBar(
         toolbarHeight: 70,
         backgroundColor: PageColors.white,
-       iconTheme: IconThemeData(color: PageColors.blue),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              AppBarTitle(),
-            ],
-          ),
+        iconTheme: IconThemeData(color: PageColors.blue),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            AppBarTitle(),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(

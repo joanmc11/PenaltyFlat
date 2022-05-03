@@ -6,12 +6,7 @@ import 'package:penalty_flat_app/components/llista_multas/multas_list.dart';
 import 'package:penalty_flat_app/components/llista_multas/select_meses.dart';
 
 class PantallaMultas extends StatefulWidget {
-  final String sesionId;
-
-  const PantallaMultas({
-    Key? key,
-    required this.sesionId,
-  }) : super(key: key);
+  const PantallaMultas({Key? key}) : super(key: key);
 
   @override
   _PantallaMultasState createState() => _PantallaMultasState();
@@ -43,7 +38,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -51,7 +46,7 @@ class _PantallaMultasState extends State<PantallaMultas> {
             padding: const EdgeInsets.only(top: 16.0),
             child: Text("Multas de: ", style: TiposBlue.title),
           ),
-          SelectMeses(sesionId: widget.sesionId, callbackMes: callbackMes),
+          SelectMeses(callbackMes: callbackMes),
           /* Padding(
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: IconButton(
@@ -70,12 +65,12 @@ class _PantallaMultasState extends State<PantallaMultas> {
           const Padding(padding: EdgeInsets.only(bottom: 8.0, top: 4.0)),
           ButtonPropio(callbackButton: callbackButton),
           ListaMultasUsuarios(
-              sesionId: widget.sesionId,
-              monthValue: monthValue,
-              selectedMonth: selectedMonth,
-              yearValue: yearValue,
-              selected: selected,
-              currentIndex: currentIndex)
+            monthValue: monthValue,
+            selectedMonth: selectedMonth,
+            yearValue: yearValue,
+            selected: selected,
+            currentIndex: currentIndex,
+          )
         ],
       ),
     );

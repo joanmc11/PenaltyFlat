@@ -5,12 +5,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import '../../../../Styles/colors.dart';
 
 class ProfilePic extends StatefulWidget {
-  final String sesionId;
-  const ProfilePic({Key? key, required this.sesionId}) : super(key: key);
+  const ProfilePic({Key? key}) : super(key: key);
 
   @override
   _ProfilePicState createState() => _ProfilePicState();
@@ -36,10 +36,10 @@ class _ProfilePicState extends State<ProfilePic> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     final storage = FirebaseStorage.instance;
     return StreamBuilder(
-        stream:
-            db.doc("sesion/${widget.sesionId}/users/${user?.uid}").snapshots(),
+        stream: db.doc("sesion/$idCasa/users/${user?.uid}").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -71,9 +71,8 @@ class _ProfilePicState extends State<ProfilePic> {
                             color: colors[userData['color']],
                           )
                         : FutureBuilder(
-                            future: storage
-                                .ref("/images/${userData['imagenPerfil']}")
-                                .getDownloadURL(),
+                            future:
+                                storage.ref("/images/${userData['imagenPerfil']}").getDownloadURL(),
                             builder: (context, AsyncSnapshot<String> snapshot) {
                               if (!snapshot.hasData) {
                                 return const CircularProgressIndicator();
@@ -109,13 +108,11 @@ class _ProfilePicState extends State<ProfilePic> {
                         backgroundColor: PageColors.blue,
                       ),
                       onPressed: () async {
-                        final image = await ImagePicker().pickImage(
-                            source: ImageSource.gallery, imageQuality: 25);
+                        final image = await ImagePicker()
+                            .pickImage(source: ImageSource.gallery, imageQuality: 25);
                         if (image == null) return;
                         final imageTemporary = File(image.path);
-                        await db
-                            .doc('sesion/${widget.sesionId}/users/${user?.uid}')
-                            .update({
+                        await db.doc('sesion/$idCasa/users/${user?.uid}').update({
                           'imagenPerfil': image.name,
                         });
                         await FirebaseStorage.instance

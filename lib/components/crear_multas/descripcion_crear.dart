@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../Styles/colors.dart';
 
 class DescripcionCrear extends StatefulWidget {
-  final String sesionId;
   final Function callbackDesc;
   const DescripcionCrear({
     Key? key,
-    required this.sesionId,
     required this.callbackDesc,
   }) : super(key: key);
 
@@ -17,7 +15,7 @@ class DescripcionCrear extends StatefulWidget {
 
 class _DescripcionCrearState extends State<DescripcionCrear> {
   final db = FirebaseFirestore.instance;
-  
+
   String descripcion = "";
 
   @override
@@ -27,8 +25,7 @@ class _DescripcionCrearState extends State<DescripcionCrear> {
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding:
-                const EdgeInsets.only(left: 0, bottom: 4),
+            padding: const EdgeInsets.only(left: 0, bottom: 4),
             child: Text(
               "Descríbela brevemente:",
               style: TiposBlue.body,
@@ -36,15 +33,11 @@ class _DescripcionCrearState extends State<DescripcionCrear> {
           ),
         ),
         TextFormField(
-          validator: (val) => val!.isEmpty
-              ? "Añade una pequeña descripción"
-              : null,
+          validator: (val) => val!.isEmpty ? "Añade una pequeña descripción" : null,
           decoration: InputDecoration(
               hintText: "Descripción ",
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: PageColors.yellow,
-                      width: 0.5))),
+              focusedBorder:
+                  OutlineInputBorder(borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
           onChanged: (val) {
             setState(() {
               descripcion = val;

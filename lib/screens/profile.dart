@@ -7,12 +7,7 @@ import '../../services/auth.dart';
 import 'pagamentos/pagamentos.dart';
 
 class ProfilePage extends StatelessWidget {
-  final String sesionId;
-
-  ProfilePage({
-    Key? key,
-    required this.sesionId,
-  }) : super(key: key);
+  ProfilePage({Key? key}) : super(key: key);
   final AuthService _auth = AuthService();
 
   @override
@@ -20,9 +15,9 @@ class ProfilePage extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 18.0),
-          child: ProfilePic(sesionId: sesionId),
+        const Padding(
+          padding: EdgeInsets.only(top: 18.0),
+          child: ProfilePic(),
         ),
         const SizedBox(height: 20),
         ProfileMenu(
@@ -43,9 +38,7 @@ class ProfilePage extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Pagamento(
-                    sesionId: sesionId,
-                  ),
+                  builder: (context) => const Pagamento(),
                 ));
           },
         ),

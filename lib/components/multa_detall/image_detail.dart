@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 
 class ImagenMultado extends StatelessWidget {
-  final String sesionId;
   final String idMultado;
   ImagenMultado({
     Key? key,
-    required this.sesionId,
     required this.idMultado,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
@@ -31,8 +31,9 @@ class ImagenMultado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storage = FirebaseStorage.instance;
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-      stream: db.doc("sesion/$sesionId/users/$idMultado").snapshots(),
+      stream: db.doc("sesion/$idCasa/users/$idMultado").snapshots(),
       builder: (
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -58,9 +59,7 @@ class ImagenMultado extends StatelessWidget {
                     color: colors[userData['color']],
                   )
                 : FutureBuilder(
-                    future: storage
-                        .ref("/images/${userData['imagenPerfil']}")
-                        .getDownloadURL(),
+                    future: storage.ref("/images/${userData['imagenPerfil']}").getDownloadURL(),
                     builder: (context, AsyncSnapshot<String> snapshot) {
                       if (!snapshot.hasData) {
                         return const CircularProgressIndicator();

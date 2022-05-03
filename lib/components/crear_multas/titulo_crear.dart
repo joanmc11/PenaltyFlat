@@ -1,14 +1,11 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../Styles/colors.dart';
 
 class TituloCrear extends StatefulWidget {
-  final String sesionId;
   final Function callbackTitulo;
   const TituloCrear({
     Key? key,
-    required this.sesionId,
     required this.callbackTitulo,
   }) : super(key: key);
 
@@ -17,7 +14,6 @@ class TituloCrear extends StatefulWidget {
 }
 
 class _TituloCrearState extends State<TituloCrear> {
-  
   String titulo = "";
 
   @override
@@ -27,8 +23,7 @@ class _TituloCrearState extends State<TituloCrear> {
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(
-                left: 0.0, bottom: 4),
+            padding: const EdgeInsets.only(left: 0.0, bottom: 4),
             child: Text(
               "Ponle un título a tu norma:",
               style: TiposBlue.body,
@@ -37,15 +32,11 @@ class _TituloCrearState extends State<TituloCrear> {
         ),
         TextFormField(
           //email
-          validator: (val) => val!.isEmpty
-              ? "Introduce un nombre para la norma"
-              : null,
+          validator: (val) => val!.isEmpty ? "Introduce un nombre para la norma" : null,
           decoration: InputDecoration(
               hintText: "Titulo ",
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: PageColors.yellow,
-                      width: 0.5))),
+              focusedBorder:
+                  OutlineInputBorder(borderSide: BorderSide(color: PageColors.yellow, width: 0.5))),
           onChanged: (val) {
             setState(() {
               titulo = val;

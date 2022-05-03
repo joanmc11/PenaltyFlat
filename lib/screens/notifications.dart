@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/components/notificacions/notify_pic.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import '../../Styles/colors.dart';
@@ -10,13 +11,13 @@ import 'llistaMultes/multa_detall.dart';
 import 'pagamentos/confirmaciones.dart';
 
 class Notificaciones extends StatelessWidget {
-  final String sesionId;
-  const Notificaciones({Key? key, required this.sesionId}) : super(key: key);
+  const Notificaciones({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +33,6 @@ class Notificaciones extends StatelessWidget {
             AppBarTitle(),
           ],
         ),
-        
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -48,7 +48,7 @@ class Notificaciones extends StatelessWidget {
           Flexible(
             child: StreamBuilder(
               stream: db
-                  .collection("sesion/$sesionId/notificaciones")
+                  .collection("sesion/$idCasa/notificaciones")
                   .where("idUsuario", isEqualTo: user!.uid)
                   .orderBy("fecha", descending: true)
                   .snapshots(),
@@ -69,7 +69,6 @@ class Notificaciones extends StatelessWidget {
                   itemExtent: 55.0,
                   itemCount: notifyData.isEmpty ? 1 : notifyData.length,
                   itemBuilder: (context, index) {
-                    
                     return notifyData.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(top: 32.0),
@@ -109,7 +108,7 @@ class Notificaciones extends StatelessWidget {
                                     onPressed: () async {
                                       await db
                                           .doc(
-                                              'sesion/$sesionId/notificaciones/${notifyData[index].id}')
+                                              'sesion/$idCasa/notificaciones/${notifyData[index].id}')
                                           .update({
                                         "visto": true,
                                       });
@@ -119,7 +118,6 @@ class Notificaciones extends StatelessWidget {
                                           MaterialPageRoute(
                                             builder: (context) => MultaDetall(
                                               notifyId: notifyData[index].id,
-                                              sesionId: sesionId,
                                               idMulta: notifyData[index]['idMulta'],
                                               idMultado: user.uid,
                                             ),
@@ -161,7 +159,6 @@ class Notificaciones extends StatelessWidget {
                                               MaterialPageRoute(
                                                 builder: (context) => Confirmaciones(
                                                   notifyId: notifyData[index].id,
-                                                  sesionId: sesionId,
                                                   userId: notifyData[index]['idPagador'],
                                                 ),
                                               ));
@@ -174,7 +171,7 @@ class Notificaciones extends StatelessWidget {
                                 : ListTile(
                                     leading:
                                         /*Center(
-                                      child: NotifyPic(sesionId: sesionId, notificadorId: notifyData[index]
+                                      child: NotifyPic(idCasa: idCasa, notificadorId: notifyData[index]
                                                     ['idUsuario'],)
                                     ),*/
                                         notifyData[index]['mensaje'] == "Pago aceptado"
@@ -196,7 +193,6 @@ class Notificaciones extends StatelessWidget {
                                                 width: 40,
                                                 child: Center(
                                                   child: NotifyPic(
-                                                    sesionId: sesionId,
                                                     notificadorId: notifyData[index]
                                                         ['idNotificador'],
                                                   ),
@@ -214,7 +210,7 @@ class Notificaciones extends StatelessWidget {
                                         onPressed: () async {
                                           await db
                                               .doc(
-                                                  'sesion/$sesionId/notificaciones/${notifyData[index].id}')
+                                                  'sesion/$idCasa/notificaciones/${notifyData[index].id}')
                                               .update({
                                             'visto': true,
                                           });

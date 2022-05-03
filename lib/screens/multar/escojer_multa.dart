@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar/penalty_flat_app_bar.dart';
@@ -6,10 +5,13 @@ import 'package:penalty_flat_app/components/lista_normas/buscador.dart';
 import 'package:penalty_flat_app/components/lista_normas/multas_radioButton.dart';
 import 'package:penalty_flat_app/components/lista_normas/zonas_casa.dart';
 import 'package:penalty_flat_app/screens/multar/poner_multa.dart';
+
 class EscojerMulta extends StatefulWidget {
-  final String sesionId;
   final String idMultado;
-  const EscojerMulta({Key? key, required this.sesionId, required this.idMultado}) : super(key: key);
+  const EscojerMulta({
+    Key? key,
+    required this.idMultado,
+  }) : super(key: key);
 
   @override
   _EscojerMultaState createState() => _EscojerMultaState();
@@ -47,8 +49,9 @@ class _EscojerMultaState extends State<EscojerMulta> {
   @override
   Widget build(BuildContext context) {
     debugPrint(parte);
+
     return Scaffold(
-      appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+      appBar: PenaltyFlatAppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -57,11 +60,9 @@ class _EscojerMultaState extends State<EscojerMulta> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
-                  flex: 2,
-                  child: ZonasCasa(
-                    sesionId: widget.sesionId,
-                    callbackParte: callbackParte,
-                  )),
+                flex: 2,
+                child: ZonasCasa(callbackParte: callbackParte),
+              ),
               Expanded(
                 flex: 9,
                 child: Container(
@@ -76,12 +77,12 @@ class _EscojerMultaState extends State<EscojerMulta> {
                             child: Buscador(width: 250, callbackSearch: callbackSearch),
                           )),
                       MultasRadio(
-                          sesionId: widget.sesionId,
-                          folded: _folded,
-                          search: search,
-                          todas: todas,
-                          parte: parte,
-                          callbackMulta: callbackMulta)
+                        folded: _folded,
+                        search: search,
+                        todas: todas,
+                        parte: parte,
+                        callbackMulta: callbackMulta,
+                      )
                     ],
                   ),
                 ),
@@ -97,7 +98,6 @@ class _EscojerMultaState extends State<EscojerMulta> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PonerMulta(
-                    sesionId: widget.sesionId,
                     idMultado: widget.idMultado,
                     multaId: _site,
                   ),

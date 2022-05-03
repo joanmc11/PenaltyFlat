@@ -4,13 +4,11 @@ import 'package:penalty_flat_app/Styles/colors.dart';
 class BottomBarButtonPenalty extends StatelessWidget {
   const BottomBarButtonPenalty({
     Key? key,
-    required this.sesionId,
     required this.callbackTap,
     required this.callbackSelected,
     required this.multa,
   }) : super(key: key);
 
-  final String sesionId;
   final Function callbackTap;
   final Function callbackSelected;
   final bool multa;
@@ -24,9 +22,9 @@ class BottomBarButtonPenalty extends StatelessWidget {
       },
       child: Icon(
         Icons.gavel,
-        color: multa? PageColors.blue:PageColors.yellow,
+        color: multa ? PageColors.blue : PageColors.yellow,
       ),
-      backgroundColor: multa? PageColors.yellow: PageColors.blue,
+      backgroundColor: multa ? PageColors.yellow : PageColors.blue,
     );
   }
 }

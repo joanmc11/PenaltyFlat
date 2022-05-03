@@ -2,32 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../models/user.dart';
 import '../notifications.dart';
 
-
-
 class Calendario extends StatefulWidget {
-  final String sesionId;
-
   const Calendario({
     Key? key,
-    required this.sesionId,
   }) : super(key: key);
 
   @override
   _CalendarioState createState() => _CalendarioState();
 }
- final db = FirebaseFirestore.instance;
-DateTime dateToday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      DateTime.now().hour,
-      DateTime.now().minute,
-      DateTime.now().second);
+
+final db = FirebaseFirestore.instance;
+DateTime dateToday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
+    DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
 
 CalendarFormat format = CalendarFormat.month;
 
@@ -37,6 +29,7 @@ class _CalendarioState extends State<Calendario> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
+    final idCasa = context.read<CasaID>();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -57,7 +50,7 @@ class _CalendarioState extends State<Calendario> {
         actions: <Widget>[
           StreamBuilder(
               stream: db
-                  .collection("sesion/${widget.sesionId}/notificaciones")
+                  .collection("sesion/$idCasa/notificaciones")
                   .where('idUsuario', isEqualTo: user?.uid)
                   .where('visto', isEqualTo: false)
                   .snapshots(),
@@ -88,8 +81,8 @@ class _CalendarioState extends State<Calendario> {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) =>
-                              Notificaciones(sesionId: widget.sesionId)),
+                        builder: (context) => const Notificaciones(),
+                      ),
                     );
                   },
                 );
@@ -121,8 +114,7 @@ class _CalendarioState extends State<Calendario> {
               });
             },
             daysOfWeekVisible: true,
-            headerStyle: const HeaderStyle(
-                formatButtonVisible: true, formatButtonShowsNext: true),
+            headerStyle: const HeaderStyle(formatButtonVisible: true, formatButtonShowsNext: true),
           ),
         ],
       ),

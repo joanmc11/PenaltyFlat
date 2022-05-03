@@ -1,19 +1,14 @@
-
-
-
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 
 class NotifyPic extends StatefulWidget {
-  final String sesionId;
   final String notificadorId;
   const NotifyPic({
     Key? key,
-    required this.sesionId,
     required this.notificadorId,
   }) : super(key: key);
 
@@ -41,9 +36,10 @@ class _NotifyPicState extends State<NotifyPic> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final storage = FirebaseStorage.instance;
+    final idCasa = context.read<CasaID>();
+
     return StreamBuilder(
-        stream:
-            db.doc("sesion/${widget.sesionId}/users/${widget.notificadorId}").snapshots(),
+        stream: db.doc("sesion/$idCasa/users/${widget.notificadorId}").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -60,19 +56,15 @@ class _NotifyPicState extends State<NotifyPic> {
             dashPattern: const [5],
             color: colors[userData['color']],
             strokeWidth: 1,
-            
             child: Center(
               child: userData['imagenPerfil'] == ""
                   ? Icon(
                       Icons.account_circle_rounded,
                       size: 36,
                       color: colors[userData['color']],
-                      
                     )
                   : FutureBuilder(
-                      future: storage
-                          .ref("/images/${userData['imagenPerfil']}")
-                          .getDownloadURL(),
+                      future: storage.ref("/images/${userData['imagenPerfil']}").getDownloadURL(),
                       builder: (context, AsyncSnapshot<String> snapshot) {
                         if (!snapshot.hasData) {
                           return const CircularProgressIndicator();

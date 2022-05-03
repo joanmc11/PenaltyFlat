@@ -10,14 +10,13 @@ import 'package:penalty_flat_app/components/multar/persona_multada.dart';
 import 'package:penalty_flat_app/components/multar/prueba_multa.dart';
 import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/shared/multa_screen.dart';
+import 'package:provider/provider.dart';
 
 class PonerMulta extends StatefulWidget {
-  final String sesionId;
   final String idMultado;
   final String multaId;
   const PonerMulta({
     Key? key,
-    required this.sesionId,
     required this.idMultado,
     required this.multaId,
   }) : super(key: key);
@@ -28,30 +27,29 @@ class PonerMulta extends StatefulWidget {
 
 final db = FirebaseFirestore.instance;
 bool multado = false;
-String imgPath="";
+String imgPath = "";
 File? imgFile;
+
 class _PonerMultaState extends State<PonerMulta> {
   callbackMultado(varMultado) {
     setState(() {
       multado = varMultado;
     });
-    
   }
 
-  callbackImgPath(varImgPath, varImgFile){
+  callbackImgPath(varImgPath, varImgFile) {
     setState(() {
-      imgPath=varImgPath;
-      imgFile=varImgFile;
+      imgPath = varImgPath;
+      imgFile = varImgFile;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final idCasa = context.read<CasaID>();
     return multado
         ? StreamBuilder(
-            stream: db
-                .doc("sesion/${widget.sesionId}/users/${widget.idMultado}")
-                .snapshots(),
+            stream: db.doc("sesion/$idCasa/users/${widget.idMultado}").snapshots(),
             builder: (
               BuildContext context,
               AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -63,43 +61,42 @@ class _PonerMultaState extends State<PonerMulta> {
                 return const Center(child: CircularProgressIndicator());
               }
               final userData = snapshot.data!.data()!;
-              Future.delayed(const Duration(milliseconds: 1500), () async {
-                setState(() {
-                  multado = false;
-                });
+              Future.delayed(
+                const Duration(milliseconds: 1500),
+                () async {
+                  setState(() {
+                    multado = false;
+                  });
 
-                await Navigator.pushReplacement(
+                  await Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          DisplayPaginas(sesionId: widget.sesionId),
-                    ));
-              });
+                      builder: (context) => const DisplayPaginas(),
+                    ),
+                  );
+                },
+              );
 
               return MultadoPage(nombre: userData['nombre']);
             },
           )
         : Scaffold(
-            appBar: PenaltyFlatAppBar(sesionId: widget.sesionId),
+            appBar: PenaltyFlatAppBar(),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child:
-                      Text("Estás a punto de multar", style: TiposBlue.title),
+                  child: Text("Estás a punto de multar", style: TiposBlue.title),
                 ),
-                PersonaMultaDetalle(
-                    sesionId: widget.sesionId, idMultado: widget.idMultado),
-                DetalleMultar(
-                    sesionId: widget.sesionId, multaId: widget.multaId),
+                PersonaMultaDetalle(idMultado: widget.idMultado),
+                DetalleMultar(multaId: widget.multaId),
                 PruebaMultar(
-                    sesionId: widget.sesionId,
-                    idMultado: widget.idMultado,
-                    multaId: widget.multaId,
-                    callbackImgPath: callbackImgPath,),
+                  idMultado: widget.idMultado,
+                  multaId: widget.multaId,
+                  callbackImgPath: callbackImgPath,
+                ),
                 BotonesMultar(
-                  sesionId: widget.sesionId,
                   idMultado: widget.idMultado,
                   multaId: widget.multaId,
                   callbackMultado: callbackMultado,

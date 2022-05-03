@@ -7,32 +7,32 @@ import 'package:penalty_flat_app/components/multa_detall/image_detail.dart';
 import 'package:penalty_flat_app/components/multa_detall/precio_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/pruebas.dart';
 import 'package:penalty_flat_app/components/multa_detall/title_multa.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
+import 'package:provider/provider.dart';
 
 class MultaDetall extends StatelessWidget {
-  final String sesionId;
   final String idMulta;
   final String idMultado;
   final String notifyId;
   MultaDetall({
     Key? key,
-    required this.sesionId,
     required this.idMulta,
     required this.idMultado,
     required this.notifyId,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
-  
 
   @override
   Widget build(BuildContext context) {
+    final idCasa = context.read<CasaID>();
     return Scaffold(
-        appBar: PenaltyFlatAppBar(sesionId: sesionId),
+        appBar: PenaltyFlatAppBar(),
         body: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height*1.1,
+            height: MediaQuery.of(context).size.height * 1.1,
             child: StreamBuilder(
-              stream: db.doc("sesion/$sesionId/multas/$idMulta").snapshots(),
+              stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
               builder: (
                 BuildContext context,
                 AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -44,10 +44,8 @@ class MultaDetall extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 Map multaData = {};
-                snapshot.data?.data() != null
-                    ? multaData = snapshot.data!.data()!
-                    : multaData = {};
-        
+                snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};
+
                 return multaData.isEmpty
                     ? const Loading()
                     : Padding(
@@ -56,27 +54,18 @@ class MultaDetall extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Expanded(flex: 1, child: TituloMulta(idMulta: idMulta)),
+                              ImagenMultado(idMultado: idMultado),
                               Expanded(
-                                flex:1, 
-                                child: TituloMulta(sesionId: sesionId, idMulta: idMulta)),
-                              ImagenMultado(
-                                  sesionId: sesionId, idMultado: idMultado),
-                              Expanded(
-                                flex:4,
+                                flex: 4,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    DescripcionDetail(
-                                        sesionId: sesionId, idMulta: idMulta),
-                                    PruebasDetail(
-                                        sesionId: sesionId, idMulta: idMulta),
-                                    PrecioDetail(
-                                        sesionId: sesionId, idMulta: idMulta),
-                                    AceptarMulta(
-                                        sesionId: sesionId,
-                                        idMulta: idMulta,
-                                        notifyId: notifyId),
+                                    DescripcionDetail(idMulta: idMulta),
+                                    PruebasDetail(idMulta: idMulta),
+                                    PrecioDetail(idMulta: idMulta),
+                                    AceptarMulta(idMulta: idMulta, notifyId: notifyId),
                                   ],
                                 ),
                               ),

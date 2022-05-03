@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:provider/provider.dart';
 
 class SelectMeses extends StatefulWidget {
-  final String sesionId;
   final Function callbackMes;
 
   const SelectMeses({
     Key? key,
-    required this.sesionId,
     required this.callbackMes,
   }) : super(key: key);
 
@@ -27,10 +27,9 @@ class _SelectMesesState extends State<SelectMeses> {
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
-
+    final idCasa = context.read<CasaID>();
     return StreamBuilder(
-        stream:
-            db.collection("sesion/${widget.sesionId}/multas").snapshots(),
+        stream: db.collection("sesion/$idCasa/multas").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
@@ -46,17 +45,14 @@ class _SelectMesesState extends State<SelectMeses> {
           List<int>? mValues = [0];
           List<int> yValues = [0];
           for (int i = 0; i < multasData.length; i++) {
-            DateTime date = DateTime.fromMicrosecondsSinceEpoch(
-                multasData[i]['fecha'].microsecondsSinceEpoch);
+            DateTime date =
+                DateTime.fromMicrosecondsSinceEpoch(multasData[i]['fecha'].microsecondsSinceEpoch);
 
-            String dateString =
-                DateFormat("MMMM yyy", "es_ES").format(date);
+            String dateString = DateFormat("MMMM yyy", "es_ES").format(date);
             int year = int.parse(DateFormat('yyyy').format(date));
             int month = int.parse(DateFormat('MM').format(date));
 
-            monthsYearsStrings.contains(dateString)
-                ? null
-                : monthsYearsStrings.add(dateString);
+            monthsYearsStrings.contains(dateString) ? null : monthsYearsStrings.add(dateString);
 
             if (!mValues.contains(month) || !yValues.contains(year)) {
               yValues.add(year);
