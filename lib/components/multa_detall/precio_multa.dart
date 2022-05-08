@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 
@@ -11,7 +11,7 @@ class PrecioDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
       stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
       builder: (

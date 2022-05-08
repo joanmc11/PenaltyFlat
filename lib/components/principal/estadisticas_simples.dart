@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
+
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 //import 'package:fl_chart/fl_chart.dart';
@@ -34,7 +35,7 @@ class EstadisticasSimples extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
 
     return user == null
         ? Container()
@@ -59,7 +60,8 @@ class EstadisticasSimples extends StatelessWidget {
               final List<num> dineroMultas = [];
               for (int i = 0; i < usersData.length; i++) {
                 dineroMultas.add(usersData[i]['dinero']);
-                sectionsChart[usersData[i]['nombre']] = usersData[i]['dinero'].toDouble();
+                sectionsChart[usersData[i]['nombre']] =
+                    usersData[i]['dinero'].toDouble();
               }
               final num totalMultas = dineroMultas.sum;
 
@@ -108,7 +110,8 @@ class EstadisticasSimples extends StatelessWidget {
                                   onPressed: () async {
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => const EstadisticaMultas(),
+                                        builder: (context) =>
+                                            const EstadisticaMultas(),
                                       ),
                                     );
                                   },

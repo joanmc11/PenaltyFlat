@@ -4,6 +4,7 @@ import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/services/auth.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../Styles/colors.dart';
 
@@ -80,12 +81,15 @@ class TodasCasas extends StatelessWidget {
                                 style: TiposBlue.bodyBold,
                               ),
                               onTap: () async {
+                                String sesionCode = casasData[index]['idCasa'];
+                                Provider.of<SesionProvider>(context,
+                                        listen: false)
+                                    .setSesion(sesionCode);
+
                                 await Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (context) => Provider<CasaID>.value(
-                                      value: casasData[index]['idCasa'],
-                                      child: const DisplayPaginas(),
-                                    ),
+                                    builder: (context) =>
+                                        const DisplayPaginas(),
                                   ),
                                 );
                               },
@@ -103,7 +107,8 @@ class TodasCasas extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 25.0),
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: PageColors.yellow.withOpacity(1)),
+                    style: ElevatedButton.styleFrom(
+                        primary: PageColors.yellow.withOpacity(1)),
                     child: Text(
                       "Atras",
                       style: TextStyle(color: PageColors.blue),

@@ -3,7 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 
 class PersonaMultaDetalle extends StatelessWidget {
@@ -33,7 +33,7 @@ class PersonaMultaDetalle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storage = FirebaseStorage.instance;
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
         stream: db.doc("sesion/$idCasa/users/$idMultado").snapshots(),
         builder: (

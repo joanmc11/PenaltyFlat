@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 
 class BotonesPagamento extends StatelessWidget {
@@ -21,7 +21,7 @@ class BotonesPagamento extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
       stream: db.doc("sesion/$idCasa/users/${user!.uid}").snapshots(),
       builder: (

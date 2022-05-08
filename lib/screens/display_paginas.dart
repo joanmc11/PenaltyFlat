@@ -6,7 +6,6 @@ import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
 
-typedef CasaID = String;
 
 class DisplayPaginas extends StatefulWidget {
   const DisplayPaginas({Key? key}) : super(key: key);

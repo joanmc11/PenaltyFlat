@@ -7,7 +7,7 @@ import 'package:penalty_flat_app/components/multa_detall/image_detail.dart';
 import 'package:penalty_flat_app/components/multa_detall/precio_multa.dart';
 import 'package:penalty_flat_app/components/multa_detall/pruebas.dart';
 import 'package:penalty_flat_app/components/multa_detall/title_multa.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class MultaDetall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return Scaffold(
         appBar: PenaltyFlatAppBar(),
         body: SingleChildScrollView(

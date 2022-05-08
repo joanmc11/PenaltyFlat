@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:penalty_flat_app/screens/notifications.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +33,7 @@ class _NotificationIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = FirebaseAuth.instance.currentUser!;
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
       stream: db
           .collection("sesion/$idCasa/notificaciones")

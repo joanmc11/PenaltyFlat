@@ -8,7 +8,7 @@ import 'package:penalty_flat_app/components/multar/botones_multar.dart';
 import 'package:penalty_flat_app/components/multar/detalles_multa.dart';
 import 'package:penalty_flat_app/components/multar/persona_multada.dart';
 import 'package:penalty_flat_app/components/multar/prueba_multa.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:penalty_flat_app/shared/multa_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +46,7 @@ class _PonerMultaState extends State<PonerMulta> {
 
   @override
   Widget build(BuildContext context) {
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return multado
         ? StreamBuilder(
             stream: db.doc("sesion/$idCasa/users/${widget.idMultado}").snapshots(),
@@ -68,12 +68,12 @@ class _PonerMultaState extends State<PonerMulta> {
                     multado = false;
                   });
 
-                  await Navigator.pushReplacement(
+                  /*await Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const DisplayPaginas(),
                     ),
-                  );
+                  );*/
                 },
               );
 

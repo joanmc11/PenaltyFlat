@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:penalty_flat_app/models/user.dart';
-import 'package:penalty_flat_app/screens/display_paginas.dart';
+import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../../../Styles/colors.dart';
 
@@ -36,7 +36,7 @@ class _ProfilePicState extends State<ProfilePic> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
-    final idCasa = context.read<CasaID>();
+    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     final storage = FirebaseStorage.instance;
     return StreamBuilder(
         stream: db.doc("sesion/$idCasa/users/${user?.uid}").snapshots(),
