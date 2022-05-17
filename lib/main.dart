@@ -13,10 +13,8 @@ import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
@@ -33,7 +31,7 @@ class MyApp extends StatelessWidget {
       // ignore: avoid_types_as_parameter_names
       catchError: (User, MyUser) => null,
       child: ChangeNotifierProvider(
-        create: (_)=>SesionProvider(),
+        create: (_) => SesionProvider(),
         child: const MaterialApp(
           home: Wrapper(),
         ),
