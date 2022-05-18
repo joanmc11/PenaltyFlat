@@ -33,3 +33,64 @@ Stream<List<CodigoMultas>> codigoMultasSnapshots(String idCasa) async* {
     yield multas;
   }
 }
+
+Stream<List<CodigoMultas>> partesMultasSnapshots(
+    String idCasa, String parte) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db
+      .collection("sesion/$idCasa/codigoMultas")
+      .where('parte', isEqualTo: parte)
+      .snapshots();
+  await for (final listaMultas in stream) {
+    final List<CodigoMultas> multas = [];
+    for (final multa in listaMultas.docs) {
+      multas.add(CodigoMultas.fromFirestre(multa));
+    }
+    yield multas;
+  }
+}
+
+Stream<List<CodigoMultas>> searchMultasSnapshots(
+    String idCasa, String search) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db
+      .collection("sesion/$idCasa/codigoMultas")
+      .where('titulo', isGreaterThanOrEqualTo: search.toLowerCase())
+      .where('titulo',
+          isLessThan: search
+                  .toLowerCase()
+                  .substring(0, search.toLowerCase().length - 1) +
+              String.fromCharCode(
+                  search.toLowerCase().codeUnitAt(search.length - 1) + 1))
+      .snapshots();
+  await for (final listaMultas in stream) {
+    final List<CodigoMultas> multas = [];
+    for (final multa in listaMultas.docs) {
+      multas.add(CodigoMultas.fromFirestre(multa));
+    }
+    yield multas;
+  }
+}
+
+Stream<List<CodigoMultas>> searchParteMultasSnapshots(
+    String idCasa, String search, String parte) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db
+      .collection("sesion/$idCasa/codigoMultas")
+      .where('parte', isEqualTo: parte)
+      .where('titulo', isGreaterThanOrEqualTo: search.toLowerCase())
+      .where('titulo',
+          isLessThan: search
+                  .toLowerCase()
+                  .substring(0, search.toLowerCase().length - 1) +
+              String.fromCharCode(
+                  search.toLowerCase().codeUnitAt(search.length - 1) + 1))
+      .snapshots();
+  await for (final listaMultas in stream) {
+    final List<CodigoMultas> multas = [];
+    for (final multa in listaMultas.docs) {
+      multas.add(CodigoMultas.fromFirestre(multa));
+    }
+    yield multas;
+  }
+}

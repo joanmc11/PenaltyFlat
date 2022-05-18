@@ -83,6 +83,7 @@ class _BuscadorState extends State<Buscador> {
                       search = "";
                     }
                   });
+                  widget.callbackSearch(search, _folded);
                 },
               ),
             ),
