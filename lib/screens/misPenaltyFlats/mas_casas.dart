@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
+import 'package:penalty_flat_app/models/casa_model.dart';
 import 'package:penalty_flat_app/models/user.dart';
 import 'package:penalty_flat_app/screens/display_paginas.dart';
 import 'package:penalty_flat_app/services/auth.dart';
@@ -44,62 +45,38 @@ class TodasCasas extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            StreamBuilder(
-                stream: db.collection("users/${user!.uid}/casas").snapshots(),
-                builder: (
-                  BuildContext context,
-                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-                ) {
-                  if (snapshot.hasError) {
-                    return ErrorWidget(snapshot.error.toString());
-                  }
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final casasData = snapshot.data!.docs;
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  Text(
+                    "Tus PenaltyFlats",
+                    style: TiposBlue.bodyBold,
+                  ),
+                  StreamBuilder(
+                    stream: casasSnapshots(user!.uid),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<List<Casa>> snapshot,
+                    ) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.done:
+                          throw "Stream is none or done!!!";
+                        case ConnectionState.waiting:
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        case ConnectionState.active:
+                          final casas = snapshot.data!;
 
-                  return Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        Text(
-                          "Tus PenaltyFlats",
-                          style: TiposBlue.bodyBold,
-                        ),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: casasData.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: Icon(
-                                Icons.house_rounded,
-                                color: PageColors.blue,
-                              ),
-                              title: Text(
-                                casasData[index]['nombreCasa'],
-                                style: TiposBlue.bodyBold,
-                              ),
-                              onTap: () async {
-                                String sesionCode = casasData[index]['idCasa'];
-                                Provider.of<SesionProvider>(context,
-                                        listen: false)
-                                    .setSesion(sesionCode);
-
-                                await Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DisplayPaginas(),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                          return _ListCasas(casasData: casas);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Expanded(
@@ -123,6 +100,48 @@ class TodasCasas extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ListCasas extends StatelessWidget {
+  const _ListCasas({
+    Key? key,
+    required this.casasData,
+  }) : super(key: key);
+
+  final List<Casa> casasData;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: casasData.length,
+      itemBuilder: (context, index) {
+        Casa casa = casasData[index];
+        return ListTile(
+          leading: Icon(
+            Icons.house_rounded,
+            color: PageColors.blue,
+          ),
+          title: Text(
+            casa.nombreCasa,
+            style: TiposBlue.bodyBold,
+          ),
+          onTap: () async {
+            String sesionCode = casa.idCasa;
+            Provider.of<SesionProvider>(context, listen: false)
+                .setSesion(sesionCode);
+
+            await Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const DisplayPaginas(),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:penalty_flat_app/components/bottom_bar/button_penalty.dart';
 import 'package:penalty_flat_app/screens/multar/usuario_multa.dart';
 import 'package:penalty_flat_app/screens/principal.dart';
 import 'package:penalty_flat_app/screens/profile.dart';
-import 'package:penalty_flat_app/screens/test_list_multas_page.dart';
 
 class DisplayPaginas extends StatefulWidget {
   const DisplayPaginas({Key? key}) : super(key: key);
@@ -51,7 +50,7 @@ class _DisplayPaginasState extends State<DisplayPaginas> {
       const PrincipalScreen(),
       const PersonaMultada(),
       // ProfilePage(),
-      const TestListMultasPage(),
+       ProfilePage(),
     ];
 
     return Scaffold(

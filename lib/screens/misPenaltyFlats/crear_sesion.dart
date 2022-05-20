@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
-import 'package:penalty_flat_app/screens/misPenaltyFlats/inici.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 import '../../Styles/colors.dart';
 import '../../models/user.dart';
 import '../../services/database.dart';
@@ -21,12 +19,7 @@ class _CrearSesionState extends State<CrearSesion> {
   final _formKey = GlobalKey<FormState>();
   final db = FirebaseFirestore.instance;
 
-  //Get Random String
-  static const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz123456789';
-  final Random _rnd = Random();
-
-  String getRandomString(int length) => String.fromCharCodes(
-      Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  
 
   @override
   Widget build(BuildContext context) {
@@ -129,51 +122,10 @@ class _CrearSesionState extends State<CrearSesion> {
                             "Empieza",
                             style: TextStyle(color: PageColors.blue),
                           ),
-                          onPressed: () async {
+                          onPressed: () async{
                             if (_formKey.currentState!.validate()) {
-                              final sesionSnap = await db.collection('/sesion').add({
-                                "codi": getRandomString(5),
-                                "casa": casa,
-                                "partes": [
-                                  "Todas",
-                                  "Baño",
-                                  "Comedor",
-                                  "Cocina",
-                                  "Lavadero",
-                                  "Otros"
-                                ],
-                                "sinMultas": true,
-                              });
-                              await db.doc('/sesion/${sesionSnap.id}/users/${user?.uid}').set({
-                                "nombre": apodo,
-                                "color": 0,
-                                "id": user!.uid,
-                                "isAdmin": true,
-                                "imagenPerfil": "",
-                                "dinero": 0,
-                                "pendiente": false,
-                                'contador': 1,
-                              });
-
-                              db.collection('/sesion/${sesionSnap.id}/notificaciones');
-
-                              //creo la collection de casas (inicialment buida)
-                              await DatabaseService(uid: user.uid)
-                                  .updateUserFlats(casa, sesionSnap.id);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 1),
-                                  content: Text("¡Has creado un PenaltyFlat!"),
-                                ),
-                              );
-                              await Future.delayed(const Duration(milliseconds: 300), () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Inicio(),
-                                    ));
-                              });
+                              await DatabaseService(uid: user!.uid).createHouse(casa, apodo, context);
+                               
                             }
                           },
                         ),
