@@ -19,8 +19,8 @@ class _ZonasCasaState extends State<ZonasCasa> {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
-    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
+   
+    List<String> partes = ["Todas", "Baño", "Comedor", "Cocina", "Lavadero", "Otros"];
 
     return Container(
       padding: const EdgeInsets.all(20.0),
@@ -28,22 +28,8 @@ class _ZonasCasaState extends State<ZonasCasa> {
           color: PageColors.blue,
           borderRadius: const BorderRadius.only(topRight: Radius.circular(20))),
       //Lista Partes Casa
-      child: StreamBuilder(
-          stream: db.doc("sesion/$idCasa").snapshots(),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final casaData = snapshot.data!.data()!;
-
-            return ListView.separated(
-              itemCount: casaData['partes'].length,
+      child: ListView.separated(
+              itemCount: partes.length,
               separatorBuilder: (
                 BuildContext context,
                 int index,
@@ -55,7 +41,7 @@ class _ZonasCasaState extends State<ZonasCasa> {
                   onTap: () {
                     setState(() {
                       selectedIndex = index;
-                      parte = casaData['partes'][index];
+                      parte = partes[index];
                       parte == "Todas" ? todas = true : todas = false;
                     });
                     widget.callbackParte(parte, todas);
@@ -82,7 +68,7 @@ class _ZonasCasaState extends State<ZonasCasa> {
                                   borderRadius: const BorderRadius.all(Radius.circular(10))),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                                child: Text(casaData['partes'][index],
+                                child: Text(partes[index],
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: PageColors.yellow,
@@ -99,8 +85,8 @@ class _ZonasCasaState extends State<ZonasCasa> {
                   ),
                 );
               },
-            );
-          }),
+            ),
+        
     );
   }
 }

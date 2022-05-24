@@ -70,7 +70,7 @@ class Inicio extends StatelessWidget {
                                   child: CircularProgressIndicator());
                             }
 
-                            var userData = snapshot.data!.data()!;
+                            final userData = snapshot.data!.data()!;
                             // <-- Your value
 
                             return Padding(

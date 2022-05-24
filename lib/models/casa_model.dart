@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class Casa {
   String? id;
@@ -26,3 +25,4 @@ Stream<List<Casa>> casasSnapshots(String idUsuario) async* {
     yield casas;
   }
 }
+
