@@ -11,7 +11,7 @@ class PrincipalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
+      children:  const [
         EstadisticasSimples(),
         CodigoCasa(),
         MiniLista(),

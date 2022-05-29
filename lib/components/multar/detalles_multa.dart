@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/models/codigo_multas.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -17,20 +18,24 @@ class DetalleMultar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
+
     return StreamBuilder(
-        stream: db.doc("sesion/$idCasa/codigoMultas/$multaId").snapshots(),
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            return ErrorWidget(snapshot.error.toString());
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final multaData = snapshot.data!.data()!;
-          return Row(
+      stream: singleNormaSnapshot(idCasa, multaId),
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<CodigoMultas> snapshot,
+      ) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.done:
+            throw "Stream is none or done!!!";
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.active:
+            final multaData = snapshot.data!;
+            return Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
@@ -51,8 +56,10 @@ class DetalleMultar extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${multaData['titulo']}".capitalize!, style: TiposBlue.bodyBold),
-                            Text("${multaData['descripcion']}".capitalize!, style: TiposBlue.body),
+                            Text(multaData.titulo.capitalize!,
+                                style: TiposBlue.bodyBold),
+                            Text(multaData.descripcion.capitalize!,
+                                style: TiposBlue.body),
                           ],
                         ),
                       ),
@@ -61,13 +68,13 @@ class DetalleMultar extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text("Precio a pagar:", style: TiposBlue.subtitle),
                     ),
-                    Text("${multaData['precio']}€", style: TiposBlue.body),
+                    Text("${multaData.precio}€", style: TiposBlue.body),
                   ],
                 ),
               ),
               Container()
             ],
           );
-        });
+        }});
   }
 }

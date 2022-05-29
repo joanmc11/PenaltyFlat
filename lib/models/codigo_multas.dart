@@ -94,3 +94,18 @@ Stream<List<CodigoMultas>> searchParteMultasSnapshots(
     yield multas;
   }
 }
+
+ Stream<CodigoMultas> singleNormaSnapshot(
+    String idCasa, String idMulta) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db.doc("sesion/$idCasa/codigoMultas/$idMulta").snapshots();
+
+  
+  await for (final multa in stream) {
+   
+   yield CodigoMultas.fromFirestre(multa);
+  }
+  
+  
+  }
+

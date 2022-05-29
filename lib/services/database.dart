@@ -1,7 +1,17 @@
+// ignore_for_file: deprecated_member_use, unnecessary_null_comparison
+
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:penalty_flat_app/models/multas.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
 import 'package:penalty_flat_app/screens/misPenaltyFlats/inici.dart';
 import 'dart:math';
+
+import 'package:penalty_flat_app/services/functions.dart';
 
 class DatabaseService {
   final String uid;
@@ -143,4 +153,195 @@ class DatabaseService {
       }
     }
   }
+
+  //Crear Norma
+  Future createMulta(
+      idCasa, titulo, descripcion, parteCasa, precio, context) async {
+    final db = FirebaseFirestore.instance;
+    await db.collection('sesion/$idCasa/codigoMultas').add({
+      'titulo': titulo.toLowerCase(),
+      'descripcion': descripcion.toLowerCase(),
+      'parte': parteCasa,
+      'precio': precio,
+    });
+
+    await db.doc('sesion/$idCasa').update({
+      "sinMultas": false,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("¡Norma creada con éxito!"),
+      ),
+    );
+    await Future.delayed(const Duration(milliseconds: 300), () {
+      /* Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CodigoMultas(
+                          ),
+                        ));*/
+      Navigator.of(context).pop();
+    });
+  }
+
+  //Editar Norma
+
+  Future editNorma(String idCasa, multaId, String titulo, String descripcion,
+      String parteCasa, precio, context) async {
+    final db = FirebaseFirestore.instance;
+
+    await db.doc('sesion/$idCasa/codigoMultas/$multaId').update({
+      'titulo': titulo.toLowerCase(),
+      'descripcion': descripcion.toLowerCase(),
+      'parte': parteCasa,
+      'precio': precio,
+    });
+
+    await db.doc('sesion/$idCasa').update({
+      "sinMultas": false,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("¡Norma actualizada!"),
+      ),
+    );
+    await Future.delayed(const Duration(milliseconds: 300), () {
+      Navigator.of(context).pop();
+    });
+  }
+
+  //Eliminar Norma
+  Future deleteNorma(String idCasa, multaId, context) async {
+    final db = FirebaseFirestore.instance;
+    await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: const Text("¿Eliminar norma?"),
+              content: const Text("¿Estás seguro?"),
+              actions: [
+                FlatButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await db
+                          .doc("sesion/$idCasa/codigoMultas/$multaId")
+                          .delete();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          duration: Duration(seconds: 1),
+                          content: Text("Norma eliminada"),
+                        ),
+                      );
+                      await Future.delayed(const Duration(milliseconds: 300),
+                          () {
+                        /* Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CodigoMultas(
+                                          ),
+                                        ));*/
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    child: const Text(
+                      "Si",
+                      style: TextStyle(color: Colors.blue),
+                    )),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child:
+                        const Text("No", style: TextStyle(color: Colors.blue)))
+              ],
+            ),
+        barrierDismissible: false);
+  }
+
+  //Cambiar Imagen Perfil
+
+  Future changeProfileImage(
+    String idCasa,
+  ) async {
+    final db = FirebaseFirestore.instance;
+    final image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 25);
+    if (image == null) return;
+    final imageTemporary = File(image.path);
+    await db.doc('sesion/$idCasa/users/$uid').update({
+      'imagenPerfil': image.name,
+    });
+    await FirebaseStorage.instance
+        .ref("/images/${image.name}")
+        .putFile(imageTemporary);
+  }
+
+//Rechazar Multa
+
+  Future rejectMulta(
+    String idCasa,
+    InsideUser userData,
+    Multa multaData,
+    String notifyId,
+    context,
+  ) async {
+    final dateToday = FunctionService().takeDate();
+    final db = FirebaseFirestore.instance;
+    await db.collection('sesion/$idCasa/notificaciones').add({
+      'fecha': dateToday,
+      'tipo': "feedback",
+      'mensaje': "${userData.nombre} ha rechazado la multa",
+      'subtitulo': multaData.titulo,
+      'visto': false,
+      'idUsuario': multaData.autorId,
+      'idNotificador': uid,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Multa rechazada"),
+      ),
+    );
+    Navigator.pop(context);
+    await db.doc("sesion/$idCasa/multas/${multaData.id}").delete();
+    await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
+  }
+
+  //Aceptar Multa
+  Future acceptMulta(
+    String idCasa,
+    Multa multaData,
+    InsideUser userData,
+    context,
+  ) async {
+    final dateToday = FunctionService().takeDate();
+    final db = FirebaseFirestore.instance;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Multa aceptada"),
+      ),
+    );
+    await db.doc('sesion/$idCasa/multas/${multaData.id}').update({
+      'aceptada': true,
+    });
+    await db.doc('sesion/$idCasa/users/$uid').update({
+      'dinero': userData.dinero == null
+          ? multaData.precio
+          : userData.dinero + multaData.precio,
+    });
+    await db.collection('sesion/$idCasa/notificaciones').add({
+      'fecha': dateToday,
+      'tipo': "feedback",
+      'mensaje': "${userData.nombre} ha aceptado la multa",
+      'subtitulo': multaData.titulo,
+      'visto': false,
+      'idUsuario': multaData.autorId,
+      'idNotificador': uid,
+    });
+  }
+
+
 }

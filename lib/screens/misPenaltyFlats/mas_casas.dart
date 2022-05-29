@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
 import 'package:penalty_flat_app/models/casa_model.dart';
@@ -15,7 +15,6 @@ class TodasCasas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
     return Scaffold(
       backgroundColor: PageColors.white,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
-import 'package:penalty_flat_app/screens/misPenaltyFlats/inici.dart';
 import 'package:provider/provider.dart';
 import '../../Styles/colors.dart';
 import '../../models/user.dart';

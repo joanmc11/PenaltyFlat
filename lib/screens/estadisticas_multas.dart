@@ -19,12 +19,12 @@ class EstadisticaMultas extends StatelessWidget {
             "Estadisticas generales:",
             style: TiposBlue.subtitle,
           ),
-          GeneralStats(),
+          const GeneralStats(),
           Text(
             "Estadisticas propias:",
             style: TiposBlue.subtitle,
           ),
-          OwnStats(),
+          const OwnStats(),
         ],
       ),
     );

@@ -1,22 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/models/multas.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
+import 'package:penalty_flat_app/services/database.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
 import '../../../models/user.dart';
 
 class AceptarMulta extends StatelessWidget {
-  final String idMulta;
+  final Multa multaData;
   final String notifyId;
   AceptarMulta({
     Key? key,
-    required this.idMulta,
+    required this.multaData,
     required this.notifyId,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
-
-  final DateTime dateToday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
-      DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
 
   @override
   Widget build(BuildContext context) {
@@ -24,34 +24,23 @@ class AceptarMulta extends StatelessWidget {
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
 
     return StreamBuilder(
-      stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
+      stream: singleUserData(idCasa, user!.uid),
       builder: (
         BuildContext context,
-        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+        AsyncSnapshot<InsideUser> snapshot,
       ) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error.toString());
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        Map multaData = {};
-        snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.done:
+            throw "Stream is none or done!!!";
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.active:
+            final userData = snapshot.data!;
 
-        return StreamBuilder(
-          stream: db.doc("sesion/$idCasa/users/${user!.uid}").snapshots(),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final userData = snapshot.data!.data()!;
-            return !multaData['aceptada']
+            return !multaData.aceptada
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
@@ -60,30 +49,15 @@ class AceptarMulta extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(primary: PageColors.white),
+                            style: ElevatedButton.styleFrom(
+                                primary: PageColors.white),
                             child: Text(
                               "Rechazar",
                               style: TextStyle(color: PageColors.blue),
                             ),
                             onPressed: () async {
-                              await db.collection('sesion/$idCasa/notificaciones').add({
-                                'fecha': dateToday,
-                                'tipo': "feedback",
-                                'mensaje': "${userData['nombre']} ha rechazado la multa",
-                                'subtitulo': multaData['titulo'],
-                                'visto': false,
-                                'idUsuario': multaData['autorId'],
-                                'idNotificador': user.uid,
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 2),
-                                  content: Text("Multa rechazada"),
-                                ),
-                              );
-                              Navigator.pop(context);
-                              await db.doc("sesion/$idCasa/multas/$idMulta").delete();
-                              await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
+                              DatabaseService(uid: user.uid).rejectMulta(idCasa,
+                                  userData, multaData, notifyId, context);
                             },
                           ),
                         ),
@@ -92,58 +66,45 @@ class AceptarMulta extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(primary: PageColors.yellow),
+                            style: ElevatedButton.styleFrom(
+                                primary: PageColors.yellow),
                             child: Text(
                               "Aceptar",
                               style: TextStyle(color: PageColors.blue),
                             ),
                             onPressed: () async {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  duration: Duration(seconds: 2),
-                                  content: Text("Multa aceptada"),
-                                ),
+                              DatabaseService(uid: user.uid).acceptMulta(
+                                idCasa,
+                                multaData,
+                                userData,
+                                context,
                               );
-                              await db.doc('sesion/$idCasa/multas/$idMulta').update({
-                                'aceptada': true,
-                              });
-                              await db.doc('sesion/$idCasa/users/${user.uid}').update({
-                                'dinero': userData['dinero'] == null
-                                    ? multaData['precio']
-                                    : userData['dinero'] + multaData['precio'],
-                              });
-                              await db.collection('sesion/$idCasa/notificaciones').add({
-                                'fecha': dateToday,
-                                'tipo': "feedback",
-                                'mensaje': "${userData['nombre']} ha aceptado la multa",
-                                'subtitulo': multaData['titulo'],
-                                'visto': false,
-                                'idUsuario': multaData['autorId'],
-                                'idNotificador': user.uid,
-                              });
                             },
                           ),
                         ),
                       ),
                     ],
                   )
-                : multaData['pagado']
+                : multaData.pagado
                     ? const Center(
                         child: Text(
                           "Multa pagada",
                           style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.bold, fontSize: 20),
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
                         ),
                       )
                     : const Center(
                         child: Text(
                           "Multa por pagar",
                           style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
                         ),
                       );
-          },
-        );
+        }
       },
     );
   }

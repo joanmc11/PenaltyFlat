@@ -1,4 +1,3 @@
-
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ class MiniLista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
       stream: miniListaSnapshots(idCasa),
@@ -67,7 +65,6 @@ class MiniLista extends StatelessWidget {
                                 ? 3
                                 : listMultas.length,
                         itemBuilder: (context, index) {
-                          final multa = listMultas[index];
                           return listMultas.isEmpty
                               ? const SinMultas()
                               : ListTile(
@@ -82,10 +79,11 @@ class MiniLista extends StatelessWidget {
                                                   builder: (context) =>
                                                       MultaDetall(
                                                     notifyId: "sinNotificacion",
-                                                    idMulta:
-                                                        multa.id.toString(),
-                                                    idMultado:
-                                                       multa.idMultado,
+                                                    idMulta: listMultas[index]
+                                                        .id
+                                                        .toString(),
+                                                    idMultado: listMultas[index]
+                                                        .idMultado,
                                                   ),
                                                 ));
                                           },
@@ -93,18 +91,18 @@ class MiniLista extends StatelessWidget {
                                               color: PageColors.blue)),
                                     ],
                                   ),
-                                  title: Text(multa.nomMultado,
+                                  title: Text(listMultas[index].nomMultado,
                                       style: TextStyle(
                                           fontSize: 14,
                                           color: PageColors.blue,
                                           fontWeight: FontWeight.bold)),
                                   subtitle: Text(
-                                    multa.titulo,
+                                    listMultas[index].titulo,
                                     style: TextStyle(
                                         fontSize: 14, color: PageColors.blue),
                                   ),
                                   trailing:
-                                      Text("${multa.precio}€"),
+                                      Text("${listMultas[index].precio}€"),
                                 );
                         },
                       ),
@@ -150,20 +148,19 @@ class SinMultas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Center(
+      title: Center(
+          child: Text(
+        "Todavía no hay multas",
+        style: TiposBlue.bodyBold,
+      )),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(bottom: 32.0),
+        child: Center(
             child: Text(
-          "Todavía no hay multas",
-          style: TiposBlue.bodyBold,
+          "¿Serás tu el primero?",
+          style: TiposBlue.body,
         )),
-        subtitle: Padding(
-          padding:
-              const EdgeInsets.only(bottom: 32.0),
-          child: Center(
-              child: Text(
-            "¿Serás tu el primero?",
-            style: TiposBlue.body,
-          )),
-        ),
-      );
+      ),
+    );
   }
 }

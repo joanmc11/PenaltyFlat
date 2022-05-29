@@ -1,39 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:penalty_flat_app/services/sesionProvider.dart';
-import 'package:provider/provider.dart';
+import 'package:penalty_flat_app/models/multas.dart';
 import '../../../Styles/colors.dart';
 
 class PruebasDetail extends StatelessWidget {
-  final String idMulta;
+  final Multa multaData;
+
   PruebasDetail({
     Key? key,
-    required this.idMulta,
+    required this.multaData,
   }) : super(key: key);
   final db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     final storage = FirebaseStorage.instance;
-    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
+     /*Map multaData = {};
+        snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};*/
 
-    return StreamBuilder(
-      stream: db.doc("sesion/$idCasa/multas/$idMulta").snapshots(),
-      builder: (
-        BuildContext context,
-        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-      ) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error.toString());
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        Map multaData = {};
-        snapshot.data?.data() != null ? multaData = snapshot.data!.data()! : multaData = {};
-
-        return Column(
+    return Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,14 +33,14 @@ class PruebasDetail extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: multaData['imagen'] == ""
+                  child: multaData.imagen == ""
                       ? Text(
                           "No se dispone de pruebas",
                           style: TiposBlue.body,
                         )
                       : FutureBuilder(
                           future:
-                              storage.ref("/images/multas/${multaData['imagen']}").getDownloadURL(),
+                              storage.ref("/images/multas/${multaData.imagen}").getDownloadURL(),
                           builder: (context, AsyncSnapshot<String> snapshot) {
                             if (!snapshot.hasData) {
                               return const CircularProgressIndicator();
@@ -72,7 +58,6 @@ class PruebasDetail extends StatelessWidget {
             ),
           ],
         );
-      },
-    );
+      }
   }
-}
+

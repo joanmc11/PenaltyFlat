@@ -104,3 +104,12 @@ Stream<List<Multa>> listaMultasSnapshots(
     yield multas;
   }
 }
+
+Stream<Multa> singleMultaSnapshot(String idCasa, String idMulta) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db.doc("sesion/$idCasa/multas/$idMulta").snapshots();
+
+  await for (final multa in stream) {
+    yield Multa.fromFirestre(multa);
+  }
+}

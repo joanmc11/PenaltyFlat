@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:penalty_flat_app/services/database.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../../Styles/colors.dart';
@@ -56,32 +57,9 @@ class BotonesCrear extends StatelessWidget {
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  await db.collection('sesion/$idCasa/codigoMultas').add({
-                    'titulo': titulo.toLowerCase(),
-                    'descripcion': descripcion.toLowerCase(),
-                    'parte': parteCasa,
-                    'precio': precio,
-                  });
 
-                  await db.doc('sesion/$idCasa').update({
-                    "sinMultas": false,
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Text("¡Norma creada con éxito!"),
-                    ),
-                  );
-                  await Future.delayed(const Duration(milliseconds: 300), () {
-                    /* Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CodigoMultas(
-                          ),
-                        ));*/
-                    Navigator.of(context).pop();
-                  });
+                  DatabaseService(uid: '').createMulta(idCasa, titulo, descripcion, parteCasa, precio, context);
+                  
                 }
               },
             ),
