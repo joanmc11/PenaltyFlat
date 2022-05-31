@@ -1,93 +1,61 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:penalty_flat_app/services/sesionProvider.dart';
-import 'package:provider/provider.dart';
-
+import 'package:penalty_flat_app/models/colors_model.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
 class ImagenConfirmacion extends StatelessWidget {
-  final String userId;
-  ImagenConfirmacion({
+  final InsideUser userData;
+  const ImagenConfirmacion({
     Key? key,
-    required this.userId,
+    required this.userData,
   }) : super(key: key);
-
-  final List<Color> colors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-    Colors.indigo,
-    Colors.pinkAccent,
-    Colors.amber,
-    Colors.deepOrange,
-    Colors.brown,
-    Colors.cyan,
-    Colors.yellow,
-  ];
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
+    final colors = UserColors().colors;
     final storage = FirebaseStorage.instance;
-    final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
 
-    return StreamBuilder(
-      stream: db.doc("sesion/$idCasa/users/$userId").snapshots(),
-      builder: (
-        BuildContext context,
-        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-      ) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error.toString());
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final userData = snapshot.data!.data()!;
-
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            DottedBorder(
-              borderType: BorderType.Circle,
-              dashPattern: const [5],
-              color: colors[userData['color']],
-              strokeWidth: 1,
-              child: Center(
-                child: userData['imagenPerfil'] == ""
-                    ? Icon(
-                        Icons.account_circle_rounded,
-                        size: 110,
-                        color: colors[userData['color']],
-                      )
-                    : FutureBuilder(
-                        future: storage.ref("/images/${userData['imagenPerfil']}").getDownloadURL(),
-                        builder: (context, AsyncSnapshot<String> snapshot) {
-                          if (!snapshot.hasData) {
-                            return const CircularProgressIndicator();
-                          }
-                          debugPrint(snapshot.data!);
-                          return CircleAvatar(
-                            radius: 52,
-                            backgroundColor: colors[userData['color']],
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                snapshot.data!,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-              ),
-            ),
-          ],
-        );
-      },
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        DottedBorder(
+          borderType: BorderType.Circle,
+          dashPattern: const [5],
+          color: colors[userData.color.toInt()],
+          strokeWidth: 1,
+          child: Center(
+            child: userData.imagenPerfil == ""
+                ? Icon(
+                    Icons.account_circle_rounded,
+                    size: 110,
+                    color: colors[userData.color.toInt()],
+                  )
+                : FutureBuilder(
+                    future: storage
+                        .ref("/images/${userData.imagenPerfil}")
+                        .getDownloadURL(),
+                    builder: (context, AsyncSnapshot<String> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      debugPrint(snapshot.data!);
+                      return CircleAvatar(
+                        radius: 52,
+                        backgroundColor: colors[userData.color.toInt()],
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(
+                            snapshot.data!,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ),
+      ],
     );
   }
 }

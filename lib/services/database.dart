@@ -304,7 +304,7 @@ class DatabaseService {
         content: Text("Multa rechazada"),
       ),
     );
-    Navigator.pop(context);
+    
     await db.doc("sesion/$idCasa/multas/${multaData.id}").delete();
     await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
   }
@@ -343,5 +343,137 @@ class DatabaseService {
     });
   }
 
+  //Envio de notificaciones en pagamentos
 
+  Future pagamentos(singleUserData, usersData, context, idCasa) async {
+    final db = FirebaseFirestore.instance;
+    if (singleUserData.dinero == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 800),
+          content: Text("Nada que pagar"),
+        ),
+      );
+    } else if (singleUserData.pendiente == false) {
+      if (singleUserData.pendiente == false) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 800),
+            content: Text("Espera a que tus compañeros confirmen el pago"),
+          ),
+        );
+        for (int i = 0; i < usersData.length; i++) {
+          if (usersData[i].id != uid) {
+            await db.collection('sesion/$idCasa/notificaciones').add({
+              'nomPagador': singleUserData.nombre,
+              'idPagador': uid,
+              'idUsuario': usersData[i].id,
+              'tipo': "pago",
+              'fecha': FunctionService().takeDate(),
+              'visto': false,
+            });
+            await db
+                .doc('sesion/$idCasa/users/$uid')
+                .update({'contador': 1, 'pendiente': true});
+          }
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 800),
+          content: Text("Espera a que tus compañeros confirmen el pago"),
+        ),
+      );
+    }
+  }
+
+  //Set Multas pagadas
+  Future multasPagadas(List<Multa> multasPagadas, String idCasa) async {
+    final db = FirebaseFirestore.instance;
+    for (int i = 0; i < multasPagadas.length; i++) {
+      await db.doc('sesion/$idCasa/multas/${multasPagadas[i].id}').update({
+        'pagado': true,
+      });
+    }
+  }
+
+  //Rechazar pago ajeno
+  Future rechazarPago(
+    String idCasa,
+    context,
+    userData,
+    userId,
+    currentUserData,
+    notifyId,
+  ) async {
+    final db = FirebaseFirestore.instance;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Pago rechazado"),
+      ),
+    );
+    await db
+        .doc('sesion/$idCasa/users/$userId')
+        .update({'contador': 0, 'pendiente': false, 'dinero': userData.dinero});
+    await db.doc('sesion/$idCasa/notificaciones/$notifyId').update({
+      'visto': true,
+    });
+    await db.collection("sesion/$idCasa/notificaciones").add({
+      'mensaje': "Pago rechazado por:",
+      'subtitulo': currentUserData.nombre,
+      'idUsuario': userId,
+      'fecha': FunctionService().takeDate(),
+      'tipo': "feedback",
+      'visto': false,
+      'idNotificador': uid
+    });
+    
+
+    await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
+  }
+
+  //Aceptar pago ajeno
+  Future aceptarPago(
+    String idCasa,
+    context,
+    userData,
+    userId,
+    currentUserData,
+    notifyId,
+    allUsers,
+  ) async {
+    final db = FirebaseFirestore.instance;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text("Pago confirmado"),
+      ),
+    );
+
+    if (userData.contador == allUsers.length - 1) {
+      await db.collection("sesion/$idCasa/notificaciones").add({
+        'mensaje': "Pago aceptado",
+        'subtitulo': "Tus compañeros lo han confirmado",
+        'idUsuario': userId,
+        'fecha': FunctionService().takeDate(),
+        'tipo': "feedback",
+        'visto': false,
+      });
+    }
+    await db.doc('sesion/$idCasa/notificaciones/$notifyId').update({
+      'visto': true,
+    });
+    await db.doc('sesion/$idCasa/users/$userId').update({
+      'contador': userData.contador + 1,
+      'pendiente': (userData.contador == allUsers.length - 1)
+          ? false
+          : userData.pendiente,
+      'dinero': (userData.contador == allUsers.length - 1) ? 0 : userData.dinero
+    });
+
+    Navigator.pop(context);
+    await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
+  }
 }

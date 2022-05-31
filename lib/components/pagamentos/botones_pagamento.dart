@@ -1,55 +1,36 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/models/user.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
+import 'package:penalty_flat_app/services/database.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 
 class BotonesPagamento extends StatelessWidget {
-  BotonesPagamento({Key? key}) : super(key: key);
-
-  final DateTime dateToday = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-    DateTime.now().hour,
-    DateTime.now().minute,
-    DateTime.now().second,
-  );
+  const BotonesPagamento({Key? key, required this.singleUserData})
+      : super(key: key);
+  final InsideUser singleUserData;
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
     final user = Provider.of<MyUser?>(context);
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
-      stream: db.doc("sesion/$idCasa/users/${user!.uid}").snapshots(),
+      stream: simpleUsersSnapshot(idCasa),
       builder: (
         BuildContext context,
-        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+        AsyncSnapshot<List<InsideUser>> snapshot,
       ) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error.toString());
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final singleUserdata = snapshot.data!.data()!;
-
-        return StreamBuilder(
-          stream:
-              db.collection("sesion/$idCasa/users").orderBy("color", descending: false).snapshots(),
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-          ) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final usersData = snapshot.data!.docs;
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.done:
+            throw "Stream is none or done!!!";
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.active:
+            final usersData = snapshot.data!;
 
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,7 +46,8 @@ class BotonesPagamento extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(primary: PageColors.white),
+                            style: ElevatedButton.styleFrom(
+                                primary: PageColors.white),
                             child: Text(
                               "Atrás",
                               style: TextStyle(color: PageColors.blue),
@@ -81,56 +63,24 @@ class BotonesPagamento extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: singleUserdata['pendiente'] == false
-                                    ? singleUserdata['dinero'] == 0
+                                primary: singleUserData.pendiente == false
+                                    ? singleUserData.dinero == 0
                                         ? Colors.grey
                                         : PageColors.yellow
                                     : Colors.grey),
                             child: Text(
-                              singleUserdata['pendiente'] == false ? "Pagar" : "Pendiente",
+                              singleUserData.pendiente == false
+                                  ? "Pagar"
+                                  : "Pendiente",
                               style: TextStyle(color: PageColors.blue),
                             ),
                             onPressed: () async {
-                              if (singleUserdata['dinero'] == 0) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(milliseconds: 800),
-                                    content: Text("Nada que pagar"),
-                                  ),
-                                );
-                              } else if (singleUserdata['pendiente'] == false) {
-                                if (singleUserdata['pendiente'] == false) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      duration: Duration(milliseconds: 800),
-                                      content:
-                                          Text("Espera a que tus compañeros confirmen el pago"),
-                                    ),
-                                  );
-                                  for (int i = 0; i < usersData.length; i++) {
-                                    if (usersData[i]['id'] != user.uid) {
-                                      await db.collection('sesion/$idCasa/notificaciones').add({
-                                        'nomPagador': singleUserdata['nombre'],
-                                        'idPagador': user.uid,
-                                        'idUsuario': usersData[i]['id'],
-                                        'tipo': "pago",
-                                        'fecha': dateToday,
-                                        'visto': false,
-                                      });
-                                      await db
-                                          .doc('sesion/$idCasa/users/${user.uid}')
-                                          .update({'contador': 1, 'pendiente': true});
-                                    }
-                                  }
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    duration: Duration(milliseconds: 800),
-                                    content: Text("Espera a que tus compañeros confirmen el pago"),
-                                  ),
-                                );
-                              }
+                              DatabaseService(uid: user!.uid).pagamentos(
+                                singleUserData,
+                                usersData,
+                                context,
+                                idCasa,
+                              );
                             },
                           ),
                         ),
@@ -140,8 +90,7 @@ class BotonesPagamento extends StatelessWidget {
                 ),
               ],
             );
-          },
-        );
+        }
       },
     );
   }

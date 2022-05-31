@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:icon_badge/icon_badge.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:penalty_flat_app/components/app_bar/app_bar_title.dart';
+import 'package:penalty_flat_app/models/notificaciones.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:penalty_flat_app/screens/notifications.dart';
 import 'package:penalty_flat_app/shared/loading.dart';
@@ -31,47 +32,46 @@ class _NotificationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
     final user = FirebaseAuth.instance.currentUser!;
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
-      stream: db
-          .collection("sesion/$idCasa/notificaciones")
-          .where('idUsuario', isEqualTo: user.uid)
-          .where('visto', isEqualTo: false)
-          .snapshots(),
+      stream: notificacionesNoVistas(idCasa, user.uid),
       builder: (
         BuildContext context,
-        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+        AsyncSnapshot<List<Notificacion>> snapshot,
       ) {
-        if (snapshot.hasError) {
-          return ErrorWidget(snapshot.error.toString());
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final notifyData = snapshot.data!.docs;
-
-        return IconBadge(
-          icon: Icon(
-            Icons.notifications_none_outlined,
-            color: PageColors.blue,
-            size: 35,
-          ),
-          itemCount: notifyData.length,
-          badgeColor: Colors.red,
-          itemColor: Colors.white,
-          hideZero: true,
-          top: 11,
-          right: 9,
-          onTap: () async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const Notificaciones(),
-              ),
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.done:
+            throw "Stream is none or done!!!";
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        );
+          case ConnectionState.active:
+            final notifyData = snapshot.data!;
+
+            return IconBadge(
+              icon: Icon(
+                Icons.notifications_none_outlined,
+                color: PageColors.blue,
+                size: 35,
+              ),
+              itemCount: notifyData.length,
+              badgeColor: Colors.red,
+              itemColor: Colors.white,
+              hideZero: true,
+              top: 11,
+              right: 9,
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Notificaciones(),
+                  ),
+                );
+              },
+            );
+        }
       },
     );
   }

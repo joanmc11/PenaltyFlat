@@ -113,3 +113,21 @@ Stream<Multa> singleMultaSnapshot(String idCasa, String idMulta) async* {
     yield Multa.fromFirestre(multa);
   }
 }
+
+
+Stream<List<Multa>> multasAceptadas(String idCasa) async* {
+  final db = FirebaseFirestore.instance;
+  final stream = db
+      .collection("sesion/$idCasa/multas")
+      .where('aceptada', isEqualTo: true)
+      .orderBy('fecha', descending: true)
+      .snapshots();
+  await for (final listaMultas in stream) {
+    final List<Multa> multas = [];
+    for (final multa in listaMultas.docs) {
+      multas.add(Multa.fromFirestre(multa));
+    }
+
+    yield multas;
+  }
+}

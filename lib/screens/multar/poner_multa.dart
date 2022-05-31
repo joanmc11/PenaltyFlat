@@ -8,6 +8,7 @@ import 'package:penalty_flat_app/components/multar/botones_multar.dart';
 import 'package:penalty_flat_app/components/multar/detalles_multa.dart';
 import 'package:penalty_flat_app/components/multar/persona_multada.dart';
 import 'package:penalty_flat_app/components/multar/prueba_multa.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:penalty_flat_app/shared/multa_screen.dart';
 import 'package:provider/provider.dart';
@@ -49,35 +50,34 @@ class _PonerMultaState extends State<PonerMulta> {
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return multado
         ? StreamBuilder(
-            stream: db.doc("sesion/$idCasa/users/${widget.idMultado}").snapshots(),
+            stream: singleUserData(idCasa, widget.idMultado),
             builder: (
               BuildContext context,
-              AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+              AsyncSnapshot<InsideUser> snapshot,
             ) {
-              if (snapshot.hasError) {
-                return ErrorWidget(snapshot.error.toString());
-              }
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final userData = snapshot.data!.data()!;
-              Future.delayed(
-                const Duration(milliseconds: 1500),
-                () async {
-                  setState(() {
-                    multado = false;
-                  });
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.done:
+                  throw "Stream is none or done!!!";
+                case ConnectionState.waiting:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                case ConnectionState.active:
+                  final userData = snapshot.data!;
+                  Future.delayed(
+                    const Duration(milliseconds: 1500),
+                    () async {
+                      setState(() {
+                        multado = false;
+                      });
 
-                  /*await Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DisplayPaginas(),
-                    ),
-                  );*/
-                },
-              );
+                      Navigator.pop(context);
+                    },
+                  );
 
-              return MultadoPage(nombre: userData['nombre']);
+                  return MultadoPage(nombre: userData.nombre);
+              }
             },
           )
         : Scaffold(
@@ -87,7 +87,8 @@ class _PonerMultaState extends State<PonerMulta> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: Text("Estás a punto de multar", style: TiposBlue.title),
+                  child:
+                      Text("Estás a punto de multar", style: TiposBlue.title),
                 ),
                 PersonaMultaDetalle(idMultado: widget.idMultado),
                 DetalleMultar(multaId: widget.multaId),

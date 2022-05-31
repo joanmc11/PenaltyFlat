@@ -11,29 +11,29 @@ class FunctionService {
     return sectionsChart;
   }
 
-  
-  num dineroMultas (List<InsideUser> usersData) {
-
+  num dineroMultas(List<InsideUser> usersData) {
     List<num> dineroMultas = [];
-     for (int i = 0; i < usersData.length; i++) {
-     dineroMultas.add(usersData[i].dinero);
+    for (int i = 0; i < usersData.length; i++) {
+      dineroMultas.add(usersData[i].dinero);
     }
-     final num totalMultas = dineroMultas.sum;
+    final num totalMultas = dineroMultas.sum;
     return totalMultas;
   }
 
-
-  DateTime takeDate(){
+  DateTime takeDate() {
     DateTime dateToday = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      DateTime.now().hour,
-      DateTime.now().minute,
-      DateTime.now().second);
-      return dateToday;
-
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        DateTime.now().hour,
+        DateTime.now().minute,
+        DateTime.now().second);
+    return dateToday;
   }
 
 
+
+  String porcentajeMultas (userMoney, totalMultas) {
+     return ((userMoney / totalMultas) * 100).toStringAsFixed(1);
+  }
 }

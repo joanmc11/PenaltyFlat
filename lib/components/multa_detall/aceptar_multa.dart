@@ -58,6 +58,7 @@ class AceptarMulta extends StatelessWidget {
                             onPressed: () async {
                               DatabaseService(uid: user.uid).rejectMulta(idCasa,
                                   userData, multaData, notifyId, context);
+                                  Navigator.pop(context);
                             },
                           ),
                         ),
