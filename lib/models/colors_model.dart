@@ -18,5 +18,6 @@ class UserColors {
     Colors.brown,
     Colors.cyan,
     Colors.yellow,
+    Colors.black
   ];
 }

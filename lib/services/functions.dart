@@ -1,3 +1,4 @@
+
 import 'package:penalty_flat_app/models/usersInside.dart';
 
 import 'package:collection/collection.dart';
@@ -19,6 +20,8 @@ class FunctionService {
     final num totalMultas = dineroMultas.sum;
     return totalMultas;
   }
+
+ 
 
   DateTime takeDate() {
     DateTime dateToday = DateTime(

@@ -175,13 +175,6 @@ class DatabaseService {
       ),
     );
     await Future.delayed(const Duration(milliseconds: 300), () {
-      /* Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CodigoMultas(
-                          ),
-                        ));*/
       Navigator.of(context).pop();
     });
   }
@@ -199,9 +192,6 @@ class DatabaseService {
       'precio': precio,
     });
 
-    await db.doc('sesion/$idCasa').update({
-      "sinMultas": false,
-    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         duration: Duration(seconds: 1),
@@ -236,12 +226,6 @@ class DatabaseService {
                       );
                       await Future.delayed(const Duration(milliseconds: 300),
                           () {
-                        /* Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CodigoMultas(
-                                          ),
-                                        ));*/
                         Navigator.of(context).pop();
                       });
                     },
@@ -261,7 +245,6 @@ class DatabaseService {
   }
 
   //Cambiar Imagen Perfil
-
   Future changeProfileImage(
     String idCasa,
   ) async {
@@ -304,7 +287,7 @@ class DatabaseService {
         content: Text("Multa rechazada"),
       ),
     );
-    
+
     await db.doc("sesion/$idCasa/multas/${multaData.id}").delete();
     await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
   }
@@ -429,7 +412,6 @@ class DatabaseService {
       'visto': false,
       'idNotificador': uid
     });
-    
 
     await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
   }
@@ -475,5 +457,40 @@ class DatabaseService {
 
     Navigator.pop(context);
     await db.doc("sesion/$idCasa/notificaciones/$notifyId").delete();
+  }
+
+  //Poner una multa
+  Future ponerMulta(multaData, userData, imgName, imgFile, idCasa) async {
+    final db = FirebaseFirestore.instance;
+    var multaActual = await db.collection('sesion/$idCasa/multas').add({
+      'titulo': multaData.titulo,
+      'descripcion': multaData.descripcion,
+      'autorId': uid,
+      'precio': multaData.precio,
+      'nomMultado': userData.nombre,
+      'idMultado': userData.id,
+      'imagen': imgName,
+      'parte': multaData.parte,
+      'fecha': FunctionService().takeDate(),
+      'aceptada': false,
+      'pagado': false
+    });
+
+    imgFile == null
+        ? null
+        : await FirebaseStorage.instance
+            .ref("/images/multas/$imgName")
+            .putFile(imgFile as File);
+
+    await db.collection('sesion/$idCasa/notificaciones').add({
+      'subtitulo': multaData.titulo,
+      'idMulta': multaActual.id,
+      'idUsuario': userData.id,
+      'tipo': "multa",
+      'fecha': FunctionService().takeDate(),
+      'visto': false,
+    });
+
+    // debugPrint(widget.idMultado);
   }
 }

@@ -54,7 +54,7 @@ class ProfilePage extends StatelessWidget {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const MyApp(),
+                                builder: (context) => const MyApp(showHome: true,),
                               ));
                         },
                       ),
@@ -82,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                           await Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const MyApp(),
+                                builder: (context) => const MyApp(showHome: true,),
                               ));
                         },
                       ),

@@ -43,42 +43,40 @@ class _ZonasCasaState extends State<ZonasCasa> {
                     });
                     widget.callbackParte(parte, todas);
                   },
-                  child: SingleChildScrollView(
-                    child: Row(
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          height: (selectedIndex == index ? 40 : 0),
-                          width: 2,
-                          color: PageColors.yellow,
-                        ),
-                        Expanded(
-                          child: RotatedBox(
-                            quarterTurns: 3,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: (selectedIndex == index)
-                                      ? Colors.blueGrey.withOpacity(0.15)
-                                      : Colors.transparent,
-                                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                                child: Text(partes[index],
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: PageColors.yellow,
-                                      fontWeight: (selectedIndex == index
-                                          ? FontWeight.bold
-                                          : FontWeight.normal),
-                                    )),
-                              ),
+                  child: Row(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: (selectedIndex == index ? 40 : 0),
+                        width: 2,
+                        color: PageColors.yellow,
+                      ),
+                      Expanded(
+                        child: RotatedBox(
+                          quarterTurns: 3,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                color: (selectedIndex == index)
+                                    ? Colors.blueGrey.withOpacity(0.15)
+                                    : Colors.transparent,
+                                borderRadius: const BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                              child: Text(partes[index],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: PageColors.yellow,
+                                    fontWeight: (selectedIndex == index
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
+                                  )),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },

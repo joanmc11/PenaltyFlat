@@ -5,9 +5,10 @@ class Casa {
   String nombreCasa;
   String idCasa;
 
-  Casa(this.idCasa, this.nombreCasa);
+  Casa(this.idCasa, 
+  this.nombreCasa);
 
-  Casa.fromFirestre(DocumentSnapshot<Map<String, dynamic>> docSnap)
+  Casa.fromFirestore(DocumentSnapshot<Map<String, dynamic>> docSnap)
       : id = docSnap.id,
         idCasa = docSnap['idCasa'],
         nombreCasa = docSnap['nombreCasa'];
@@ -19,7 +20,7 @@ Stream<List<Casa>> casasSnapshots(String idUsuario) async* {
   await for (final listaCasas in stream) {
     final List<Casa> casas = [];
     for (final casa in listaCasas.docs) {
-      casas.add(Casa.fromFirestre(casa));
+      casas.add(Casa.fromFirestore(casa));
     }
 
     yield casas;

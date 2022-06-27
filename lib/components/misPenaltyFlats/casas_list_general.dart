@@ -56,9 +56,9 @@ class CasasList extends StatelessWidget {
                   style: TiposBlue.bodyBold,
                 ),
                 onTap: () async {
-                  String sesionCode = casa.idCasa;
+                  String sesionId = casa.idCasa;
                   Provider.of<SesionProvider>(context, listen: false)
-                      .setSesion(sesionCode);
+                      .setSesion(sesionId);
 
                   await Navigator.of(context).pushReplacement(
                     MaterialPageRoute(

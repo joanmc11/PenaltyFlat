@@ -49,8 +49,7 @@ class _DisplayPaginasState extends State<DisplayPaginas> {
     final List<Widget> _pages = <Widget>[
       const PrincipalScreen(),
       const PersonaMultada(),
-      // ProfilePage(),
-       ProfilePage(),
+            ProfilePage(),
     ];
 
     return Scaffold(

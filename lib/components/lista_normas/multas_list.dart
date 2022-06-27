@@ -53,7 +53,9 @@ class MultasList extends StatelessWidget {
                           ? codigoMultasSnapshots(idCasa)
                           : partesMultasSnapshots(idCasa, parte)
                       : search == ""
-                          ? codigoMultasSnapshots(idCasa)
+                          ? todas
+                              ? codigoMultasSnapshots(idCasa)
+                              : partesMultasSnapshots(idCasa, parte)
                           : todas
                               ? searchMultasSnapshots(idCasa, search)
                               : searchParteMultasSnapshots(

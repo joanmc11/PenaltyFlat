@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:penalty_flat_app/models/colors_model.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,21 +15,7 @@ class PersonaMultaDetalle extends StatelessWidget {
   }) : super(key: key);
 
   final db = FirebaseFirestore.instance;
-  final List<Color> colors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-    Colors.indigo,
-    Colors.pinkAccent,
-    Colors.amber,
-    Colors.deepOrange,
-    Colors.brown,
-    Colors.cyan,
-    Colors.yellow,
-  ];
+  final colors = UserColors().colors;
 
   @override
   Widget build(BuildContext context) {

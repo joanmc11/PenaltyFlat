@@ -95,6 +95,7 @@ class ListaMultasUsuarios extends StatelessWidget {
                             ),
                             trailing: Text("${multa.precio}€"),
                           );
+                        
                   },
                 ),
               ),

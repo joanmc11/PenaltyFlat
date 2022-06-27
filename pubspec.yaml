@@ -53,6 +53,8 @@ dependencies:
   pie_chart: ^5.1.0
   fl_chart: ^0.45.0
   icon_badge: ^1.0.0
+  smooth_page_indicator: ^1.0.0+2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:penalty_flat_app/Styles/colors.dart';
+import 'package:penalty_flat_app/models/codigo_multas.dart';
+import 'package:penalty_flat_app/models/usersInside.dart';
+import 'package:penalty_flat_app/services/database.dart';
 import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
@@ -13,7 +14,7 @@ class BotonesMultar extends StatelessWidget {
   final Function callbackMultado;
   final String imgName;
   final File? imgFile;
-  BotonesMultar(
+  const BotonesMultar(
       {Key? key,
       required this.idMultado,
       required this.multaId,
@@ -22,124 +23,96 @@ class BotonesMultar extends StatelessWidget {
       required this.imgFile})
       : super(key: key);
 
-  final db = FirebaseFirestore.instance;
-  final List<Color> colors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-    Colors.indigo,
-    Colors.pinkAccent,
-    Colors.amber,
-    Colors.deepOrange,
-    Colors.brown,
-    Colors.cyan,
-    Colors.yellow,
-  ];
-
-  final DateTime dateToday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day,
-      DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
+ 
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<MyUser?>(context);
     final idCasa = Provider.of<SesionProvider?>(context)!.sesionCode;
     return StreamBuilder(
-        stream: db.doc("sesion/$idCasa/users/$idMultado").snapshots(),
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            return ErrorWidget(snapshot.error.toString());
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final userData = snapshot.data!.data()!;
-          return StreamBuilder(
-              stream: db.doc("sesion/$idCasa/codigoMultas/$multaId").snapshots(),
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-              ) {
-                if (snapshot.hasError) {
-                  return ErrorWidget(snapshot.error.toString());
-                }
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final multaData = snapshot.data!.data()!;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            primary: PageColors.blue,
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                side: BorderSide(color: Colors.black.withOpacity(0.5))),
-                            minimumSize: const Size(120, 20)),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Cancelar', style: TextStyle(fontSize: 15)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            primary: PageColors.blue,
-                            backgroundColor: PageColors.yellow,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            minimumSize: const Size(120, 25)),
-                        onPressed: () async {
-                          var multaActual = await db.collection('sesion/$idCasa/multas').add({
-                            'titulo': multaData['titulo'],
-                            'descripcion': multaData['descripcion'],
-                            'autorId': user!.uid,
-                            'precio': multaData['precio'],
-                            'nomMultado': userData['nombre'],
-                            'idMultado': userData['id'],
-                            'imagen': imgName,
-                            'parte': multaData['parte'],
-                            'fecha': dateToday,
-                            'aceptada': false,
-                            'pagado': false
-                          });
-
-                          imgFile == null
-                              ? null
-                              : await FirebaseStorage.instance
-                                  .ref("/images/multas/$imgName")
-                                  .putFile(imgFile as File);
-
-                          await db.collection('sesion/$idCasa/notificaciones').add({
-                            'subtitulo': multaData['titulo'],
-                            'idMulta': multaActual.id,
-                            'idUsuario': userData['id'],
-                            'tipo': "multa",
-                            'fecha': dateToday,
-                            'visto': false,
-                          });
-
-                          callbackMultado(true);
-
-                          // debugPrint(widget.idMultado);
-                        },
-                        child: const Text('Multar', style: TextStyle(fontSize: 15)),
-                      ),
-                    ),
-                  ],
-                );
-              });
-        });
+      stream: singleUserData(idCasa, idMultado),
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<InsideUser> snapshot,
+      ) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.done:
+            throw "Stream is none or done!!!";
+          case ConnectionState.waiting:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.active:
+            final userData = snapshot.data!;
+            return StreamBuilder(
+                stream: singleNormaSnapshot(idCasa, multaId),
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot<CodigoMultas> snapshot,
+                ) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.done:
+                      throw "Stream is none or done!!!";
+                    case ConnectionState.waiting:
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    case ConnectionState.active:
+                      final multaData = snapshot.data!;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                  primary: PageColors.blue,
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      side: BorderSide(
+                                          color:
+                                              Colors.black.withOpacity(0.5))),
+                                  minimumSize: const Size(120, 20)),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancelar',
+                                  style: TextStyle(fontSize: 15)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                  primary: PageColors.blue,
+                                  backgroundColor: PageColors.yellow,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  minimumSize: const Size(120, 25)),
+                              onPressed: () async {
+                                DatabaseService(uid: user!.uid).ponerMulta(
+                                    multaData,
+                                    userData,
+                                    imgName,
+                                    imgFile,
+                                    idCasa);
+                                callbackMultado(true);
+                              },
+                              child: const Text('Multar',
+                                  style: TextStyle(fontSize: 15)),
+                            ),
+                          ),
+                        ],
+                      );
+                  }
+                });
+        }
+      },
+    );
   }
 }

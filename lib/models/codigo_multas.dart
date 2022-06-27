@@ -14,7 +14,7 @@ class CodigoMultas {
     this.precio,
   );
 
-  CodigoMultas.fromFirestre(DocumentSnapshot<Map<String, dynamic>> docSnap)
+  CodigoMultas.fromFirestore(DocumentSnapshot<Map<String, dynamic>> docSnap)
       : id = docSnap.id,
         descripcion = docSnap['descripcion'],
         parte = docSnap['parte'],
@@ -28,7 +28,7 @@ Stream<List<CodigoMultas>> codigoMultasSnapshots(String idCasa) async* {
   await for (final listaMultas in stream) {
     final List<CodigoMultas> multas = [];
     for (final multa in listaMultas.docs) {
-      multas.add(CodigoMultas.fromFirestre(multa));
+      multas.add(CodigoMultas.fromFirestore(multa));
     }
     yield multas;
   }
@@ -44,7 +44,7 @@ Stream<List<CodigoMultas>> partesMultasSnapshots(
   await for (final listaMultas in stream) {
     final List<CodigoMultas> multas = [];
     for (final multa in listaMultas.docs) {
-      multas.add(CodigoMultas.fromFirestre(multa));
+      multas.add(CodigoMultas.fromFirestore(multa));
     }
     yield multas;
   }
@@ -66,7 +66,7 @@ Stream<List<CodigoMultas>> searchMultasSnapshots(
   await for (final listaMultas in stream) {
     final List<CodigoMultas> multas = [];
     for (final multa in listaMultas.docs) {
-      multas.add(CodigoMultas.fromFirestre(multa));
+      multas.add(CodigoMultas.fromFirestore(multa));
     }
     yield multas;
   }
@@ -89,23 +89,16 @@ Stream<List<CodigoMultas>> searchParteMultasSnapshots(
   await for (final listaMultas in stream) {
     final List<CodigoMultas> multas = [];
     for (final multa in listaMultas.docs) {
-      multas.add(CodigoMultas.fromFirestre(multa));
+      multas.add(CodigoMultas.fromFirestore(multa));
     }
     yield multas;
   }
 }
 
- Stream<CodigoMultas> singleNormaSnapshot(
-    String idCasa, String idMulta) async* {
+Stream<CodigoMultas> singleNormaSnapshot(String idCasa, String idMulta) async* {
   final db = FirebaseFirestore.instance;
   final stream = db.doc("sesion/$idCasa/codigoMultas/$idMulta").snapshots();
-
-  
   await for (final multa in stream) {
-   
-   yield CodigoMultas.fromFirestre(multa);
+    yield CodigoMultas.fromFirestore(multa);
   }
-  
-  
-  }
-
+}
