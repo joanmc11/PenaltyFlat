@@ -14,6 +14,7 @@ import 'pagamentos/pagamentos.dart';
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
   final AuthService _auth = AuthService();
+  
 
   @override
   Widget build(BuildContext context) {

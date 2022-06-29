@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
       child: ChangeNotifierProvider(
         create: (_) => SesionProvider(),
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'PenaltyFlat',
           home: showHome ? const Wrapper() : const OnBoardingPage(),
         ),

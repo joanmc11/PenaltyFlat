@@ -241,25 +241,73 @@ class DatabaseService {
                         const Text("No", style: TextStyle(color: Colors.blue)))
               ],
             ),
-        barrierDismissible: false);
+        barrierDismissible: true);
   }
 
   //Cambiar Imagen Perfil
   Future changeProfileImage(
-    String idCasa,
+    String idCasa, context
   ) async {
-    final db = FirebaseFirestore.instance;
-    final image = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 25);
-    if (image == null) return;
-    final imageTemporary = File(image.path);
-    await db.doc('sesion/$idCasa/users/$uid').update({
-      'imagenPerfil': image.name,
-    });
-    await FirebaseStorage.instance
-        .ref("/images/${image.name}")
-        .putFile(imageTemporary);
+    await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: const Text("Escoje una imagen para tu perfil",textAlign: TextAlign.center,),
+              alignment: Alignment.center,
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    final db = FirebaseFirestore.instance;
+                    final image = await ImagePicker().pickImage(
+                        source: ImageSource.camera, imageQuality: 25);
+                    if (image == null) return;
+                    final imageTemporary = File(image.path);
+                    await db.doc('sesion/$idCasa/users/$uid').update({
+                      'imagenPerfil': image.name,
+                    });
+                    await FirebaseStorage.instance
+                        .ref("/images/${image.name}")
+                        .putFile(imageTemporary);
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.camera),
+                      Text("Camera"),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final db = FirebaseFirestore.instance;
+                    final image = await ImagePicker().pickImage(
+                        source: ImageSource.gallery, imageQuality: 25);
+                    if (image == null) return;
+                    final imageTemporary = File(image.path);
+                    await db.doc('sesion/$idCasa/users/$uid').update({
+                      'imagenPerfil': image.name,
+                    });
+                    await FirebaseStorage.instance
+                        .ref("/images/${image.name}")
+                        .putFile(imageTemporary);
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.image),
+                      Text("Galeria"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+        barrierDismissible: true);
+
+   
   }
+
+  //Escoger imagen multa
+  // ignore: non_constant_identifier_names
 
 //Rechazar Multa
 

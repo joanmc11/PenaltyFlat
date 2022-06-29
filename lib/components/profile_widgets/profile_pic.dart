@@ -62,7 +62,7 @@ class ProfilePic extends StatelessWidget {
                   backgroundColor: PageColors.blue,
                 ),
                 onPressed: () async {
-                  DatabaseService(uid: user!.uid).changeProfileImage(idCasa);
+                  DatabaseService(uid: user!.uid).changeProfileImage(idCasa, context);
                 },
                 child: const Text("+"),
               ),

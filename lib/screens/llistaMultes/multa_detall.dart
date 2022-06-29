@@ -48,32 +48,41 @@ class MultaDetall extends StatelessWidget {
                   case ConnectionState.active:
                     final multaData = snapshot.data!;
 
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 1, child: TituloMulta(idMulta: idMulta)),
-                            ImagenMultado(idMultado: idMultado),
-                            Expanded(
-                              flex: 4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  DescripcionDetail(multaData: multaData),
-                                  PruebasDetail(multaData: multaData),
-                                  PrecioDetail(multaData: multaData),
-                                  AceptarMulta(
-                                      multaData: multaData, notifyId: notifyId),
-                                ],
-                              ),
+                    return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1, child: TituloMulta(idMulta: idMulta)),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: ImagenMultado(idMultado: idMultado),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 30),
+                                  child: DescripcionDetail(multaData: multaData),
+                                ),
+                                Padding(
+                                 padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                  child: PruebasDetail(multaData: multaData),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                                  child: PrecioDetail(multaData: multaData),
+                                ),
+                                AceptarMulta(
+                                    multaData: multaData, notifyId: notifyId),
+                              ],
                             ),
-                          ]),
-                    );
+                          ),
+                        ]);
                 }
               },
             ),

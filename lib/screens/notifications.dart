@@ -66,7 +66,7 @@ class Notificaciones extends StatelessWidget {
 
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemExtent: 55.0,
+                      itemExtent: 70.0,
                       itemCount: notifyData.isEmpty ? 1 : notifyData.length,
                       itemBuilder: (context, index) {
                         return notifyData.isEmpty
@@ -81,99 +81,145 @@ class Notificaciones extends StatelessWidget {
                                 ),
                               )
                             : notifyData[index].tipo == "multa"
-                                ? ListTile(
-                                    leading: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: PageColors.blue,
-                                      ),
-                                      width: 40,
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.gavel,
-                                          color: PageColors.yellow,
-                                          size: 22,
+                                ? GestureDetector(
+                                    onTap: () async {
+                                      await db
+                                          .doc(
+                                              'sesion/$idCasa/notificaciones/${notifyData[index].id}')
+                                          .update({
+                                        "visto": true,
+                                      });
+
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MultaDetall(
+                                              notifyId: notifyData[index]
+                                                  .id
+                                                  .toString(),
+                                              idMulta:
+                                                  notifyData[index].idMulta,
+                                              idMultado: user.uid,
+                                            ),
+                                          ));
+                                    },
+                                    child: ListTile(
+                                      
+                                      tileColor: notifyData[index].visto
+                                          ? null
+                                          : PageColors.yellow.withOpacity(0.1),
+                                      leading: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: PageColors.blue,
+                                        ),
+                                        width: 40,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.gavel,
+                                            color: PageColors.yellow,
+                                            size: 22,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    title: Text(
-                                      "¡Te han pillado!",
-                                      style: TiposBlue.bodyBold,
-                                    ),
-                                    subtitle: Text(
-                                      notifyData[index].subtitulo
-                                          .capitalize!,
-                                      style: TiposBlue.body,
-                                    ),
-                                    trailing: IconButton(
-                                        onPressed: () async {
-                                          await db
-                                              .doc(
-                                                  'sesion/$idCasa/notificaciones/${notifyData[index].id}')
-                                              .update({
-                                            "visto": true,
-                                          });
+                                      title: Text(
+                                        "¡Te han pillado!",
+                                        style: TiposBlue.bodyBold,
+                                      ),
+                                      subtitle: Text(
+                                        notifyData[index].subtitulo.capitalize!,
+                                        style: TiposBlue.body,
+                                      ),
+                                      trailing: IconButton(
+                                          onPressed: () async {
+                                            await db
+                                                .doc(
+                                                    'sesion/$idCasa/notificaciones/${notifyData[index].id}')
+                                                .update({
+                                              "visto": true,
+                                            });
 
+                                            await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MultaDetall(
+                                                    notifyId: notifyData[index]
+                                                        .id
+                                                        .toString(),
+                                                    idMulta: notifyData[index]
+                                                        .idMulta,
+                                                    idMultado: user.uid,
+                                                  ),
+                                                ));
+                                          },
+                                          icon: Icon(
+                                            Icons.add,
+                                            color: PageColors.blue,
+                                          )),
+                                    ),
+                                  )
+                                : notifyData[index].tipo == "pago"
+                                    ? GestureDetector(
+                                        onTap: (() async {
                                           await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    MultaDetall(
-                                                  notifyId:
-                                                      notifyData[index].id.toString(),
-                                                  idMulta: notifyData[index]
-                                                      .idMulta,
-                                                  idMultado: user.uid,
+                                                    Confirmaciones(
+                                                  notifyId: notifyData[index]
+                                                      .id
+                                                      .toString(),
+                                                  userId: notifyData[index]
+                                                      .idPagador,
                                                 ),
                                               ));
-                                        },
-                                        icon: Icon(
-                                          Icons.add,
-                                          color: PageColors.blue,
-                                        )),
-                                  )
-                                : notifyData[index].tipo == "pago"
-                                    ? ListTile(
-                                        leading: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: PageColors.blue,
-                                          ),
-                                          width: 40,
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.payment,
-                                              color: PageColors.yellow,
-                                              size: 22,
+                                        }),
+                                        child: ListTile(
+                                          leading: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: PageColors.blue,
+                                            ),
+                                            width: 40,
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.payment,
+                                                color: PageColors.yellow,
+                                                size: 22,
+                                              ),
                                             ),
                                           ),
+                                          title: Text(
+                                            "Confirma el pago de:",
+                                            style: TiposBlue.bodyBold,
+                                          ),
+                                          subtitle: Text(
+                                            notifyData[index].nomPagador,
+                                            style: TiposBlue.body,
+                                          ),
+                                          trailing: IconButton(
+                                              onPressed: () async {
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Confirmaciones(
+                                                        notifyId:
+                                                            notifyData[index]
+                                                                .id
+                                                                .toString(),
+                                                        userId:
+                                                            notifyData[index]
+                                                                .idPagador,
+                                                      ),
+                                                    ));
+                                              },
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: PageColors.blue,
+                                              )),
                                         ),
-                                        title: Text(
-                                          "Confirma el pago de:",
-                                          style: TiposBlue.bodyBold,
-                                        ),
-                                        subtitle: Text(
-                                          notifyData[index].nomPagador,
-                                          style: TiposBlue.body,
-                                        ),
-                                        trailing: IconButton(
-                                            onPressed: () async {
-                                              await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Confirmaciones(
-                                                      notifyId:
-                                                          notifyData[index].id.toString(),
-                                                      userId: notifyData[index]
-                                                          .idPagador,
-                                                    ),
-                                                  ));
-                                            },
-                                            icon: Icon(
-                                              Icons.add,
-                                              color: PageColors.blue,
-                                            )),
                                       )
                                     : ListTile(
                                         leading:
@@ -203,7 +249,8 @@ class Notificaciones extends StatelessWidget {
                                                     child: Center(
                                                       child: NotifyPic(
                                                         notificadorId:
-                                                            notifyData[index].idNotificador,
+                                                            notifyData[index]
+                                                                .idNotificador,
                                                       ),
                                                     ),
                                                   ),

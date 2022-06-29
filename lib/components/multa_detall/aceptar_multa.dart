@@ -41,70 +41,81 @@ class AceptarMulta extends StatelessWidget {
             final userData = snapshot.data!;
 
             return !multaData.aceptada
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: PageColors.white),
-                            child: Text(
-                              "Rechazar",
-                              style: TextStyle(color: PageColors.blue),
+                ? Padding(
+                  padding: const EdgeInsets.only(bottom:16.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0, left: 16, ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: PageColors.white),
+                              child: Text(
+                                "Rechazar",
+                                style: TextStyle(color: PageColors.blue),
+                              ),
+                              onPressed: () async {
+                                DatabaseService(uid: user.uid).rejectMulta(idCasa,
+                                    userData, multaData, notifyId, context);
+                                    Navigator.pop(context);
+                              },
                             ),
-                            onPressed: () async {
-                              DatabaseService(uid: user.uid).rejectMulta(idCasa,
-                                  userData, multaData, notifyId, context);
-                                  Navigator.pop(context);
-                            },
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: PageColors.yellow),
-                            child: Text(
-                              "Aceptar",
-                              style: TextStyle(color: PageColors.blue),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 16, ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: PageColors.yellow),
+                              child: Text(
+                                "Aceptar",
+                                style: TextStyle(color: PageColors.blue),
+                              ),
+                              onPressed: () async {
+                                DatabaseService(uid: user.uid).acceptMulta(
+                                  idCasa,
+                                  multaData,
+                                  userData,
+                                  context,
+                                );
+                              },
                             ),
-                            onPressed: () async {
-                              DatabaseService(uid: user.uid).acceptMulta(
-                                idCasa,
-                                multaData,
-                                userData,
-                                context,
-                              );
-                            },
                           ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    ),
+                )
                 : multaData.pagado
-                    ? const Center(
-                        child: Text(
-                          "Multa pagada",
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                    ? Container(
+                      height: 60,
+                      color: PageColors.yellow.withOpacity(0.25),
+                      child:  Center(
+                          child: Text(
+                            "Multa pagada",
+                            style: TextStyle(
+                                color: PageColors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
                         ),
-                      )
-                    : const Center(
-                        child: Text(
-                          "Multa por pagar",
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                    )
+                    : Container(
+                      color: Colors.grey.withOpacity(0.2),
+                      height: 60,
+                      child: Center(
+                          child: Text(
+                            "Multa por pagar",
+                            style: TextStyle(
+                                color: PageColors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
                         ),
-                      );
+                    );
         }
       },
     );

@@ -4,6 +4,9 @@ import 'package:penalty_flat_app/Styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 
+import 'package:penalty_flat_app/services/database.dart';
+import 'package:penalty_flat_app/services/functions.dart';
+
 class PruebaMultar extends StatefulWidget {
   final String idMultado;
   final String multaId;
@@ -22,8 +25,14 @@ class PruebaMultar extends StatefulWidget {
 class _PruebaMultarState extends State<PruebaMultar> {
   File? _image;
 
+  callbackImage(imageFile){
+      _image=imageFile;
+    }
+
   @override
   Widget build(BuildContext context) {
+
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -41,14 +50,8 @@ class _PruebaMultarState extends State<PruebaMultar> {
                 child: InkWell(
                   splashColor: Theme.of(context).primaryColorLight,
                   onTap: () async {
-                    final image = await ImagePicker()
-                        .pickImage(source: ImageSource.gallery, imageQuality: 10);
-                    if (image == null) return;
-                    setState(() {
-                      _image = File(image.path);
-                    });
 
-                    widget.callbackImgPath(image.name, _image);
+                    FunctionService().imagenMulta(context, widget.callbackImgPath, callbackImage);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
