@@ -176,6 +176,9 @@ class Notificaciones extends StatelessWidget {
                                               ));
                                         }),
                                         child: ListTile(
+                                          tileColor: notifyData[index].visto
+                                          ? null
+                                          : PageColors.yellow.withOpacity(0.1),
                                           leading: Container(
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
@@ -222,6 +225,9 @@ class Notificaciones extends StatelessWidget {
                                         ),
                                       )
                                     : ListTile(
+                                      tileColor: notifyData[index].visto
+                                          ? null
+                                          : PageColors.yellow.withOpacity(0.1),
                                         leading:
                                             /*Center(
                                       child: NotifyPic(idCasa: idCasa, notificadorId: notifyData[index]

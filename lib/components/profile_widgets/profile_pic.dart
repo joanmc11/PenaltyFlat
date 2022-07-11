@@ -11,6 +11,8 @@ import 'package:penalty_flat_app/services/sesionProvider.dart';
 import 'package:provider/provider.dart';
 import '../../../../Styles/colors.dart';
 
+
+
 class ProfilePic extends StatelessWidget {
   ProfilePic({Key? key, required this.userData}) : super(key: key);
   InsideUser userData;
